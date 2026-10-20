@@ -207,7 +207,7 @@ const FOE = {
 function spawnFoe(type, x, y, extra) { const F = FOE[type]; const k = [0.7, 1, 1.25][Save.set.diff]; const u = makeUnit(Object.assign({ type, n: F.n, x, y, hx: x, hy: y, hp: F.hp * k, maxHp: F.hp * k, look: F.look, kind: F.kind, sp: F.sp, size: F.size || 1, seenHp: 0 }, extra || {}));
   if (extra && extra.hpMul) u.hp *= extra.hpMul; u.maxHp = u.hp; if (u.kind === 'bijuu') { u.r = 90; u.size = extra && extra.size || 1.5; } World.foes_.push(u); return u; }
 /* ---------- Dégâts ---------- */
-function hurt(t, dmg, src, o = {}) { if (!t || t.hp <= 0 || t.gone) return 0; if (t.isHero && (t.iframe > 0 || Game.cine)) return 0; if (t.isAlly && t.down) return 0;
+function hurt(t, dmg, src, o = {}) { if (!t || t.hp <= 0 || t.gone) return 0; if (t.isHero && (t.iframe > 0 || Game.cine)) return 0; if (t.isHero) dmg *= 1.2; if (t.isAlly && t.down) return 0;
   let r = { dmg, rx: null }; if (o.el && !t.isHero && !t.isAlly) r = applyEl(src, t, o.el, dmg); let d = r.dmg * (t.armor ? 0.6 : 1); if (t.isHero) d *= [0.5, 1, 1.35][Save.set.diff]; if (t.guard) d *= 0.35;
   if (t.type === 'dummy') { t.hp = t.maxHp; t.wob = 1; } else if (t.type === 'sensei') { t.hp = t.maxHp; if (t.onTag) t.onTag(); } else t.hp -= d;
   t.hurtT = t.kind === 'bijuu' ? 0.08 : 0.2; t.flash = 0.09; t.sq = t.kind === 'bijuu' ? -0.06 : -0.28; t.seenHp = 4;

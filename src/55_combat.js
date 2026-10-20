@@ -52,7 +52,7 @@ function heroUpdate(u, dt) {
 function nearestFoe(u, r) { let b = null, bd = r; for (const f of World.foes()) { if (f.type === 'dummy' && !(Game.inField(u) || f.tag === 'yard')) continue; if (f.passive) continue; const d = dist(f, u) - (f.kind === 'bijuu' ? 60 : 0); if (d < bd) { bd = d; b = f; } } return b; }
 function aimAt(u) { const f = u.aimFoe || u.tgt || nearestFoe(u, 320); if (f) { u.face = f.x < u.x ? -1 : 1; return Math.atan2(f.y - u.y, f.x - u.x); } return u.face < 0 ? Math.PI : 0; }
 function startM1(u, n) { const a = aimAt(u); u.act = { k: 'm1', n, t: 0, dur: [0.3, 0.34, 0.46][n], hit: false, a }; u.vx = Math.cos(a) * (n === 2 ? 60 : 150); u.vy = Math.sin(a) * 100; Sfx.play('swing'); }
-function dodge(u) { const m = Input.move(); const a = Math.hypot(m.x, m.y) > 0.1 ? Math.atan2(m.y, m.x) : (u.face < 0 ? 0 : Math.PI); u.act = { k: 'dash', t: 0, dur: 0.24, a }; u.iframe = 0.3; u.cd.dodge = 0.45; u.vx = Math.cos(a) * 920; u.vy = Math.sin(a) * 660; if (Math.abs(Math.cos(a)) > 0.2) u.face = Math.cos(a) < 0 ? -1 : 1; FX.dust(u.x, u.y, 8); FX.shock(u.x, u.y, 'rgba(200,220,255,.6)', 40, 0.25, 4); Sfx.play('dodge'); Game.stat('dodge'); }
+function dodge(u) { const m = Input.move(); const a = Math.hypot(m.x, m.y) > 0.1 ? Math.atan2(m.y, m.x) : (u.face < 0 ? 0 : Math.PI); u.act = { k: 'dash', t: 0, dur: 0.24, a }; u.iframe = 0.3; u.cd.dodge = 0.45; u.vx = Math.cos(a) * 920; u.vy = Math.sin(a) * 660; if (Math.abs(Math.cos(a)) > 0.2) u.face = Math.cos(a) < 0 ? -1 : 1; V.dashFx(u, u.isHero ? Game.mainEl : null); Sfx.play('dodge'); Game.stat('dodge'); }
 const pw = (u) => (u.isAlly ? 0.55 + (Game.lvl - 1) * 0.06 : Game.pow());
 function actStep(u, a, dt) {
   if (a.k === 'm1') { u.vx *= 0.8; u.vy *= 0.8; u.x += u.vx * dt; u.y += u.vy * dt;
@@ -74,9 +74,10 @@ function actStep(u, a, dt) {
 }
 function castSkill(u, S, id, isHero) { if (!S) return; const G = Game; if (isHero) { const lk = G.skillLock(id); if (lk) { FX.text(u.x, u.y - 110, lk, '#93a3c6', 15); return; } if (u.cd[id] > 0) return; if (u.ch < S.ch) { FX.text(u.x, u.y - 110, 'Chakra', '#4aa8ff', 15); return; } u.ch -= S.ch; }
   u.cd[id] = S.cd * (u.isAlly ? 1.8 : 1); u.sign = { k: S.sign, t: 0 }; u.act = { k: 'cast', S, id, t: 0, dur: 0.26 }; u.aimA = aimAt(u); u.sq = -0.12; Sfx.play('tech'); if (isHero) G.stat('skill');
-  FX.glow(u.x, u.y - 40, elc(S.el), 50, 0.3); }
+  FX.glow(u.x, u.y - 40, elc(S.el), 50, 0.3); V.signFx(u, S.el, 3, 0.3); }
 function castUlt(u) { const G = Game, id = G.ultId; if (!id) return; const lk = G.ultLock(); if (lk) { FX.text(u.x, u.y - 110, lk, '#93a3c6', 15); return; } if (G.ultV < 100) { FX.text(u.x, u.y - 110, 'Ultime ' + Math.floor(G.ultV) + '%', '#ffd166', 15); return; }
-  G.ultV = 0; const S = SK[id]; u.sign = { k: S.sign, t: 0 }; u.act = { k: 'ult', id, t: 0, dur: 0.7 }; u.iframe = 0.9; u.aimA = aimAt(u); Cam.tz = 1.15; G.later(1.6, () => (Cam.tz = 1)); Sfx.play('tech'); G.stat('ult'); if (id === 'uzuhiko') V.karma(u, 1.8); FX.glow(u.x, u.y - 40, elc(S.el), 120, 0.7, { grow: 0.5 }); }
+  G.ultV = 0; Cine.play(u, id, SK[id].el, () => castUltGo(u, id), { tgt: nearestFoe(u, 520) }); }
+function castUltGo(u, id) { const G = Game; const S = SK[id]; u.sign = { k: S.sign, t: 0 }; u.act = { k: 'ult', id, t: 0, dur: 0.7 }; u.iframe = 0.9; u.aimA = aimAt(u); Cam.tz = 1.15; G.later(1.6, () => (Cam.tz = 1)); Sfx.play('tech'); G.stat('ult'); if (id === 'uzuhiko') V.karma(u, 1.8); FX.glow(u.x, u.y - 40, elc(S.el), 120, 0.7, { grow: 0.5 }); }
 function aoe(x, y, r, dmg, src, o) { for (const f of World.foes()) if (!f.passive && Math.hypot(f.x - x, f.y - y) < r + (f.kind === 'bijuu' ? 80 : 0)) hurt(f, dmg, src, o); }
 function fireSkill(u, S, id) { const a = u.aimA, P = pw(u), h = u.hand || { x: u.x + u.face * 20, y: u.y - 40 };
   const proj = (o) => Proj.push(Object.assign({ x: h.x, y: h.y, team: 0, src: u, hit: new Set(), r: 16, life: 0.6 }, o));
@@ -102,6 +103,7 @@ function fireSkill(u, S, id) { const a = u.aimA, P = pw(u), h = u.hand || { x: u
       const bond = Game.bondAvg(); Game.later(0.7, () => { if (bond >= 3 && f.hp > 0) { Game.impact(f.x, f.y, 0.12); hurt(f, 30 * P, u, { el: 'yang', big: 1, k: 1 }); } }); return; }
   } }
 function fireUlt(u, id) { const P = Game.pow(), f = nearestFoe(u, 520), tx = f ? f.x : u.x + u.face * 220, ty = f ? f.y : u.y;
+  if (ULT_FX[id]) { ULT_FX[id](u, tx, ty, P); return; }
   if (id === 'uzuhiko') { const h = u.hand || u; V.uzuhiko(h.x, h.y, tx, ty, () => aoe(tx, ty, 190, 120 * P, u, { el: 'wind', k: 2.5, big: 1 })); return; }
   if (id === 'kirin') { V.kirin(tx, ty, () => aoe(tx, ty, 200, 130 * P, u, { el: 'bolt', k: 1.5, big: 1 })); return; }
   if (id === 'goryuka') { for (let i = 0; i < 5; i++) Game.later(i * 0.12, () => { const b = Math.atan2(ty - u.y, tx - u.x) + (i - 2) * 0.16; Proj.push({ x: u.x, y: u.y - 40, vx: Math.cos(b) * 620, vy: Math.sin(b) * 620, life: 0.9, dmg: 34 * P, el: 'fire', r: 30, kind: 'fireball', boom: 100, team: 0, src: u, hit: new Set() }); }); Game.later(0.8, () => Game.impact(tx, ty, 0.14)); return; }

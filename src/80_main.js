@@ -27,7 +27,7 @@ const Game = {
       for (const f of World.foes()) { f.aggro = false; if (!f.boss) { f.x = f.hx; f.y = f.hy; } f.hp = Math.max(f.hp, f.maxHp * 0.6); f.casting = null; } for (const a of this.allies) { a.down = false; a.hp = a.maxHp; a.x = h.x - 40; a.y = h.y; } Proj.length = 0;
       $('#fade').style.opacity = 0; this.downing = false; UI.toast('Tu te relèves.'); }, 1600); },
   spawnJura() { this.jura = makeUnit({ x: 250, y: 1560, look: 'jura', face: 1, team: 2 }); Talk.say([['', 'Une présence immense, à la lisière ouest.']]); },
-  addAlly(d) { if (typeof d === 'string') d = { sarada: { id: 'sarada', n: 'Sarada', look: 'sarada', el: 'fire', skill: 'chidori', slot: 0 } }[d]; const a = makeUnit({ isAlly: true, team: 0, id: d.id, n: d.n || d.name, look: d.look, el: d.el, skill: d.skill || ELEM_SK[d.el][0], slot: d.slot || 0, x: this.hero.x - 60 - (d.slot || 0) * 30, y: this.hero.y + 20, hp: 150 + this.lvl * 12, maxHp: 150 + this.lvl * 12, r: 13, jin: d.jin });
+  addAlly(d) { if (typeof d === 'string') d = { sarada: { id: 'sarada', n: 'Sarada', look: 'sarada', el: 'fire', skill: 'chidori', slot: 0 } }[d]; const a = makeUnit({ isAlly: true, team: 0, clan: d.clan, id: d.id, n: d.n || d.name, look: d.look, el: d.el, skill: d.skill || ELEM_SK[d.el][0], slot: d.slot || 0, x: this.hero.x - 60 - (d.slot || 0) * 30, y: this.hero.y + 20, hp: 150 + this.lvl * 12, maxHp: 150 + this.lvl * 12, r: 13, jin: d.jin });
     this.allies = this.allies.filter((o) => o.id !== a.id); this.allies.push(a); FX.smoke(a.x, a.y - 10, 6); return a; },
   save() { if (!this.hero || this.titleMode) return; const base = { v: 2, lvl: this.lvl, xp: this.xp, time: World.time, day: World.day, x: this.hero.x, y: this.hero.y, rx: this.rxSeen, ryo: this.ryo, opened: this.opened };
     if (this.mode === 'voie') Save.writeV(Object.assign(base, { voie: Voie.save() })); else Save.write(Object.assign(base, { step: Story.step, q: Story.q, flags: Story.flags, hood: this.hero.hood })); },
@@ -41,7 +41,7 @@ const Game = {
     if (sv && !sv.step.startsWith('p')) { this.sarada.x = 1640; this.sarada.y = 400; }
     Story.start(sv); if (sv && sv.step === 'c2') this.spawnJura(); if (sv && sv.step === 'k3') { Story.step = 'k2'; } this.go(!sv); },
   startVoie(created) { const sv = created ? null : Save.gameV(); this.boot(sv); this.mode = 'voie'; Story = Voie; if (created) { Voie.newGame(created); } else Object.assign(Voie, sv.voie);
-    const me = Voie.me; this.skills = [ELEM_SK[me.el][0], CLANS[me.clan].sk, 'bunshin', 'combo']; this.ultId = ELEM_SK[me.el][1]; this.mainEl = me.el; this.heroLook = me.look;
+    const me = Voie.me; this.skills = [ELEM_SK[me.el][0], CLANS[me.clan].sk, 'bunshin', 'combo']; this.ultId = CLAN_ULT[me.clan] || ELEM_SK[me.el][1]; this.mainEl = me.el; this.heroLook = me.look;
     this.hero = makeUnit({ isHero: true, look: me.look, team: 0, x: 2250, y: 900, r: 13, n: me.name }); this.heroStats(this.hero); if (sv) { this.hero.x = sv.x || 2250; this.hero.y = sv.y || 900; } else World.time = 8;
     if (Voie.step === 'j2') Voie.step = 'j1'; Voie.start(sv ? sv.voie : null); if (sv && Voie.step === 'j1' && !World.foes_.some((f) => f.tag === 'hide')) for (const [x, y] of [[330, 1500], [420, 1620]]) spawnFoe('kuro', x, y, { tag: 'hide' }); this.go(!sv); },
   go(isNew) { Cam.x = this.hero.x; Cam.y = this.hero.y; this.paused = false; this.running = true; this.titleMode = false; if (isNew) this.later(0.2, () => this.hint('move')); UI.objective(); },
@@ -60,9 +60,10 @@ const Game = {
     if (Input.pressed('menu')) { if ($('#sheet').style.display === 'flex') UI.close(); else if (!Talk.on && this.running && !this.titleMode) UI.open('carte'); }
     if (Input.pressed('map') && !Talk.on && !this.titleMode) { if ($('#sheet').style.display === 'flex') UI.close(); else if (this.running) UI.open('carte'); }
     if (this.paused || !this.running) { Input.end(); return; }
-    dt *= Save.set.speed; this.t += dt; for (let i = this.timers.length - 1; i >= 0; i--) { const T = this.timers[i]; T.t -= dt; if (T.t <= 0) { this.timers.splice(i, 1); T.f(); } }
+    if (this.slowT > 0) { this.slowT -= dt; dt *= 0.35; } dt *= Save.set.speed; this.t += dt; for (let i = this.timers.length - 1; i >= 0; i--) { const T = this.timers[i]; T.t -= dt; if (T.t <= 0) { this.timers.splice(i, 1); T.f(); } }
     Talk.update(dt); FX.update(dt); UI.update(dt); if (this.impactT > 0) this.impactT -= dt; if (this.skyT > 0) this.skyT -= dt; else this.skyA = Math.max(0, this.skyA - dt);
     this.ultA = lerp(this.ultA, this.ultV >= 100 ? 1 : 0, dt * 3);
+    if (Cine.on) { Cine.update(dt); Input.end(); return; }
     if (this.hs > 0) { this.hs -= dt; Input.end(); return; }
     World.update(dt);
     if (!this.cine && h.hp > 0) heroUpdate(h, dt); else { h.vx *= 0.8; h.vy *= 0.8; h.anim += dt * 3; if (h.koT != null) h.koT += dt; h.act = h.hp > 0 ? null : h.act; }
@@ -80,7 +81,7 @@ const Game = {
     Input.end(); },
   render() { const dpr = Math.min(Save.set.low ? 1 : 2, devicePixelRatio || 1), vw = innerWidth, vh = innerHeight; if (cv.width !== Math.round(vw * dpr) || cv.height !== Math.round(vh * dpr)) { cv.width = Math.round(vw * dpr); cv.height = Math.round(vh * dpr); }
     g.setTransform(1, 0, 0, 1, 0, 0); g.fillStyle = '#0b1020'; g.fillRect(0, 0, cv.width, cv.height); if (!this.running || !this.hero) return;
-    const z = clamp(vw / 1150, 0.62, 1.25) * Cam.z; const W2 = () => g.setTransform(dpr * z, 0, 0, dpr * z, dpr * vw / 2 - (Cam.x + Cam.kx) * dpr * z, dpr * vh / 2 - (Cam.y + Cam.ky) * dpr * z); W2();
+    const z = clamp(vw / 1150, 0.62, 1.25) * Cam.z; Cam.x = clamp(Cam.x, vw / 2 / z, 3200 - vw / 2 / z); Cam.y = clamp(Cam.y, vh / 2 / z, 3000 - vh / 2 / z); const W2 = () => g.setTransform(dpr * z, 0, 0, dpr * z, dpr * vw / 2 - (Cam.x + Cam.kx) * dpr * z, dpr * vh / 2 - (Cam.y + Cam.ky) * dpr * z); W2();
     const vx0 = Cam.x - vw / 2 / z - 200, vx1 = Cam.x + vw / 2 / z + 200, vy0 = Cam.y - vh / 2 / z - 200, vy1 = Cam.y + vh / 2 / z + 300;
     World.drawGround(g); FX.draw(g, 0);
     for (const it of Story.items) { const b = Math.sin(this.t * 4) * 4; g.fillStyle = '#ffd166'; g.beginPath(); g.moveTo(it.x, it.y - 30 + b); g.lineTo(it.x + 9, it.y - 18 + b); g.lineTo(it.x, it.y - 6 + b); g.lineTo(it.x - 9, it.y - 18 + b); g.fill(); g.strokeStyle = INK; g.lineWidth = 2; g.stroke(); }
@@ -96,7 +97,7 @@ const Game = {
     // cadre d'impact (rare, gros moments seulement) : encre sombre + lignes de vitesse ; jamais blanc si « réduire les flashs »
     if (this.impactT > 0) { const a = Math.min(1, this.impactT * 8); g.fillStyle = Save.set.rf ? `rgba(6,10,24,${0.5 * a})` : `rgba(255,255,255,${0.55 * a})`; g.fillRect(0, 0, cv.width, cv.height); const ip = this.impactAt || Cam; const cx = (ip.x - Cam.x) * z * dpr + cv.width / 2, cy = (ip.y - 40 - Cam.y) * z * dpr + cv.height / 2; g.strokeStyle = Save.set.rf ? `rgba(58,160,255,${0.6 * a})` : `rgba(11,16,32,${0.85 * a})`; g.lineWidth = 3 * dpr;
       for (let i = 0; i < 34; i++) { const an = rnd(0, TAU), r0 = rnd(0.18, 0.32) * Math.max(cv.width, cv.height); g.beginPath(); g.moveTo(cx + Math.cos(an) * r0, cy + Math.sin(an) * r0); g.lineTo(cx + Math.cos(an) * r0 * 2.6, cy + Math.sin(an) * r0 * 2.6); g.stroke(); } }
-    g.setTransform(dpr, 0, 0, dpr, 0, 0); UI.compass(g, vw, vh); UI.bossHud(g, vw, vh);
+    g.setTransform(dpr, 0, 0, dpr, 0, 0); if (!Cine.on) { UI.compass(g, vw, vh); UI.bossHud(g, vw, vh); } Cine.draw(g, vw, vh);
     const h = this.hero; if (h.hp < h.maxHp * 0.3 && h.hp > 0) { const gr = g.createRadialGradient(vw / 2, vh / 2, Math.min(vw, vh) * 0.35, vw / 2, vh / 2, Math.max(vw, vh) * 0.7); gr.addColorStop(0, 'rgba(120,20,30,0)'); gr.addColorStop(1, `rgba(120,20,30,${0.35 + Math.sin(this.t * 6) * 0.1})`); g.fillStyle = gr; g.fillRect(0, 0, vw, vh); } },
 };
 function drawCat(g, c) { g.save(); g.translate(c.x, c.y); g.scale(c.face, 1); const t = c.anim, run = Math.hypot(c.vx, c.vy) > 30 ? 1 : 0; g.fillStyle = 'rgba(0,0,0,.25)'; g.beginPath(); g.ellipse(0, 0, 14, 4, 0, 0, TAU); g.fill(); g.strokeStyle = INK; g.lineWidth = 2;

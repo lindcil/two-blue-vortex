@@ -1,0 +1,6 @@
+// v0.3 : ultimes scénarisés (Kawaki Daikokuten, Sarada Susanoo, coéquipiers de Ta voie)
+(() => { const hu = Histoire.update.bind(Histoire); Histoire.update = function (dt) { hu(dt); const F = this.flags || (this.flags = {});
+  if (this.step === 'k1' && !F.kawUlt) { const k = World.foes_.find((x) => x.tag === 'kawaki'); if (k && k.hp < k.maxHp * 0.7 && !Cine.on && !Talk.on) { F.kawUlt = 1; Cine.play(k, 'daikokuten', 'yin', () => ULT_FX.daikokuten(k, Game.hero.x, Game.hero.y, 1, true), { tgt: Game.hero, enemy: 1, dur: 2.6 }); } }
+  if (this.step === 'k3' && !F.sarUlt) { const b = World.foes_.find((x) => x.tag === 'kurama'), s = Game.allies[0]; if (b && s && b.hp < b.maxHp * 0.7 && !Cine.on && !Talk.on) { F.sarUlt = 1; allyUlt(s, 'susanoo'); } } };
+  const vu = Voie.update.bind(Voie); Voie.update = function (dt) { vu(dt); if (Cine.on || Talk.on) return; this.allyUltT = (this.allyUltT || 0) - dt; if (this.allyUltT > 0) return;
+    const boss = World.foes().find((f) => f.boss && f.aggro && !f.passive && dist(f, Game.hero) < 500); if (!boss) return; const a = Game.allies.find((x) => !x.down && x.clan && CLAN_ULT[x.clan]); if (!a) return; this.allyUltT = 40; allyUlt(a, CLAN_ULT[a.clan]); }; })();

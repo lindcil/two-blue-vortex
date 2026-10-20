@@ -701,7 +701,7 @@ const FOE = {
 function spawnFoe(type, x, y, extra) { const F = FOE[type]; const k = [0.7, 1, 1.25][Save.set.diff]; const u = makeUnit(Object.assign({ type, n: F.n, x, y, hx: x, hy: y, hp: F.hp * k, maxHp: F.hp * k, look: F.look, kind: F.kind, sp: F.sp, size: F.size || 1, seenHp: 0 }, extra || {}));
   if (extra && extra.hpMul) u.hp *= extra.hpMul; u.maxHp = u.hp; if (u.kind === 'bijuu') { u.r = 90; u.size = extra && extra.size || 1.5; } World.foes_.push(u); return u; }
 /* ---------- Dégâts ---------- */
-function hurt(t, dmg, src, o = {}) { if (!t || t.hp <= 0 || t.gone) return 0; if (t.isHero && (t.iframe > 0 || Game.cine)) return 0; if (t.isAlly && t.down) return 0;
+function hurt(t, dmg, src, o = {}) { if (!t || t.hp <= 0 || t.gone) return 0; if (t.isHero && (t.iframe > 0 || Game.cine)) return 0; if (t.isHero) dmg *= 1.2; if (t.isAlly && t.down) return 0;
   let r = { dmg, rx: null }; if (o.el && !t.isHero && !t.isAlly) r = applyEl(src, t, o.el, dmg); let d = r.dmg * (t.armor ? 0.6 : 1); if (t.isHero) d *= [0.5, 1, 1.35][Save.set.diff]; if (t.guard) d *= 0.35;
   if (t.type === 'dummy') { t.hp = t.maxHp; t.wob = 1; } else if (t.type === 'sensei') { t.hp = t.maxHp; if (t.onTag) t.onTag(); } else t.hp -= d;
   t.hurtT = t.kind === 'bijuu' ? 0.08 : 0.2; t.flash = 0.09; t.sq = t.kind === 'bijuu' ? -0.06 : -0.28; t.seenHp = 4;
@@ -768,7 +768,7 @@ function heroUpdate(u, dt) {
 function nearestFoe(u, r) { let b = null, bd = r; for (const f of World.foes()) { if (f.type === 'dummy' && !(Game.inField(u) || f.tag === 'yard')) continue; if (f.passive) continue; const d = dist(f, u) - (f.kind === 'bijuu' ? 60 : 0); if (d < bd) { bd = d; b = f; } } return b; }
 function aimAt(u) { const f = u.aimFoe || u.tgt || nearestFoe(u, 320); if (f) { u.face = f.x < u.x ? -1 : 1; return Math.atan2(f.y - u.y, f.x - u.x); } return u.face < 0 ? Math.PI : 0; }
 function startM1(u, n) { const a = aimAt(u); u.act = { k: 'm1', n, t: 0, dur: [0.3, 0.34, 0.46][n], hit: false, a }; u.vx = Math.cos(a) * (n === 2 ? 60 : 150); u.vy = Math.sin(a) * 100; Sfx.play('swing'); }
-function dodge(u) { const m = Input.move(); const a = Math.hypot(m.x, m.y) > 0.1 ? Math.atan2(m.y, m.x) : (u.face < 0 ? 0 : Math.PI); u.act = { k: 'dash', t: 0, dur: 0.24, a }; u.iframe = 0.3; u.cd.dodge = 0.45; u.vx = Math.cos(a) * 920; u.vy = Math.sin(a) * 660; if (Math.abs(Math.cos(a)) > 0.2) u.face = Math.cos(a) < 0 ? -1 : 1; FX.dust(u.x, u.y, 8); FX.shock(u.x, u.y, 'rgba(200,220,255,.6)', 40, 0.25, 4); Sfx.play('dodge'); Game.stat('dodge'); }
+function dodge(u) { const m = Input.move(); const a = Math.hypot(m.x, m.y) > 0.1 ? Math.atan2(m.y, m.x) : (u.face < 0 ? 0 : Math.PI); u.act = { k: 'dash', t: 0, dur: 0.24, a }; u.iframe = 0.3; u.cd.dodge = 0.45; u.vx = Math.cos(a) * 920; u.vy = Math.sin(a) * 660; if (Math.abs(Math.cos(a)) > 0.2) u.face = Math.cos(a) < 0 ? -1 : 1; V.dashFx(u, u.isHero ? Game.mainEl : null); Sfx.play('dodge'); Game.stat('dodge'); }
 const pw = (u) => (u.isAlly ? 0.55 + (Game.lvl - 1) * 0.06 : Game.pow());
 function actStep(u, a, dt) {
   if (a.k === 'm1') { u.vx *= 0.8; u.vy *= 0.8; u.x += u.vx * dt; u.y += u.vy * dt;
@@ -790,9 +790,10 @@ function actStep(u, a, dt) {
 }
 function castSkill(u, S, id, isHero) { if (!S) return; const G = Game; if (isHero) { const lk = G.skillLock(id); if (lk) { FX.text(u.x, u.y - 110, lk, '#93a3c6', 15); return; } if (u.cd[id] > 0) return; if (u.ch < S.ch) { FX.text(u.x, u.y - 110, 'Chakra', '#4aa8ff', 15); return; } u.ch -= S.ch; }
   u.cd[id] = S.cd * (u.isAlly ? 1.8 : 1); u.sign = { k: S.sign, t: 0 }; u.act = { k: 'cast', S, id, t: 0, dur: 0.26 }; u.aimA = aimAt(u); u.sq = -0.12; Sfx.play('tech'); if (isHero) G.stat('skill');
-  FX.glow(u.x, u.y - 40, elc(S.el), 50, 0.3); }
+  FX.glow(u.x, u.y - 40, elc(S.el), 50, 0.3); V.signFx(u, S.el, 3, 0.3); }
 function castUlt(u) { const G = Game, id = G.ultId; if (!id) return; const lk = G.ultLock(); if (lk) { FX.text(u.x, u.y - 110, lk, '#93a3c6', 15); return; } if (G.ultV < 100) { FX.text(u.x, u.y - 110, 'Ultime ' + Math.floor(G.ultV) + '%', '#ffd166', 15); return; }
-  G.ultV = 0; const S = SK[id]; u.sign = { k: S.sign, t: 0 }; u.act = { k: 'ult', id, t: 0, dur: 0.7 }; u.iframe = 0.9; u.aimA = aimAt(u); Cam.tz = 1.15; G.later(1.6, () => (Cam.tz = 1)); Sfx.play('tech'); G.stat('ult'); if (id === 'uzuhiko') V.karma(u, 1.8); FX.glow(u.x, u.y - 40, elc(S.el), 120, 0.7, { grow: 0.5 }); }
+  G.ultV = 0; Cine.play(u, id, SK[id].el, () => castUltGo(u, id), { tgt: nearestFoe(u, 520) }); }
+function castUltGo(u, id) { const G = Game; const S = SK[id]; u.sign = { k: S.sign, t: 0 }; u.act = { k: 'ult', id, t: 0, dur: 0.7 }; u.iframe = 0.9; u.aimA = aimAt(u); Cam.tz = 1.15; G.later(1.6, () => (Cam.tz = 1)); Sfx.play('tech'); G.stat('ult'); if (id === 'uzuhiko') V.karma(u, 1.8); FX.glow(u.x, u.y - 40, elc(S.el), 120, 0.7, { grow: 0.5 }); }
 function aoe(x, y, r, dmg, src, o) { for (const f of World.foes()) if (!f.passive && Math.hypot(f.x - x, f.y - y) < r + (f.kind === 'bijuu' ? 80 : 0)) hurt(f, dmg, src, o); }
 function fireSkill(u, S, id) { const a = u.aimA, P = pw(u), h = u.hand || { x: u.x + u.face * 20, y: u.y - 40 };
   const proj = (o) => Proj.push(Object.assign({ x: h.x, y: h.y, team: 0, src: u, hit: new Set(), r: 16, life: 0.6 }, o));
@@ -818,6 +819,7 @@ function fireSkill(u, S, id) { const a = u.aimA, P = pw(u), h = u.hand || { x: u
       const bond = Game.bondAvg(); Game.later(0.7, () => { if (bond >= 3 && f.hp > 0) { Game.impact(f.x, f.y, 0.12); hurt(f, 30 * P, u, { el: 'yang', big: 1, k: 1 }); } }); return; }
   } }
 function fireUlt(u, id) { const P = Game.pow(), f = nearestFoe(u, 520), tx = f ? f.x : u.x + u.face * 220, ty = f ? f.y : u.y;
+  if (ULT_FX[id]) { ULT_FX[id](u, tx, ty, P); return; }
   if (id === 'uzuhiko') { const h = u.hand || u; V.uzuhiko(h.x, h.y, tx, ty, () => aoe(tx, ty, 190, 120 * P, u, { el: 'wind', k: 2.5, big: 1 })); return; }
   if (id === 'kirin') { V.kirin(tx, ty, () => aoe(tx, ty, 200, 130 * P, u, { el: 'bolt', k: 1.5, big: 1 })); return; }
   if (id === 'goryuka') { for (let i = 0; i < 5; i++) Game.later(i * 0.12, () => { const b = Math.atan2(ty - u.y, tx - u.x) + (i - 2) * 0.16; Proj.push({ x: u.x, y: u.y - 40, vx: Math.cos(b) * 620, vy: Math.sin(b) * 620, life: 0.9, dmg: 34 * P, el: 'fire', r: 30, kind: 'fireball', boom: 100, team: 0, src: u, hit: new Set() }); }); Game.later(0.8, () => Game.impact(tx, ty, 0.14)); return; }
@@ -906,6 +908,77 @@ function allyUpdate(a, dt) { const h = Game.hero; a.anim += dt * (Math.hypot(a.v
 function cloneUpdate(c, dt) { c.life -= dt; if (c.life <= 0 || c.hp <= 0) { c.gone = true; FX.smoke(c.x, c.y - 20, 8); return; } const f = nearestFoe(c, 500); c.anim += dt * 11; c.combat = !!f;
   if (c.act) { c.act.t += dt; actStep(c, c.act, dt); if (c.act && c.act.t >= c.act.dur) { const n = c.act; c.act = null; if (n.n < 2 && f && dist(f, c) < 80) startM1(c, n.n + 1); } return; }
   if (f) { const d = dist(f, c); c.face = f.x < c.x ? -1 : 1; if (d > 60) { const a = Math.atan2(f.y - c.y, f.x - c.x); c.vx = Math.cos(a) * c.sp; c.vy = Math.sin(a) * c.sp; c.x += c.vx * dt; c.y += c.vy * dt; } else { c.vx = c.vy = 0; c.tgt = f; startM1(c, 0); } } else { const h = Game.hero; c.vx = c.vy = 0; if (dist(h, c) > 80) { c.x = lerp(c.x, h.x - h.face * 50, dt * 3); c.y = lerp(c.y, h.y, dt * 3); c.vx = (h.x - c.x); } } World.collide(c); }
+
+// v0.3 : VFX de mudras, VFX de dash, cinématiques d'ultime façon Storm.
+const SIGN_K = { tora: '寅', ushi: '丑', ne: '子', tori: '酉', mi: '巳', tatsu: '辰', inu: '戌', i: '亥', uma: '午', hitsuji: '未', saru: '申', u: '卯' };
+const SIGN_SEQ = ['mi', 'hitsuji', 'saru', 'i', 'uma', 'tora'];
+V.signFx = (u, el, n = 3, dur = 0.45) => { const c = elc(el || 'wind'); const seq = []; for (let i = 0; i < n - 1; i++) seq.push(SIGN_SEQ[(i * 2 + (u.x | 0)) % SIGN_SEQ.length]); seq.push((u.sign && u.sign.k) || 'tora');
+  // tourbillon de chakra autour des mains
+  FX.custom({ x: u.x, y: u.y, life: dur + 0.1, draw: (g, p, q) => { const hx = u.x + u.face * 10, hy = u.y - 52 * (u.size || 1); g.save(); g.globalCompositeOperation = 'lighter'; g.lineCap = 'round';
+    for (let k = 0; k < 3; k++) { g.strokeStyle = c; g.globalAlpha = (1 - q) * (0.75 - k * 0.2); g.lineWidth = 4 - k; const r = 22 + k * 9 - q * 8, a0 = Game.t * (9 + k * 3) + k * 2; g.beginPath(); g.ellipse(hx, hy, r, r * 0.55, 0, a0, a0 + 4.2); g.stroke(); }
+    g.restore(); } });
+  seq.forEach((s, i) => Game.later(i * dur / n, () => { if (u.hp <= 0) return; const last = i === n - 1; const ox = (i - (n - 1) / 2) * 34;
+    FX.custom({ x: u.x, y: u.y, life: last ? 0.7 : 0.45, draw: (g, p, q) => { const x = u.x + ox, y = u.y - 112 * (u.size || 1) - q * 18; g.save(); g.globalAlpha = 1 - q * q; g.globalCompositeOperation = 'lighter'; g.fillStyle = c; g.beginPath(); g.arc(x, y, 17 + q * 6, 0, TAU); g.globalAlpha *= 0.35; g.fill(); g.globalAlpha = 1 - q * q;
+      g.globalCompositeOperation = 'source-over'; g.font = "400 22px 'Lilita One', serif"; g.textAlign = 'center'; g.lineWidth = 4; g.strokeStyle = INK; g.strokeText(SIGN_K[s] || '印', x, y + 8); g.fillStyle = '#fff'; g.fillText(SIGN_K[s] || '印', x, y + 8); g.restore(); } });
+    for (let k = 0; k < 6; k++) FX.add({ k: 'spark', x: u.x + u.face * 10, y: u.y - 52, vx: rnd(-160, 160), vy: rnd(-220, -40), c, life: rnd(0.2, 0.4), s: rnd(2, 3.5) });
+    Sfx.tone && Sfx.tone(520 + i * 120, 760 + i * 120, 0.07, 'triangle', 0.05);
+    if (last) { FX.shock(u.x, u.y - 50, c, 70, 0.35, 6); FX.glow(u.x, u.y - 50, c, 60, 0.3); FX.shock(u.x, u.y, c, 50, 0.4, 4); u.sq = 0.2; } })); };
+V.dashFx = (u, el) => { const c = elc(el || 'wind'), a = u.act && u.act.a || 0, x0 = u.x, y0 = u.y;
+  FX.shock(x0, y0, c, 46, 0.25, 5); FX.dust(x0, y0, 10); for (let k = 0; k < 8; k++) FX.add({ k: 'spark', x: x0, y: y0 - 30, vx: -Math.cos(a) * rnd(100, 300) + rnd(-60, 60), vy: -Math.sin(a) * rnd(60, 200) - rnd(20, 90), c, life: rnd(0.2, 0.35), s: 2.5 });
+  // traînée teintée + lignes de vitesse
+  const tr = []; FX.custom({ x: x0, y: y0, life: 0.5, upd: () => { if (tr.length < 40) tr.push([u.x, u.y - 34]); }, draw: (g, p, q) => { if (tr.length < 2) return; g.save(); g.globalCompositeOperation = 'lighter'; g.lineCap = 'round'; g.lineJoin = 'round';
+    for (const [w, al] of [[26, 0.18], [12, 0.45], [4, 0.9]]) { g.strokeStyle = c; g.globalAlpha = al * (1 - q); g.lineWidth = w * (1 - q * 0.6); g.beginPath(); g.moveTo(tr[0][0], tr[0][1]); for (const t of tr) g.lineTo(t[0], t[1]); g.stroke(); }
+    g.globalCompositeOperation = 'source-over'; g.strokeStyle = INK; g.globalAlpha = 0.6 * (1 - q); g.lineWidth = 2; for (let k = 0; k < 6; k++) { const t = tr[(k * 5) % tr.length], o = (k - 2.5) * 9; g.beginPath(); g.moveTo(t[0] - Math.cos(a) * 30 - Math.sin(a) * o, t[1] - Math.sin(a) * 30 + Math.cos(a) * o); g.lineTo(t[0] - Math.cos(a) * 90 - Math.sin(a) * o, t[1] - Math.sin(a) * 90 + Math.cos(a) * o); g.stroke(); } g.restore(); } });
+  for (let i = 1; i <= 4; i++) Game.later(i * 0.045, () => FX.ghost(u, c));
+  Game.later(0.24, () => { FX.dust(u.x, u.y, 8); FX.shock(u.x, u.y, c, 36, 0.22, 4); V.ink(u.x, u.y - 20, a + Math.PI, c); }); };
+// coup de pinceau (encre)
+V.ink = (x, y, a, c = INK, len = 90) => FX.custom({ x, y, life: 0.45, draw: (g, p, q) => { g.save(); g.translate(x, y); g.rotate(a); g.fillStyle = INK; g.globalAlpha = 0.85 * (1 - q); g.beginPath(); const L = len * Math.min(1, q * 5); g.moveTo(0, -3); g.quadraticCurveTo(L * 0.5, -10, L, 0); g.quadraticCurveTo(L * 0.5, 6, 0, 3); g.fill(); g.fillStyle = c; g.globalAlpha = 0.6 * (1 - q); g.fillRect(L * 0.2, -1, L * 0.6, 2); g.restore(); } });
+
+const ULT_NAME = { uzuhiko: 'Rasengan Uzuhiko', kirin: 'Kirin', goryuka: 'Gōryūka', daibakufu: 'Daibakufu', taigyoku: 'Taigyoku Rasengan', doryu: 'Doryūheki', susanoo: 'Susanoo', daikokuten: 'Daikokuten', bijuudama: 'Bijūdama' };
+const Cine = { on: null,
+  play(u, id, el, done, o = {}) { const c = elc(el || 'wind'); this.on = { u, id, c, t: 0, dur: o.dur || 3.2, done, tgt: o.tgt, name: o.name || ULT_NAME[id] || (SK[id] && SK[id].n) || 'Ultime', z0: Cam.tz, signs: 0, enemy: o.enemy };
+    Game.cine = true; Sfx.play('charge'); },
+  skip() { if (this.on) this.on.t = Math.max(this.on.t, this.on.dur - 0.05); },
+  update(dt) { const C = this.on; if (!C) return; C.t += dt; const u = C.u, T = C.t;
+    if (T > 0.35 && (Input.pressed('atk') || Input.pressed('use') || Input.hit.has('Escape') || Input.hit.has('Space'))) this.skip();
+    const tg = C.tgt || u; let fx = u.x, fy = u.y - 40, z = 1.6;
+    if (T < 0.5) z = lerp(C.z0, 1.7, T / 0.5); else if (T < 1.3) z = 1.9; else if (T < 2.1) { z = 2.1; fx += u.face * -30; } else if (T < 2.8) { const k = (T - 2.1) / 0.7; fx = lerp(u.x, tg.x, k * k); fy = lerp(u.y, tg.y, k * k) - 40; z = lerp(2.0, 1.25, k); }
+    Cam.tz = z; Cam.z = lerp(Cam.z, z, 1 - Math.pow(0.0005, dt)); Cam.x = lerp(Cam.x, fx, 1 - Math.pow(0.0005, dt)); Cam.y = lerp(Cam.y, fy, 1 - Math.pow(0.0005, dt));
+    if (T > 1.3 && C.signs < 1) { C.signs = 1; V.signFx(u, null, 4, 0.7); }
+    if (T > 1.4 && T < 2.1 && Math.random() < 0.7) FX.mote(u.x + rnd(-160, 160), u.y - 40 + rnd(-140, 100), u.x, u.y - 50, C.c, 0.5);
+    if (T > 2.05 && !C.charged) { C.charged = 1; FX.shock(u.x, u.y - 40, C.c, 160, 0.4, 8); Sfx.play('boom'); Cam.shake(0.4); }
+    u.anim += dt * 3;
+    if (T >= C.dur) { this.on = null; Game.cine = Talk.on; Cam.tz = C.z0 || 1; Game.slowT = 0.9; C.done && C.done(); } },
+  draw(g, vw, vh) { const C = this.on; if (!C) return; const T = C.t, u = C.u; const bar = Math.min(1, T / 0.3) * vh * 0.11; g.fillStyle = '#05070f'; g.fillRect(0, 0, vw, bar); g.fillRect(0, vh - bar, vw, bar);
+    // cut-in
+    if (T > 0.5 && T < 1.45) { const k = Math.min(1, (T - 0.5) / 0.15), out = T > 1.3 ? (T - 1.3) / 0.15 : 0, sx = (1 - k) * vw * (C.enemy ? -1 : 1) - out * vw * (C.enemy ? 1 : -1);
+      g.save(); g.translate(sx, 0); g.beginPath(); g.moveTo(0, vh * 0.28); g.lineTo(vw, vh * 0.16); g.lineTo(vw, vh * 0.7); g.lineTo(0, vh * 0.82); g.closePath(); g.fillStyle = C.c; g.fill(); g.save(); g.clip();
+      g.fillStyle = 'rgba(5,7,15,.55)'; g.fillRect(0, 0, vw, vh); g.strokeStyle = 'rgba(255,255,255,.55)'; g.lineWidth = 3; for (let i = 0; i < 26; i++) { const y = ((i * 97 + T * 2600) % (vh * 0.7)) + vh * 0.14; const x = (i * 211) % vw; g.beginPath(); g.moveTo(x, y); g.lineTo(x + 180 + (i % 3) * 80, y - 30); g.stroke(); }
+      const s = vh / 260; g.translate(vw * 0.3, vh * 0.92); g.scale(s, s); const P = u.P; drawRig(g, Object.assign({}, u, { x: 0, y: 0, face: C.enemy ? -1 : 1, P, sq: 0, flash: 0, hurtT: 0 })); g.restore();
+      g.strokeStyle = INK; g.lineWidth = 6; g.stroke(); g.font = `400 ${Math.round(vh * 0.075)}px 'TBV Ext','Lilita One',sans-serif`; g.textAlign = 'right'; g.lineWidth = 10; g.strokeStyle = INK; g.strokeText(C.name, vw * 0.94, vh * 0.62); g.fillStyle = '#fff'; g.fillText(C.name, vw * 0.94, vh * 0.62); g.restore(); }
+    // lignes de vitesse pendant la charge et la frappe
+    if (T > 1.6) { const k = T > 2.1 ? 1 : (T - 1.6) / 0.5; g.strokeStyle = `rgba(11,16,32,${0.5 * k})`; g.lineWidth = 2.5; const cx = vw / 2, cy = vh / 2; for (let i = 0; i < 40; i++) { const an = (i / 40) * TAU + T * 0.7, r0 = Math.max(vw, vh) * (0.36 + ((i * 37) % 10) / 60); g.beginPath(); g.moveTo(cx + Math.cos(an) * r0, cy + Math.sin(an) * r0); g.lineTo(cx + Math.cos(an) * r0 * 1.8, cy + Math.sin(an) * r0 * 1.8); g.stroke(); } }
+    if (T > 0.4) { g.font = "400 14px 'Lilita One',sans-serif"; g.textAlign = 'right'; g.fillStyle = 'rgba(238,243,255,.6)'; g.fillText((Input.lastDev === 'touch' ? 'Toucher' : 'J / E') + ' : passer', vw - 18, vh - 14); } } };
+
+// ultimes de clan (mode Ta voie) + Sarada / Kawaki
+const CLAN_ULT = { uchiha: 'susanoo', hyuga: 'hakke64', nara: 'kagekubi', akimichi: 'chodan', yamanaka: 'shinranshin', aburame: 'mushidama', inuzuka: 'garoga', senju: 'jukai' };
+Object.assign(SK, { susanoo: { n: 'Susanoo', el: 'yin', k: '須', ult: 1, sign: 'tori' }, daikokuten: { n: 'Daikokuten', el: 'yin', k: '黒', ult: 1, sign: 'mi' }, hakke64: { n: 'Hakke 64 Shō', el: 'yang', k: '卦', ult: 1, sign: 'tora' },
+  kagekubi: { n: 'Kage Kubi Shibari', el: 'yin', k: '影', ult: 1, sign: 'ne' }, chodan: { n: 'Chōdan Bakugeki', el: 'yang', k: '弾', ult: 1, sign: 'ushi' }, shinranshin: { n: 'Shinranshin', el: 'yin', k: '心', ult: 1, sign: 'tori' },
+  mushidama: { n: 'Mushidama', el: 'yin', k: '蟲', ult: 1, sign: 'mi' }, garoga: { n: 'Garōga', el: 'wind', k: '牙', ult: 1, sign: 'inu' }, jukai: { n: 'Jukai Kōtan', el: 'earth', k: '樹', ult: 1, sign: 'tora' } });
+const ULT_FX = {
+  susanoo(u, tx, ty, P) { FX.custom({ x: u.x, y: u.y, life: 1.6, draw: (g, p, q) => { const a = Math.min(1, q * 4) * (1 - Math.max(0, q - 0.7) / 0.3); g.save(); g.globalAlpha = 0.55 * a; g.globalCompositeOperation = 'lighter'; g.fillStyle = '#b04aff'; g.beginPath(); g.ellipse(u.x, u.y - 120, 90, 150, 0, 0, TAU); g.fill(); g.globalAlpha = a; g.strokeStyle = '#e0b0ff'; g.lineWidth = 4; for (let k = 0; k < 6; k++) { g.beginPath(); g.moveTo(u.x - 70, u.y - 40 - k * 32); g.quadraticCurveTo(u.x, u.y - 60 - k * 32, u.x + 70, u.y - 40 - k * 32); g.stroke(); } g.restore(); } });
+    Game.later(0.5, () => { V.ink(u.x, u.y - 100, Math.atan2(ty - u.y, tx - u.x), '#b04aff', 260); FX.shock(tx, ty, '#b04aff', 220, 0.6, 10); Game.impact(tx, ty, 0.2); aoe(tx, ty, 200, 125 * P, u, { el: 'yin', k: 2, big: 1 }); }); },
+  daikokuten(u, tx, ty, P, foe) { for (let i = 0; i < 3; i++) { const x = tx + (i - 1) * 90, y = ty + rnd(-30, 30); FX.custom({ x, y, life: 1, ground: 1, draw: (g, p, q) => { g.fillStyle = `rgba(255,60,60,${0.35 * (1 - q)})`; g.fillRect(x - 45, y - 25, 90, 50); } });
+    Game.later(0.9 + i * 0.15, () => { FX.custom({ x, y, life: 0.9, draw: (g, p, q) => { const yy = y - 60 - Math.max(0, 1 - q * 6) * 400; g.fillStyle = '#16141f'; g.strokeStyle = '#6a5aa0'; g.lineWidth = 3; g.fillRect(x - 45, yy - 60, 90, 90); g.strokeRect(x - 45, yy - 60, 90, 90); } }); Game.later(0.15, () => { FX.dust(x, y, 16); FX.shock(x, y, '#6a5aa0', 120, 0.4, 8); Cam.shake(0.5); if (foe) { const h = Game.hero; if (Math.abs(h.x - x) < 60 && Math.abs(h.y - y) < 40) hurt(h, 30, u, { k: 2 }); } else aoe(x, y, 80, 50 * P, u, { el: 'yin', k: 2, big: 1 }); }); }); } },
+  hakke64(u, tx, ty, P) { V.trigram(u.x, u.y, 1.4); for (let i = 0; i < 16; i++) Game.later(i * 0.05, () => { FX.add({ k: 'spark', x: u.x + u.face * 40, y: u.y - 50, vx: u.face * rnd(200, 400), vy: rnd(-100, 100), c: '#cfe8ff', life: 0.2, s: 3 }); aoe(u.x + u.face * 60, u.y, 90, 7 * P, u, { el: 'yang', k: 0.3 }); }); Game.later(0.85, () => { Game.impact(u.x, u.y, 0.16); aoe(u.x, u.y, 150, 40 * P, u, { el: 'yang', k: 3, big: 1 }); }); },
+  kagekubi(u, tx, ty, P) { for (const f of World.foes()) if (!f.passive && Math.hypot(f.x - u.x, f.y - u.y) < 420) { V.shadow(u, f, 1.6); f.stun = 1.6; Game.later(1.2, () => hurt(f, 70 * P, u, { el: 'yin', big: 1 })); } Game.later(1.2, () => Game.impact(tx, ty, 0.14)); },
+  chodan(u, tx, ty, P) { V.bigFist(u, Math.atan2(ty - u.y, tx - u.x), (x, y) => { Game.impact(x, y, 0.2); FX.shock(x, y, '#ffb36b', 260, 0.6, 12); aoe(x, y, 200, 120 * P, u, { el: 'yang', k: 3, big: 1 }); }); },
+  shinranshin(u, tx, ty, P) { for (const f of World.foes()) if (!f.passive && Math.hypot(f.x - u.x, f.y - u.y) < 420) { V.mindBeam(u, f); f.stun = 2.5; hurt(f, 60 * P, u, { el: 'yin', big: 1 }); } Game.impact(tx, ty, 0.12); },
+  mushidama(u, tx, ty, P) { V.swarm(tx, ty, 2.5); for (let i = 0; i < 8; i++) Game.later(i * 0.25, () => aoe(tx, ty, 140, 14 * P, u, { el: 'yin' })); Game.later(2, () => Game.impact(tx, ty, 0.12)); },
+  garoga(u, tx, ty, P) { V.drill(u, 0.9, '#d8c8a0'); const a = Math.atan2(ty - u.y, tx - u.x); u.vx = Math.cos(a) * 900; u.vy = Math.sin(a) * 600; u.iframe = 1; for (let i = 0; i < 6; i++) Game.later(i * 0.1, () => aoe(u.x, u.y, 90, 18 * P, u, { el: 'wind', k: 1.5 })); Game.later(0.65, () => { Game.impact(u.x, u.y, 0.14); aoe(u.x, u.y, 140, 40 * P, u, { el: 'wind', k: 2.5, big: 1 }); }); },
+  jukai(u, tx, ty, P) { Game.impact(u.x, u.y, 0.14); for (let k = 0; k < 10; k++) V.spikes(u.x, u.y, k / 10 * TAU, 6, 1, (x, y) => aoe(x, y, 46, 22 * P, u, { el: 'earth', k: 1.2 })); } };
+// Ultime d'un allié (cut-in court), ou d'un ennemi
+function allyUlt(a, id) { const f = nearestFoe(a, 520); if (!f || Cine.on) return; Cine.play(a, id, SK[id].el, () => ULT_FX[id](a, f.x, f.y, 0.9), { dur: 2.4, tgt: f }); }
 
 /* ============ Histoire, dialogues, quêtes ============ */
 const Talk = { q: [], cb: null, on: false, t: 0, opts: null, sel: 0,
@@ -1122,6 +1195,13 @@ const Voie = { mode: 'voie',
   respawn() { return this.step.startsWith('a') ? [2250, 900] : [1290, 980]; },
 };
 
+// v0.3 : ultimes scénarisés (Kawaki Daikokuten, Sarada Susanoo, coéquipiers de Ta voie)
+(() => { const hu = Histoire.update.bind(Histoire); Histoire.update = function (dt) { hu(dt); const F = this.flags || (this.flags = {});
+  if (this.step === 'k1' && !F.kawUlt) { const k = World.foes_.find((x) => x.tag === 'kawaki'); if (k && k.hp < k.maxHp * 0.7 && !Cine.on && !Talk.on) { F.kawUlt = 1; Cine.play(k, 'daikokuten', 'yin', () => ULT_FX.daikokuten(k, Game.hero.x, Game.hero.y, 1, true), { tgt: Game.hero, enemy: 1, dur: 2.6 }); } }
+  if (this.step === 'k3' && !F.sarUlt) { const b = World.foes_.find((x) => x.tag === 'kurama'), s = Game.allies[0]; if (b && s && b.hp < b.maxHp * 0.7 && !Cine.on && !Talk.on) { F.sarUlt = 1; allyUlt(s, 'susanoo'); } } };
+  const vu = Voie.update.bind(Voie); Voie.update = function (dt) { vu(dt); if (Cine.on || Talk.on) return; this.allyUltT = (this.allyUltT || 0) - dt; if (this.allyUltT > 0) return;
+    const boss = World.foes().find((f) => f.boss && f.aggro && !f.passive && dist(f, Game.hero) < 500); if (!boss) return; const a = Game.allies.find((x) => !x.down && x.clan && CLAN_ULT[x.clan]); if (!a) return; this.allyUltT = 40; allyUlt(a, CLAN_ULT[a.clan]); }; })();
+
 /* ============ Interface : halo, arc de techniques, menus ============ */
 const UI = {
   objT: 0,
@@ -1246,7 +1326,7 @@ const Game = {
       for (const f of World.foes()) { f.aggro = false; if (!f.boss) { f.x = f.hx; f.y = f.hy; } f.hp = Math.max(f.hp, f.maxHp * 0.6); f.casting = null; } for (const a of this.allies) { a.down = false; a.hp = a.maxHp; a.x = h.x - 40; a.y = h.y; } Proj.length = 0;
       $('#fade').style.opacity = 0; this.downing = false; UI.toast('Tu te relèves.'); }, 1600); },
   spawnJura() { this.jura = makeUnit({ x: 250, y: 1560, look: 'jura', face: 1, team: 2 }); Talk.say([['', 'Une présence immense, à la lisière ouest.']]); },
-  addAlly(d) { if (typeof d === 'string') d = { sarada: { id: 'sarada', n: 'Sarada', look: 'sarada', el: 'fire', skill: 'chidori', slot: 0 } }[d]; const a = makeUnit({ isAlly: true, team: 0, id: d.id, n: d.n || d.name, look: d.look, el: d.el, skill: d.skill || ELEM_SK[d.el][0], slot: d.slot || 0, x: this.hero.x - 60 - (d.slot || 0) * 30, y: this.hero.y + 20, hp: 150 + this.lvl * 12, maxHp: 150 + this.lvl * 12, r: 13, jin: d.jin });
+  addAlly(d) { if (typeof d === 'string') d = { sarada: { id: 'sarada', n: 'Sarada', look: 'sarada', el: 'fire', skill: 'chidori', slot: 0 } }[d]; const a = makeUnit({ isAlly: true, team: 0, clan: d.clan, id: d.id, n: d.n || d.name, look: d.look, el: d.el, skill: d.skill || ELEM_SK[d.el][0], slot: d.slot || 0, x: this.hero.x - 60 - (d.slot || 0) * 30, y: this.hero.y + 20, hp: 150 + this.lvl * 12, maxHp: 150 + this.lvl * 12, r: 13, jin: d.jin });
     this.allies = this.allies.filter((o) => o.id !== a.id); this.allies.push(a); FX.smoke(a.x, a.y - 10, 6); return a; },
   save() { if (!this.hero || this.titleMode) return; const base = { v: 2, lvl: this.lvl, xp: this.xp, time: World.time, day: World.day, x: this.hero.x, y: this.hero.y, rx: this.rxSeen, ryo: this.ryo, opened: this.opened };
     if (this.mode === 'voie') Save.writeV(Object.assign(base, { voie: Voie.save() })); else Save.write(Object.assign(base, { step: Story.step, q: Story.q, flags: Story.flags, hood: this.hero.hood })); },
@@ -1260,7 +1340,7 @@ const Game = {
     if (sv && !sv.step.startsWith('p')) { this.sarada.x = 1640; this.sarada.y = 400; }
     Story.start(sv); if (sv && sv.step === 'c2') this.spawnJura(); if (sv && sv.step === 'k3') { Story.step = 'k2'; } this.go(!sv); },
   startVoie(created) { const sv = created ? null : Save.gameV(); this.boot(sv); this.mode = 'voie'; Story = Voie; if (created) { Voie.newGame(created); } else Object.assign(Voie, sv.voie);
-    const me = Voie.me; this.skills = [ELEM_SK[me.el][0], CLANS[me.clan].sk, 'bunshin', 'combo']; this.ultId = ELEM_SK[me.el][1]; this.mainEl = me.el; this.heroLook = me.look;
+    const me = Voie.me; this.skills = [ELEM_SK[me.el][0], CLANS[me.clan].sk, 'bunshin', 'combo']; this.ultId = CLAN_ULT[me.clan] || ELEM_SK[me.el][1]; this.mainEl = me.el; this.heroLook = me.look;
     this.hero = makeUnit({ isHero: true, look: me.look, team: 0, x: 2250, y: 900, r: 13, n: me.name }); this.heroStats(this.hero); if (sv) { this.hero.x = sv.x || 2250; this.hero.y = sv.y || 900; } else World.time = 8;
     if (Voie.step === 'j2') Voie.step = 'j1'; Voie.start(sv ? sv.voie : null); if (sv && Voie.step === 'j1' && !World.foes_.some((f) => f.tag === 'hide')) for (const [x, y] of [[330, 1500], [420, 1620]]) spawnFoe('kuro', x, y, { tag: 'hide' }); this.go(!sv); },
   go(isNew) { Cam.x = this.hero.x; Cam.y = this.hero.y; this.paused = false; this.running = true; this.titleMode = false; if (isNew) this.later(0.2, () => this.hint('move')); UI.objective(); },
@@ -1279,9 +1359,10 @@ const Game = {
     if (Input.pressed('menu')) { if ($('#sheet').style.display === 'flex') UI.close(); else if (!Talk.on && this.running && !this.titleMode) UI.open('carte'); }
     if (Input.pressed('map') && !Talk.on && !this.titleMode) { if ($('#sheet').style.display === 'flex') UI.close(); else if (this.running) UI.open('carte'); }
     if (this.paused || !this.running) { Input.end(); return; }
-    dt *= Save.set.speed; this.t += dt; for (let i = this.timers.length - 1; i >= 0; i--) { const T = this.timers[i]; T.t -= dt; if (T.t <= 0) { this.timers.splice(i, 1); T.f(); } }
+    if (this.slowT > 0) { this.slowT -= dt; dt *= 0.35; } dt *= Save.set.speed; this.t += dt; for (let i = this.timers.length - 1; i >= 0; i--) { const T = this.timers[i]; T.t -= dt; if (T.t <= 0) { this.timers.splice(i, 1); T.f(); } }
     Talk.update(dt); FX.update(dt); UI.update(dt); if (this.impactT > 0) this.impactT -= dt; if (this.skyT > 0) this.skyT -= dt; else this.skyA = Math.max(0, this.skyA - dt);
     this.ultA = lerp(this.ultA, this.ultV >= 100 ? 1 : 0, dt * 3);
+    if (Cine.on) { Cine.update(dt); Input.end(); return; }
     if (this.hs > 0) { this.hs -= dt; Input.end(); return; }
     World.update(dt);
     if (!this.cine && h.hp > 0) heroUpdate(h, dt); else { h.vx *= 0.8; h.vy *= 0.8; h.anim += dt * 3; if (h.koT != null) h.koT += dt; h.act = h.hp > 0 ? null : h.act; }
@@ -1299,7 +1380,7 @@ const Game = {
     Input.end(); },
   render() { const dpr = Math.min(Save.set.low ? 1 : 2, devicePixelRatio || 1), vw = innerWidth, vh = innerHeight; if (cv.width !== Math.round(vw * dpr) || cv.height !== Math.round(vh * dpr)) { cv.width = Math.round(vw * dpr); cv.height = Math.round(vh * dpr); }
     g.setTransform(1, 0, 0, 1, 0, 0); g.fillStyle = '#0b1020'; g.fillRect(0, 0, cv.width, cv.height); if (!this.running || !this.hero) return;
-    const z = clamp(vw / 1150, 0.62, 1.25) * Cam.z; const W2 = () => g.setTransform(dpr * z, 0, 0, dpr * z, dpr * vw / 2 - (Cam.x + Cam.kx) * dpr * z, dpr * vh / 2 - (Cam.y + Cam.ky) * dpr * z); W2();
+    const z = clamp(vw / 1150, 0.62, 1.25) * Cam.z; Cam.x = clamp(Cam.x, vw / 2 / z, 3200 - vw / 2 / z); Cam.y = clamp(Cam.y, vh / 2 / z, 3000 - vh / 2 / z); const W2 = () => g.setTransform(dpr * z, 0, 0, dpr * z, dpr * vw / 2 - (Cam.x + Cam.kx) * dpr * z, dpr * vh / 2 - (Cam.y + Cam.ky) * dpr * z); W2();
     const vx0 = Cam.x - vw / 2 / z - 200, vx1 = Cam.x + vw / 2 / z + 200, vy0 = Cam.y - vh / 2 / z - 200, vy1 = Cam.y + vh / 2 / z + 300;
     World.drawGround(g); FX.draw(g, 0);
     for (const it of Story.items) { const b = Math.sin(this.t * 4) * 4; g.fillStyle = '#ffd166'; g.beginPath(); g.moveTo(it.x, it.y - 30 + b); g.lineTo(it.x + 9, it.y - 18 + b); g.lineTo(it.x, it.y - 6 + b); g.lineTo(it.x - 9, it.y - 18 + b); g.fill(); g.strokeStyle = INK; g.lineWidth = 2; g.stroke(); }
@@ -1315,7 +1396,7 @@ const Game = {
     // cadre d'impact (rare, gros moments seulement) : encre sombre + lignes de vitesse ; jamais blanc si « réduire les flashs »
     if (this.impactT > 0) { const a = Math.min(1, this.impactT * 8); g.fillStyle = Save.set.rf ? `rgba(6,10,24,${0.5 * a})` : `rgba(255,255,255,${0.55 * a})`; g.fillRect(0, 0, cv.width, cv.height); const ip = this.impactAt || Cam; const cx = (ip.x - Cam.x) * z * dpr + cv.width / 2, cy = (ip.y - 40 - Cam.y) * z * dpr + cv.height / 2; g.strokeStyle = Save.set.rf ? `rgba(58,160,255,${0.6 * a})` : `rgba(11,16,32,${0.85 * a})`; g.lineWidth = 3 * dpr;
       for (let i = 0; i < 34; i++) { const an = rnd(0, TAU), r0 = rnd(0.18, 0.32) * Math.max(cv.width, cv.height); g.beginPath(); g.moveTo(cx + Math.cos(an) * r0, cy + Math.sin(an) * r0); g.lineTo(cx + Math.cos(an) * r0 * 2.6, cy + Math.sin(an) * r0 * 2.6); g.stroke(); } }
-    g.setTransform(dpr, 0, 0, dpr, 0, 0); UI.compass(g, vw, vh); UI.bossHud(g, vw, vh);
+    g.setTransform(dpr, 0, 0, dpr, 0, 0); if (!Cine.on) { UI.compass(g, vw, vh); UI.bossHud(g, vw, vh); } Cine.draw(g, vw, vh);
     const h = this.hero; if (h.hp < h.maxHp * 0.3 && h.hp > 0) { const gr = g.createRadialGradient(vw / 2, vh / 2, Math.min(vw, vh) * 0.35, vw / 2, vh / 2, Math.max(vw, vh) * 0.7); gr.addColorStop(0, 'rgba(120,20,30,0)'); gr.addColorStop(1, `rgba(120,20,30,${0.35 + Math.sin(this.t * 6) * 0.1})`); g.fillStyle = gr; g.fillRect(0, 0, vw, vh); } },
 };
 function drawCat(g, c) { g.save(); g.translate(c.x, c.y); g.scale(c.face, 1); const t = c.anim, run = Math.hypot(c.vx, c.vy) > 30 ? 1 : 0; g.fillStyle = 'rgba(0,0,0,.25)'; g.beginPath(); g.ellipse(0, 0, 14, 4, 0, 0, TAU); g.fill(); g.strokeStyle = INK; g.lineWidth = 2;
