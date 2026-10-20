@@ -32,3 +32,28 @@
 - Trois ans après l'**Omnipotence** d'Eida (Ada), tout le monde croit que Boruto a tué Naruto ; seules **Sarada** et **Sumire** gardent la vérité. **Shikamaru** est Huitième Hokage. **Kawaki** veille sur Naruto et Hinata scellés dans la dimension du Daikokuten. **Himawari** s'entraîne avec Chōchō et doute.
 - **Code** infiltre Konoha avec des **Marques de Griffe** et lâche ses **Claw Grimes** pour attirer Boruto ; Boruto revient et atterrit sur le visage de Code pour protéger Sarada (ch. 1). — Narutopedia *Boruto's Return Arc* ; Comic Book Revolution, GameRant, Siliconera (récaps ch. 1).
 - Ensuite naissent les **clones du Shinju** (Jura, Hidari, Matsuri, Ryū…), groupe mystérieux qui vise Konoha ; l'un d'eux est lié à la disparition de Sasuke.
+
+---
+## v0.2 — Typographie Fortnite et « game feel » Epic
+
+### Typographie
+- Le logo et, longtemps, les menus de Fortnite utilisent **Burbank Big Condensed Black** (House Industries, police commerciale). Depuis le Chapitre 5, l'interface est passée à *Heading Now*. Les textes secondaires (fil des éliminations) sont en *Noto Sans*. Sources : fontkind.com/famous/fortnite-font, designyourway.net/blog/fortnite-font, madegooddesigns.com/what-font-does-fortnite-use.
+- Équivalents libres (OFL) : Anton, Teko, Oswald, Barlow Condensed, Bebas Neue (le plus proche en compression : **Anton**).
+- **Choix pour TBV :**
+  - **Lilita One** pour l'interface (lourde, compacte, coins arrondis, lisible en petit, accents français complets) ;
+  - **Luckiest Guy** pour les chiffres de dégâts, les réactions et les récompenses (aspect « pop » cartoon) ;
+  - repli système : `Impact, 'Arial Black', system-ui`.
+  - Les deux polices sont chargées sans bloquer le rendu (`media=print` + `onload`, `display=swap`).
+- Règles : majuscules et chasse serrée pour les titres et les boutons, casse normale pour les dialogues (qui restent lisibles), contour encré épais sur tout texte posé dans le monde.
+
+### « Game feel » satisfaisant (Epic / Fortnite)
+- **Couleurs des chiffres de dégâts** (Fortnite) : bleu = bouclier, blanc = normal, jaune = critique. Dans TBV : blanc = normal, jaune = coup final de chaîne / critique, couleur de l'élément = réaction. Source : gamerjournalist.com (dégâts Fortnite Ch4).
+- **Celia Hodent** (ancienne directrice UX d'Epic) recommande de réserver le rouge au danger : la vie du joueur doit être verte (ou d'une couleur neutre) pour que le rouge des dégâts ressorte. Elle conseille aussi de toujours afficher la touche de l'action contextuelle, pour réduire la charge mémoire. Les points faibles de la récolte jouent des notes qui montent quand on les enchaîne (récompense sonore). Sources : celiahodent.com/ux-practices-epic-games, Ars Technica « Fortnite UX Designer Breaks Down Fortnite's UI/UX ».
+- **« Juice »** : flash au contact, particules d'impact, secousse, arrêt sur image (hit-stop), son réactif. Le retour doit **confirmer l'action et communiquer un état**, pas seulement décorer (r/gamedesign, « Game feel vs game juice »).
+- **Application dans TBV v0.2 :**
+  - chiffres de dégâts qui « pop » (×1,6 puis rebond à ×1) et s'empilent sans se chevaucher ;
+  - la hauteur du son de frappe monte avec la chaîne ;
+  - sons en couches : clic d'attaque + coup sourd + note ;
+  - boutons qui rebondissent au survol et à l'appui, toasts de récompense avec dépassement (overshoot) ;
+  - anneau de vie **vert**, rouge réservé aux dégâts et aux télégraphes ;
+  - silhouettes lisibles : contour encré épais, grosse tête, une seule couleur dominante par personnage.
