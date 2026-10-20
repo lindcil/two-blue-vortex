@@ -69,7 +69,7 @@ const Voie = { mode: 'voie',
       if (this.step === 'a3') { if (src.act && src.act.k === 'm1') return; this.flags.l3t = 1; this.checkL3(); } }
     if (t.tag === 'yard' && src && src.isClone && this.step === 'a3') { this.flags.l3c = 1; this.checkL3(); } },
   checkL3() { if (this.flags.l3t && this.flags.l3c && this.step === 'a3') this.next('a4'); },
-  next(s) { this.lesson = 0; Sfx.play('pop'); UI.reward('Réussi !', '#ffd166');
+  next(s) { if (this.pending === s) return; this.pending = s; this.lesson = 0; Sfx.play('pop'); UI.reward('Réussi !', '#ffd166');
     if (s === 'a2') Talk.say([['Iruka', 'Bien. Maintenant, esquive.']], () => { this.set('a2'); Game.hint('dodge'); });
     if (s === 'a4') Talk.say([['Iruka', 'Tu es prêt pour l’examen.'], [this.team.rival.name, 'Prêt ? Contre moi ? On verra ça.']], () => { this.set('a4'); World.foes_ = World.foes_.filter((f) => f.tag !== 'yard'); this.spawnRival(2250, 830, 1); });
     if (s === 'a3') Talk.say([['Iruka', 'Dernière leçon : ta technique ' + SK[Game.skills[0]].n + ', puis le Kage Bunshin. Sur un mannequin.']], () => { this.set('a3'); Game.hint('s1'); }); },
@@ -137,7 +137,7 @@ const Voie = { mode: 'voie',
     if (S === 'x2') { r.gone = true; Game.allies.forEach((a) => (a.passive = false)); Talk.choose([['', 'Des explosions sur la place ! Des capes noires : Kurogane envahit l’examen.'], [this.team.sensei.name, 'Yaiba, leur lieutenant, fuit vers l’ouest.']], ['Protéger les civils', 'Poursuivre Yaiba'], (i) => { this.flags.exam = i ? 'chase' : 'protect'; this.set('x3'); this.formTeam();
         if (i) { const y = spawnFoe('rogue', 420, 1500, { tag: 'yaiba', n: 'Yaiba de Kurogane', look: 'kuro', hpMul: 1.4, leash: [420, 1500, 400] }); y.aggro = true; } else for (let k = 0; k < 6; k++) { const f = spawnFoe(k % 2 ? 'kuro' : 'grime', 1600 + rnd(-220, 220), 960 + rnd(-110, 110), { tag: 'invader' }); f.aggro = true; } }); }
     if (S === 'w2') Talk.say([[R.name, 'Je… voulais juste être fort.'], [this.me.name, 'Tu l’es. Reviens.']], () => { r.gone = true; }); },
-  set(s) { this.step = s; UI.objective(); Game.save(); },
+  set(s) { this.step = s; this.pending = null; UI.objective(); Game.save(); },
   talkNpc(n) { n.li = (n.li || 0) + 1; const G = { teuchi: ['Un bol ? Ça ne se refuse pas.', 'Les genins mangent gratis le jour de leur diplôme.'], ino: ['Des fleurs pour ton sensei ? Bonne idée.', 'Inojin s’entraîne trop. Comme son père.'], kotetsu: ['La porte reste ouverte. Pas les yeux.', 'Des capes noires rôdent au sud. Kurogane, qu’ils disent.'], izumo: ['Encore une mission ? Signe ici.', 'Shikamaru dort trois heures par nuit.'], haru: ['Tu es à l’Académie toi aussi ?', 'Plus tard je serai Hokage !'], mei: ['On joue aux ninjas ! Tu fais le méchant ?'], taro: ['Course jusqu’à la stèle !'], gen: ['J’ai connu le Septième tout petit. Il était bruyant, et bon.', 'Kurogane… on m’a dit qu’ils recrutent les jeunes.'], smith: ['Lames, kunais, rouleaux. Pas de crédit.'], guard3: ['Circulez.', 'Les Claw Grimes sortent la nuit.'], vend1: ['Dango tout chauds !'], vend2: ['Belle journée pour ne rien faire.'] }[n.id] || n.lines || ['…']; Talk.say([[n.n, G[n.li % G.length]]]); },
   onLessonDodge() { if (this.step !== 'a2') return; this.lesson++; UI.objective(); FX.text(Game.hero.x, Game.hero.y - 110, 'Esquivé !', '#8fd3ff', 18, 1); if (this.lesson >= 4) this.next('a3'); },
   respawn() { return this.step.startsWith('a') ? [2250, 900] : [1290, 980]; },

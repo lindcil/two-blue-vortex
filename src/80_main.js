@@ -73,7 +73,7 @@ const Game = {
     if (this.sarada) this.sarada.anim += dt * 3; if (this.jura) this.jura.anim += dt * 3; for (const e of this.extras) if (!e.cat) e.anim += dt * 3;
     if (!this.hints.dodge && World.foes().some((f) => f.act && f.act.k === 'wind' && dist(f, h) < 140)) this.hint('dodge');
     const it = !this.cine ? this.interactables() : null; if (it) { if (!this.hints.use) this.hint('use'); UI.prompt((Input.lastDev === 'touch' ? '<kbd>E</kbd> ' : `<kbd>${Input.label('use')}</kbd> `) + it.s);
-      if (Input.pressed('use')) { if (it.k === 'npc') { this.talkTo = it.o; it.o.face = h.x < it.o.x ? -1 : 1; if (it.o.onTalk) it.o.onTalk(); else if (it.o === this.sarada) Talk.say([['Sarada', pick(it.o.lines)]]); else Story.talkNpc(it.o); } else if (it.k === 'ally') this.talkAlly(it.o); else this.usePoi(it.o); } }
+      if (Input.pressed('use') && this.t - (Talk.endT || -9) > 0.3) { if (it.k === 'npc') { this.talkTo = it.o; it.o.face = h.x < it.o.x ? -1 : 1; if (it.o.onTalk) it.o.onTalk(); else if (it.o === this.sarada) Talk.say([['Sarada', pick(it.o.lines)]]); else Story.talkNpc(it.o); } else if (it.k === 'ally') this.talkAlly(it.o); else this.usePoi(it.o); } }
     else if (this.hintQ && this.hintQ.t > 0) { this.hintQ.t -= dt; UI.prompt(this.hintQ.s); } else UI.prompt(null);
     if (!Talk.on) this.talkTo = null;
     Cam.follow(h, dt); this.saveT = (this.saveT || 0) + dt; if (this.saveT > 10) { this.saveT = 0; this.save(); }

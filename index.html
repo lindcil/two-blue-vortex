@@ -913,9 +913,9 @@ const Talk = { q: [], cb: null, on: false, t: 0, opts: null, sel: 0,
   choose(lines, opts, cb) { this.q = lines.slice(); this.opts = opts; this.ocb = cb; this.cb = null; this.on = true; Game.cine = true; this.next(); },
   next() { const L = this.q.shift(); const el = $('#talk'); const O = $('#talk .opts');
     if (!L) { if (this.opts && !this.showing) { this.showing = true; this.sel = 0; O.innerHTML = this.opts.map((o, i) => `<button class="opt${i ? '' : ' on'}" data-i="${i}"><kbd>${i + 1}</kbd> ${o}</button>`).join(''); O.querySelectorAll('button').forEach((b) => (b.onclick = (e) => { e.stopPropagation(); this.pick(+b.dataset.i); })); return; }
-      el.style.display = 'none'; O.innerHTML = ''; document.body.classList.remove('talking'); this.on = false; Game.cine = false; const c = this.cb; this.cb = null; if (c) c(); return; }
+      el.style.display = 'none'; O.innerHTML = ''; document.body.classList.remove('talking'); this.on = false; this.endT = Game.t; Game.cine = false; const c = this.cb; this.cb = null; if (c) c(); return; }
     O.innerHTML = ''; this.showing = false; el.style.display = 'block'; document.body.classList.add('talking'); el.querySelector('b').textContent = L[0]; el.querySelector('p').textContent = L[1]; el.querySelector('i').textContent = Input.lastDev === 'touch' ? 'toucher ▸' : (Input.label('use') + ' ▸'); this.t = 0; el.classList.remove('pop'); void el.offsetWidth; el.classList.add('pop'); Sfx.play('ui'); },
-  pick(i) { const cb = this.ocb, O = $('#talk .opts'); this.opts = null; this.ocb = null; this.showing = false; O.innerHTML = ''; $('#talk').style.display = 'none'; document.body.classList.remove('talking'); this.on = false; Game.cine = false; Sfx.play('pop'); if (cb) cb(i); },
+  pick(i) { this.endT = Game.t; const cb = this.ocb, O = $('#talk .opts'); this.opts = null; this.ocb = null; this.showing = false; O.innerHTML = ''; $('#talk').style.display = 'none'; document.body.classList.remove('talking'); this.on = false; Game.cine = false; Sfx.play('pop'); if (cb) cb(i); },
   update(dt) { if (!this.on) return; this.t += dt; if (this.showing) { const n = this.opts.length; for (let i = 0; i < n; i++) if (Input.hit.has('Digit' + (i + 1)) || Input.hit.has('Numpad' + (i + 1))) return this.pick(i);
       const mv = (Input.pressed('down') || Input.pressed('right') ? 1 : 0) - (Input.pressed('up') || Input.pressed('left') ? 1 : 0); if (mv) { this.sel = (this.sel + mv + n) % n; $('#talk .opts').querySelectorAll('button').forEach((b, i) => b.classList.toggle('on', i === this.sel)); Sfx.play('ui'); }
       if (this.t > 0.25 && (Input.pressed('use') || Input.hit.has('Space') || Input.hit.has('Enter'))) this.pick(this.sel); return; }
@@ -1048,7 +1048,7 @@ const Voie = { mode: 'voie',
       if (this.step === 'a3') { if (src.act && src.act.k === 'm1') return; this.flags.l3t = 1; this.checkL3(); } }
     if (t.tag === 'yard' && src && src.isClone && this.step === 'a3') { this.flags.l3c = 1; this.checkL3(); } },
   checkL3() { if (this.flags.l3t && this.flags.l3c && this.step === 'a3') this.next('a4'); },
-  next(s) { this.lesson = 0; Sfx.play('pop'); UI.reward('Réussi !', '#ffd166');
+  next(s) { if (this.pending === s) return; this.pending = s; this.lesson = 0; Sfx.play('pop'); UI.reward('Réussi !', '#ffd166');
     if (s === 'a2') Talk.say([['Iruka', 'Bien. Maintenant, esquive.']], () => { this.set('a2'); Game.hint('dodge'); });
     if (s === 'a4') Talk.say([['Iruka', 'Tu es prêt pour l’examen.'], [this.team.rival.name, 'Prêt ? Contre moi ? On verra ça.']], () => { this.set('a4'); World.foes_ = World.foes_.filter((f) => f.tag !== 'yard'); this.spawnRival(2250, 830, 1); });
     if (s === 'a3') Talk.say([['Iruka', 'Dernière leçon : ta technique ' + SK[Game.skills[0]].n + ', puis le Kage Bunshin. Sur un mannequin.']], () => { this.set('a3'); Game.hint('s1'); }); },
@@ -1116,7 +1116,7 @@ const Voie = { mode: 'voie',
     if (S === 'x2') { r.gone = true; Game.allies.forEach((a) => (a.passive = false)); Talk.choose([['', 'Des explosions sur la place ! Des capes noires : Kurogane envahit l’examen.'], [this.team.sensei.name, 'Yaiba, leur lieutenant, fuit vers l’ouest.']], ['Protéger les civils', 'Poursuivre Yaiba'], (i) => { this.flags.exam = i ? 'chase' : 'protect'; this.set('x3'); this.formTeam();
         if (i) { const y = spawnFoe('rogue', 420, 1500, { tag: 'yaiba', n: 'Yaiba de Kurogane', look: 'kuro', hpMul: 1.4, leash: [420, 1500, 400] }); y.aggro = true; } else for (let k = 0; k < 6; k++) { const f = spawnFoe(k % 2 ? 'kuro' : 'grime', 1600 + rnd(-220, 220), 960 + rnd(-110, 110), { tag: 'invader' }); f.aggro = true; } }); }
     if (S === 'w2') Talk.say([[R.name, 'Je… voulais juste être fort.'], [this.me.name, 'Tu l’es. Reviens.']], () => { r.gone = true; }); },
-  set(s) { this.step = s; UI.objective(); Game.save(); },
+  set(s) { this.step = s; this.pending = null; UI.objective(); Game.save(); },
   talkNpc(n) { n.li = (n.li || 0) + 1; const G = { teuchi: ['Un bol ? Ça ne se refuse pas.', 'Les genins mangent gratis le jour de leur diplôme.'], ino: ['Des fleurs pour ton sensei ? Bonne idée.', 'Inojin s’entraîne trop. Comme son père.'], kotetsu: ['La porte reste ouverte. Pas les yeux.', 'Des capes noires rôdent au sud. Kurogane, qu’ils disent.'], izumo: ['Encore une mission ? Signe ici.', 'Shikamaru dort trois heures par nuit.'], haru: ['Tu es à l’Académie toi aussi ?', 'Plus tard je serai Hokage !'], mei: ['On joue aux ninjas ! Tu fais le méchant ?'], taro: ['Course jusqu’à la stèle !'], gen: ['J’ai connu le Septième tout petit. Il était bruyant, et bon.', 'Kurogane… on m’a dit qu’ils recrutent les jeunes.'], smith: ['Lames, kunais, rouleaux. Pas de crédit.'], guard3: ['Circulez.', 'Les Claw Grimes sortent la nuit.'], vend1: ['Dango tout chauds !'], vend2: ['Belle journée pour ne rien faire.'] }[n.id] || n.lines || ['…']; Talk.say([[n.n, G[n.li % G.length]]]); },
   onLessonDodge() { if (this.step !== 'a2') return; this.lesson++; UI.objective(); FX.text(Game.hero.x, Game.hero.y - 110, 'Esquivé !', '#8fd3ff', 18, 1); if (this.lesson >= 4) this.next('a3'); },
   respawn() { return this.step.startsWith('a') ? [2250, 900] : [1290, 980]; },
@@ -1292,7 +1292,7 @@ const Game = {
     if (this.sarada) this.sarada.anim += dt * 3; if (this.jura) this.jura.anim += dt * 3; for (const e of this.extras) if (!e.cat) e.anim += dt * 3;
     if (!this.hints.dodge && World.foes().some((f) => f.act && f.act.k === 'wind' && dist(f, h) < 140)) this.hint('dodge');
     const it = !this.cine ? this.interactables() : null; if (it) { if (!this.hints.use) this.hint('use'); UI.prompt((Input.lastDev === 'touch' ? '<kbd>E</kbd> ' : `<kbd>${Input.label('use')}</kbd> `) + it.s);
-      if (Input.pressed('use')) { if (it.k === 'npc') { this.talkTo = it.o; it.o.face = h.x < it.o.x ? -1 : 1; if (it.o.onTalk) it.o.onTalk(); else if (it.o === this.sarada) Talk.say([['Sarada', pick(it.o.lines)]]); else Story.talkNpc(it.o); } else if (it.k === 'ally') this.talkAlly(it.o); else this.usePoi(it.o); } }
+      if (Input.pressed('use') && this.t - (Talk.endT || -9) > 0.3) { if (it.k === 'npc') { this.talkTo = it.o; it.o.face = h.x < it.o.x ? -1 : 1; if (it.o.onTalk) it.o.onTalk(); else if (it.o === this.sarada) Talk.say([['Sarada', pick(it.o.lines)]]); else Story.talkNpc(it.o); } else if (it.k === 'ally') this.talkAlly(it.o); else this.usePoi(it.o); } }
     else if (this.hintQ && this.hintQ.t > 0) { this.hintQ.t -= dt; UI.prompt(this.hintQ.s); } else UI.prompt(null);
     if (!Talk.on) this.talkTo = null;
     Cam.follow(h, dt); this.saveT = (this.saveT || 0) + dt; if (this.saveT > 10) { this.saveT = 0; this.save(); }
