@@ -1,5 +1,32 @@
 # Two Blue Vortex — Notes de version
 
+## v0.2 — « Ta voie » (20/10/2026)
+**Animations & VFX (priorité)**
+- Nouveau rig plus grand : idle, course (ninja run), chaîne M1 avec anticipation/smear/follow-through, incantation avec mudras dessinés, esquive, coup reçu, K.O. Squash & stretch, orientation cohérente.
+- Vrais bijū : Kurama (9 queues) et Shukaku, queues qui ondulent, tête, gueule, rugissement.
+- Séquence Bijūdama complète : rassemblement de particules, sphère sombre/claire compressée, avalée, tirée, onde de choc, dôme. Zone rouge au sol avant l'impact.
+- VFX refaits : Rasengan, Chidori, Kirin (ciel noir + dragon), Katon, Suiton (dragon), Fūton, Doton, marques du Karma, Uzuhiko, techniques de clan.
+- Nouvelle action Ultime (R / Y / 極), jauge qui se charge en combat.
+
+**Typo & feel (recherche Fortnite/Epic, voir RESEARCH.md)**
+- Lilita One (style Burbank) + Luckiest Guy pour les dégâts, police de secours pour ū/ō.
+- Vie en vert, rouge réservé au danger. Chiffres de dégâts qui « pop », notes qui montent le long d'une chaîne, sons superposés, boutons rebondissants.
+
+**Mode RPG « Ta voie »**
+- Création : nom, clan (8) ou hasard, coiffure, couleurs. Élément tiré au sort à la naissance.
+- Intro de clan, Académie (3 leçons), duel du rival, diplôme Genin, équipe de 2 coéquipiers + jōnin avec liens, test des clochettes.
+- Missions D→S au bureau, rangs Genin → Chūnin → Jōnin.
+- Arc original : rival, organisation criminelle, examen Chūnin (choix), Shukaku (choix selon le lien), guerre, fin qui dépend de tes choix.
+
+**Histoire**
+- Jura devient un vrai boss. Nouveau chapitre 2 « Kurama » : Kawaki, Himawari, combat contre Kurama avec Sarada.
+
+**Corrections**
+- Les mannequins restent dans le cercle. Les PNJ ne sont plus tous dessinés en déserteur ; villageois variés.
+- Dialogues qui se relançaient en boucle avec E. Cinématique de naissance qui bloquait le héros.
+- Bras qui pointaient vers le haut. Textes canvas en police par défaut.
+- Équilibrage : PV des boss augmentés (Jura ×1.6, Kawaki ×1.5, Kurama ×1.4).
+
 ## v0.1 — « Tranche verticale » (20/10/2026)
 - Prologue + Chapitre 1 (Fugitif) : Grimes sur la place, Embrasement à l'étal, Code, Sarada au belvédère, 2 zones Shinju, Jura.
 - Combat : chaîne M1 en 3 coups, esquive (i-frames), 4 techniques (Rasengan, Shiden, Rappa, Kage Bunshin) avec mudras dessinés.
