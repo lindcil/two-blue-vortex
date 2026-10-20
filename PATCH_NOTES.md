@@ -1,5 +1,14 @@
 # Two Blue Vortex — Notes de version
 
+## v0.3 — « Cinématiques » (20/10/2026)
+- Ultimes façon Storm : courte séquence de 2,5 à 3,2 s qu'on peut passer (J / E / Échap). Bandes noires, zoom sur le lanceur, portrait en cut-in avec le nom de la technique, mudras, charge, lignes de vitesse vers la cible, impact puis ralenti, retour au jeu.
+- Ultime pour chaque clan de Ta voie : Susanoo (Uchiha), Hakke 64 Shō (Hyūga), Kage Kubi Shibari (Nara), Chōdan Bakugeki (Akimichi), Shinranshin (Yamanaka), Mushidama (Aburame), Garōga (Inuzuka), Jukai Kōtan (Senju).
+- Histoire : Kawaki lance Daikokuten (cubes signalés au sol), Sarada lance Susanoo contre Kurama. En Ta voie, les coéquipiers lancent leur ultime pendant les combats de boss.
+- Mudras : tourbillon de chakra autour des mains, kanji lumineux à la couleur de l'élément pour chaque signe, étincelles, onde sur le dernier signe.
+- Esquive : images rémanentes, lignes de vitesse, nuage de poussière, traînée teintée par l'élément, éclat au départ et à l'arrivée, coup de pinceau.
+- La caméra ne sort plus de la carte. Ennemis un peu plus dangereux (+20 % de dégâts).
+- Le cadre d'impact reste réservé aux points culminants et respecte « réduire les flashs ».
+
 ## v0.2 — « Ta voie » (20/10/2026)
 **Animations & VFX (priorité)**
 - Nouveau rig plus grand : idle, course (ninja run), chaîne M1 avec anticipation/smear/follow-through, incantation avec mudras dessinés, esquive, coup reçu, K.O. Squash & stretch, orientation cohérente.
