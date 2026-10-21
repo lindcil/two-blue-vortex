@@ -53,3 +53,18 @@ Sources : Narutopedia (naruto.fandom.com/wiki/Susanoo), naruto-wiki.com/wiki/sus
   - The FR source text is the key; translations live in `lang/<lang>.tsv`, and `python3 lang/gen.py` generates `src/8z_lang10.js`.
   - `LANG10.t` handles exact matches and `{}` templates.
   - Untranslated lines are collected in `LANG10.miss`; the play bot prints them.
+
+## Anime faces and rigs (v0.10.8)
+- **Eyes:** shōnen-anime eyes (Studio Pierrot's Naruto/Boruto) have a thick upper lash line with a flick at the outer corner, no lower lid line, and a tall iris with a darker top band. They carry 1–2 white specular highlights and a small pupil. Dōjutsu replace the iris: Sharingan is red with 3 tomoe, Byakugan pale with no pupil, Jōgan bright blue-white.
+- **Silhouettes first:** characters must read from hair shape alone (the "silhouette test" used by fighting games and character designers).
+  - Boruto: spiky crown with a long bang.
+  - Naruto: big spikes.
+  - Sarada: bob with forehead bangs.
+  - Kawaki: messy tufts.
+  - Mitsuki: smooth, shoulder length.
+  - Sasuke: spikes swept back plus a long front bang.
+  - Whiskers: Naruto 3, Boruto and Himawari 2.
+- **Turnarounds:** side, 3/4 and front views share the same landmarks (eyes on the head's midline, ears, nose tip). The back view hides the face behind a hair mass with the headband knot.
+- **Expressions:** a minimal set drives most anime acting: neutral, angry (brows down at the centre), shout (open trapezoid mouth with tongue), hurt (> < eyes, wavy mouth) and blink.
+- **Secondary motion:** hair, scarf and headband tails follow a damped spring (overlapping action, one of the 12 animation principles). Idle breathing is a ±1 % chest scale.
+- **LOD:** far NPCs use the old cheap head so FPS holds.

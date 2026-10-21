@@ -1,3 +1,8 @@
+## v0.10.8
+- Visages anime : yeux (iris, reflets, cils), sourcils, nez, bouche, expressions (neutre, colère, cri, blessé, clignement), dōjutsu dans l’œil (Sharingan, Byakugan, Jōgan).
+- Coupes canon (Boruto, Sarada, Kawaki, Himawari, Code, Naruto, Sasuke, Mitsuki), moustaches Uzumaki, vraie vue de face, ¾ et de dos.
+- Cou, respiration au repos, cheveux et bandeau à ressort. LOD : PNJ lointains simplifiés.
+
 ## v0.10.7
 - Orientation 8 directions pour tous (héros, alliés, ennemis, PNJ) : rotation du corps, vue de dos en montant, tête et bras orientés.
 - Attaques, techniques et esquives visent le vrai cap (souris, déplacement ou cible).
