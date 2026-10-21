@@ -1,3 +1,6 @@
+# v0.6.1 — 21 octobre 2026
+- Porte du village : Kotetsu et Izumo montent la garde de part et d’utre de l’ouverture, ils ne bloquent plus le passage.
+
 # Two Blue Vortex — Notes de version
 
 ## v0.6 — « Boutique & Kara » (21/10/2026)
