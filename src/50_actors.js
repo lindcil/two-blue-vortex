@@ -129,6 +129,9 @@ function shade(c) { return String(c).replace(/^#(..)(..)(..)$/, (m, r, gg, b) =>
 /* ---------- Bêtes à queues : vraies créatures (queues qui ondulent, mâchoire, rugissement) ---------- */
 const BIJUU = {
   kurama: { n: 'Kurama', tails: 9, body: '#f07a1e', belly: '#ffc070', mark: '#7a1e08', eye: '#ffe14a', pupil: '#c01010', ears: 'fox', snout: 1.15 },
+  matatabi: { n: 'Matatabi', tails: 2, body: '#3a6aff', belly: '#9fd0ff', mark: '#1a2a6a', eye: '#ffe14a', pupil: '#111', ears: 'fox', snout: 0.9 },
+  songoku: { n: 'Son Gokū', tails: 4, body: '#c0362a', belly: '#e8a080', mark: '#5a1a10', eye: '#fff', pupil: '#111', ears: 'round', snout: 1.0 },
+  gyuki: { n: 'Gyūki', tails: 8, body: '#7a4a9a', belly: '#c8a0d8', mark: '#2a1a3a', eye: '#fff', pupil: '#111', ears: 'round', snout: 1.05 },
   shukaku: { n: 'Shukaku', tails: 1, body: '#cfae70', belly: '#e8d29e', mark: '#2f3f8f', eye: '#ffe14a', pupil: '#111', ears: 'round', snout: 0.85 },
 };
 function beastMouth(u) { const s = u.size || 1, D = BIJUU[u.bj]; const jx = 104 * (D.snout || 1), hy = -112 + (u.rear || 0) * -20; return { x: u.x + u.face * s * jx, y: u.y + s * hy }; }

@@ -1,5 +1,11 @@
 # Two Blue Vortex — Notes de version
 
+## v0.5 — « Vague 3 » (21/10/2026)
+- Bijū errants (Ta voie, à partir de Chūnin) : Matatabi, Son Gokū et Gyūki rôdent hors des murs. Calme-les sous 35 % de PV pour gagner beaucoup d'XP et de ryō.
+- Embuscades : des ninjas errants surgissent pendant que tu te promènes sans mission.
+- Missions de rang S (Jōnin) : Escorte du daimyō, et Kara avec Kashin Kōji en boss. Les missions de rang A s'ouvrent dès Chūnin.
+- Indicateur de sauvegarde automatique, en bas à droite.
+
 ## v0.4 — « Vague 1 » (21/10/2026)
 - Réglage « Cinématiques d'ultime » : Toujours, La 1re fois (par défaut) ou Jamais. Les 15 ultimes ont été testés par script et touchent tous leurs cibles.
 - Cut-in : vrai portrait en buste, cadrage serré.

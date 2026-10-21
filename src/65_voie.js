@@ -20,8 +20,10 @@ const MISSIONS = {
   grimes: { r: 'C', n: 'Nid de Claw Grimes', d: 'Hors les murs, à l’est.' },
   deserteur: { r: 'B', n: 'Déserteur de rang B', d: 'Il se cache au sud-ouest avec deux complices.' },
   cellule: { r: 'A', n: 'Cellule de Kurogane', d: 'Une planque au sud-est.' },
+  escorte: { r: 'S', n: 'Escorte du daimyō', d: 'Des assassins attendent sur la route du sud.' },
+  kara: { r: 'S', n: 'Kara : Kashin Kōji', d: 'Un Interne de Kara a été vu au nord-est.' },
 };
-const RANK_MIS = { eleve: [], genin: ['D', 'C'], chunin: ['C', 'B'], jonin: ['B', 'A'] };
+const RANK_MIS = { eleve: [], genin: ['D', 'C'], chunin: ['C', 'B', 'A'], jonin: ['B', 'A', 'S'] };
 function genNinja(seed, clan, el, o = {}) { const R = mulb(seed), P = (a) => a[(R() * a.length) | 0]; const C = CLANS[clan]; const name = o.name || P(NAMES); const look = makeLook(seed, Object.assign({ band: 1 }, C.look, o.look || {})); delete look.apron;
   return { name, clan, el, look, n: name + ' ' + C.n, skill: R() < 0.5 ? C.sk : ELEM_SK[el][0] }; }
 const Voie = { mode: 'voie',
@@ -93,9 +95,11 @@ const Voie = { mode: 'voie',
     if (m.id === 'livraison') { m.need = 0; m.stage = m.stage || 0; if (!m.stage) this.items.push({ id: 'bol', x: 1290, y: 930, n: 'Bol' }); else m.tx = 1930, m.ty = 900; }
     const camp = (type, n, x, y, boss) => { m.tx = x; m.ty = y; m.need = n + (boss ? 1 : 0); if (reload && m.got >= m.need) return; for (let i = 0; i < n; i++) spawnFoe(type, x + rnd(-120, 120), y + rnd(-60, 60), { tag: 'mis' }); if (boss) spawnFoe(boss, x, y, { tag: 'mis' }); m.got = 0; };
     if (m.id === 'bandits') camp('bandit', 5, 1000, 2700); if (m.id === 'grimes') camp('grime', 6, 2700, 2650); if (m.id === 'deserteur') camp('stormer', 2, 600, 2750, 'rogue'); if (m.id === 'cellule') camp('kuro', 5, 2500, 2850);
+    if (m.id === 'escorte') { camp('rogue', 4, 1600, 2820, 'leader'); const b = World.foes_.filter((f) => f.tag === 'mis').pop(); if (b) { b.n = 'Chef des assassins'; } }
+    if (m.id === 'kara') { camp('kuro', 3, 2850, 560, 'leader'); const b = World.foes_.filter((f) => f.tag === 'mis').pop(); if (b) { b.n = 'Kashin Kōji'; b.look = makeLook(404, { hair: '#d8d8d8', hs: 'long', cloak: '#2a2a3a', band: 0 }); b.hp *= 1.5; b.maxHp = b.hp; b.boss = true; } }
     if (!reload) this.formTeam(); },
   catCaught() { const c = this.cat; if (!c) return; FX.smoke(c.x, c.y, 6); Game.extras = Game.extras.filter((e) => e !== c); this.cat = null; Talk.say([['', 'Tora se débat… puis ronronne.']], () => this.finishMission()); },
-  finishMission() { const m = this.mis; if (!m) return; const XP = { D: 40, C: 80, B: 160, A: 260 }[m.r]; this.mis = null; this.done++; Game.gainXp(XP * 5); Game.ryo += XP * 10; for (const k of ['t0', 't1']) this.bond[k] = Math.min(5, (this.bond[k] || 0) + (Math.random() < 0.6 ? 1 : 0)); if ('BA'.includes(m.r)) this.bond.sensei = Math.min(5, (this.bond.sensei || 0) + 1);
+  finishMission() { const m = this.mis; if (!m) return; const XP = { D: 40, C: 80, B: 160, A: 260, S: 420 }[m.r] || 100; this.mis = null; this.done++; Game.gainXp(XP * 5); Game.ryo += XP * 10; for (const k of ['t0', 't1']) this.bond[k] = Math.min(5, (this.bond[k] || 0) + (Math.random() < 0.6 ? 1 : 0)); if ('BA'.includes(m.r)) this.bond.sensei = Math.min(5, (this.bond.sensei || 0) + 1);
     UI.reward('Mission ' + m.r + ' réussie', '#ffd166'); this.formTeam(); this.beat(); UI.objective(); Game.save(); },
   /* ---------- arc personnel ---------- */
   beat() { const d = this.done, f = this.flags;
