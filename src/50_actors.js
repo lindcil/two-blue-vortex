@@ -62,13 +62,13 @@ function drawRig(g, u, tint) { const L = lookOf(u); const P = u.P || poseOf(u); 
   const limb = (x, y, a1, a2, l1, l2, w, c, end, endC) => { const kx = x + Math.sin(a1) * l1, ky = y + Math.cos(a1) * l1, fx = kx + Math.sin(a1 + a2) * l2, fy = ky + Math.cos(a1 + a2) * l2; g.lineCap = 'round'; g.lineJoin = 'round';
     if (!tint) { g.strokeStyle = ink; g.lineWidth = w + 4; g.beginPath(); g.moveTo(x, y); g.lineTo(kx, ky); g.lineTo(fx, fy); g.stroke(); }
     g.strokeStyle = C(c); g.lineWidth = w; g.beginPath(); g.moveTo(x, y); g.lineTo(kx, ky); g.lineTo(fx, fy); g.stroke();
-    if (end === 'fist') { g.fillStyle = C(endC); g.strokeStyle = ink; g.lineWidth = 2.2; g.beginPath(); g.arc(fx, fy, 4.4, 0, TAU); g.fill(); if (!tint) g.stroke(); }
+    if (end === 'fist') { const ha = a1 + a2; g.save(); g.translate(fx, fy); g.rotate(-ha); g.fillStyle = C(endC); g.strokeStyle = ink; g.lineWidth = 2; g.beginPath(); g.ellipse(0, 1.2, 3.9, 4.8, 0, 0, TAU); g.fill(); if (!tint) g.stroke(); g.beginPath(); g.ellipse(2.8, -0.6, 1.6, 2.4, -0.5, 0, TAU); g.fill(); if (!tint) g.stroke(); if (!tint) { g.strokeStyle = 'rgba(0,0,0,.3)'; g.lineWidth = 0.8; g.beginPath(); g.moveTo(-2.6, 2.6); g.lineTo(1.8, 3.4); g.stroke(); } g.restore(); }
     else if (end === 'foot') { g.fillStyle = C('#20222e'); g.strokeStyle = ink; g.lineWidth = 2; g.beginPath(); g.ellipse(fx + 3, fy, 6, 3.2, a1 + a2 - 0.3, 0, TAU); g.fill(); if (!tint) g.stroke(); }
     return [fx, fy]; };
-  const hipY = -31, legW = kid ? 6 : 7.5, armW = kid ? 5 : 6.2;
-  limb(-3, hipY, P.hB, P.kB, 15, 15, legW, shade(L.bot), 'foot');
+  const hipY = -33, legW = kid ? 6 : 7.5, armW = kid ? 5 : 6.2;
+  limb(-3, hipY, P.hB, P.kB, 16, 16, legW, shade(L.bot), 'foot');
   // cape / écharpe derrière (traînée selon la vitesse)
-  const vel = Math.min(1, Math.hypot(u.vx || 0, u.vy || 0) / 400), wav = Math.sin((u.anim || 0) * 1.3);
+  const vel = Math.min(1, Math.hypot(u.vx || 0, u.vy || 0) / 400 + Math.abs((u.spr10 && u.spr10.x) || 0) / 14), wav = Math.sin((u.anim || 0) * 1.3) + ((u.spr10 && u.spr10.v) || 0) * 0.04;
   g.save(); g.translate(0, hipY); g.rotate(P.lean);
   if (L.cloak) { g.fillStyle = C(L.cloak); g.strokeStyle = ink; g.lineWidth = 2.4; g.beginPath(); g.moveTo(-8, -27); g.quadraticCurveTo(-16 - vel * 16, -6, -14 - vel * 24 + wav * 3, 22 - vel * 10); g.lineTo(-4 - vel * 10, 24 - vel * 6 + wav * 2); g.lineTo(6, 8); g.lineTo(8, -27); g.closePath(); g.fill(); if (!tint) g.stroke(); }
   const shoulder = (back) => [back ? -3 : 3, -24];
@@ -83,10 +83,11 @@ function drawRig(g, u, tint) { const L = lookOf(u); const P = u.P || poseOf(u); 
   if (L.sword && !tint) { g.strokeStyle = '#11131b'; g.lineWidth = 4; g.beginPath(); g.moveTo(-12, -34); g.lineTo(7, 4); g.stroke(); g.strokeStyle = '#c9a050'; g.lineWidth = 2; g.beginPath(); g.moveTo(-12, -34); g.lineTo(-9, -29); g.stroke(); }
   if (L.marks && !tint) { g.strokeStyle = '#7a6aff'; g.lineWidth = 1.6; for (let i = 0; i < 3; i++) { g.beginPath(); g.moveTo(-5 + i * 4, -24); g.lineTo(-1 + i * 4, -9); g.stroke(); } }
   if (L.scarf && !tint) { g.strokeStyle = INK; g.lineWidth = 7; g.beginPath(); g.moveTo(-6, -29); g.quadraticCurveTo(-14 - vel * 18, -27 + wav * 3, -22 - vel * 22, -22 + wav * 5); g.stroke(); g.strokeStyle = L.scarf; g.lineWidth = 4.5; g.stroke(); }
+  if (!tint) { g.fillStyle = C(shade(L.top)); g.strokeStyle = ink; g.lineWidth = 2; g.beginPath(); g.ellipse(3, -25, 5, 4, 0.3, 0, TAU); g.fill(); g.stroke(); g.strokeStyle = 'rgba(0,0,0,.35)'; g.lineWidth = 1.4; g.beginPath(); g.moveTo(-5, -29); g.lineTo(1, -20); g.lineTo(6, -29); g.stroke(); g.fillStyle = '#20222e'; g.fillRect(-bw + 2, -6, bw * 2 - 4, 3); }
   // tête (grosse, lisible) — légère traînée de rotation
   g.save(); g.translate(1.5, -32); g.rotate(P.head - P.lean * 0.35); drawHead(g, u, L, C, ink, tint, kid, vel, wav, P); g.restore();
   const [sfx, sfy] = shoulder(0); const hf = limb(sfx, sfy, P.aF, P.eF, 12, 11, armW, L.top, 'fist', L.skin); g.restore();
-  limb(3, hipY, P.hF, P.kF, 15, 15, legW, L.bot, 'foot');
+  limb(3, hipY, P.hF, P.kF, 16, 16, legW, L.bot, 'foot');
   g.restore();
   // position monde de la main avant (pour les VFX tenus en main)
   const lx = 3 + Math.sin(P.aF) * 12 + Math.sin(P.aF + P.eF) * 11, ly = -24 + Math.cos(P.aF) * 12 + Math.cos(P.aF + P.eF) * 11; const cl = Math.cos(P.lean), sl = Math.sin(P.lean);

@@ -1,3 +1,7 @@
+## v0.10.9
+- Rig : jambes plus longues, épaules, col de veste, ceinture, vraies mains (paume + pouce), cape/écharpe à ressort.
+- Vue de face et de dos à pleine largeur (seuls les ¾ sont compressés).
+
 ## v0.10.8
 - Visages anime : yeux (iris, reflets, cils), sourcils, nez, bouche, expressions (neutre, colère, cri, blessé, clignement), dōjutsu dans l’œil (Sharingan, Byakugan, Jōgan).
 - Coupes canon (Boruto, Sarada, Kawaki, Himawari, Code, Naruto, Sasuke, Mitsuki), moustaches Uzumaki, vraie vue de face, ¾ et de dos.
