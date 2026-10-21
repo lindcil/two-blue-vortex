@@ -101,6 +101,6 @@
   ROOMS.porte.top = 340; ROOMS.arene.top = 380; ROOMS.entrainement.top = 380; ROOMS.creatif.top = 330;
   ROOMS.maison.top = 340;
   // reprise de partie : remettre le héros sur la carte extérieure
-  const sv = Game.startVoie.bind(Game); Game.startVoie = function () { Z.room = null; Z.sec = null; const r = sv.apply(this, arguments); if (this.hero && this.hero.x > W) { this.hero.x = 1600; this.hero.y = 1200; } return r; };
+  const sv = Game.startVoie.bind(Game); Game.startVoie = function () { Z.room = null; Z.sec = null; const r = sv.apply(this, arguments); if (this.hero && (this.hero.x >= 20000 || this.hero.x < K10 * 300)) { this.hero.x = K10 * 2250; this.hero.y = K10 * 900; } return r; };
   const st = Game.start.bind(Game); Game.start = function () { Z.room = null; Z.sec = null; return st.apply(this, arguments); };
 })();

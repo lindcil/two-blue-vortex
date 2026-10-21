@@ -1,3 +1,9 @@
+## v0.10.6
+- Ta voie : le héros n’apparaît plus à l’autre bout de la carte (ancien recalage d’avant l’agrandissement). Les mannequins de la leçon 1 sont à côté de toi.
+- Suivi de quête : flèche + distance, repère au sol sur l’objectif ; les leçons pointent les mannequins et le sensei.
+- Mudrā : plus de texte, seulement les mains (12 sceaux canon + croix du Kage Bunshin), pop et halo de chakra.
+- Test à pied : distance de marche donneur → objectif, leçon 1 jouée au clavier.
+
 ## v0.10.5
 - Dialogues réécrits en anglais (voix propre à chaque personnage, répliques courtes) : histoire, Ta voie, PNJ, Iruka, rival, équipe, scènes QTE, objectifs et messages.
 - Option Langue (menu pause) : EN par défaut, FR disponible. Textes dans lang/en.tsv, prêts pour la traduction.
