@@ -1,3 +1,8 @@
+## v0.10.12 — Oreilles et lunettes
+- Oreille en C à l arrière de la tête (plus de faux monocle).
+- Lunettes de Sarada reculées, branche jusqu à l oreille.
+- Tête du héros en jeu agrandie (x1.22).
+
 ## v0.10.11 — Visages : vrai profil anime
 - Tête de profil : front, nez pointu, mâchoire, joue, oreille, cou.
 - Contours colorés fins, cel-shading (ombre + liseré), œil en amande.
