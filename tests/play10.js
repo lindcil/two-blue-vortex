@@ -27,4 +27,4 @@ const res=await p.evaluate(async()=>{const log=[];window.SMOOTH10&&(SMOOTH10.man
   for(let k=0;k<200&&V.mis;k++){if(id==='chat'&&V.cat){V.cat.onTalk&&V.cat.onTalk()}else{const it=V.items[0];if(it)go(it.x,it.y);else{const t=V.target();if(t)go(t[0],t[1]);for(const e of World.foes_.filter(f=>f.tag==='mis'&&!f.gone&&f.hp>0))hurt(e,e.maxHp*2,Game.hero,{})}}step(4)}
   log.push('mission '+id+(V.mis?' BLOQUÉE':' ok'));V.mis=null}
  return log});
-console.log(res.join('\n'));console.log('errs',errs.length,errs.slice(0,4));await b.close()})();
+console.log(res.join('\n'));console.log('MISS',JSON.stringify(await p.evaluate(()=>window.LANG10?[...LANG10.miss]:[])));console.log('errs',errs.length,errs.slice(0,4));await b.close()})();

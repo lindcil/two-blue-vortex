@@ -1,3 +1,7 @@
+## v0.10.5
+- Dialogues réécrits en anglais (voix propre à chaque personnage, répliques courtes) : histoire, Ta voie, PNJ, Iruka, rival, équipe, scènes QTE, objectifs et messages.
+- Option Langue (menu pause) : EN par défaut, FR disponible. Textes dans lang/en.tsv, prêts pour la traduction.
+
 ## v0.10.4
 - Quêtes réparées après l’agrandissement ×10 : camps des missions (bandits, Grimes, déserteur, Kurogane, escorte, Kara), vagues de la guerre, civils de l’examen, flammes du prologue, téléports des scènes, mode Créatif, embuscades, zone du chat Tora.
 - Chapitre 1 : plus de blocage si les racines sont purifiées avant.

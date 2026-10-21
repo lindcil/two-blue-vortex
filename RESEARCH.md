@@ -29,3 +29,27 @@ Sources : Narutopedia (naruto.fandom.com/wiki/Susanoo), naruto-wiki.com/wiki/sus
 - **Demon Slayer : Hinokami Chronicles** : smear frames et traînées sur chaque frappe, hit-stop court sur les coups légers et long sur le finisseur, étincelles orientées dans le sens du coup.
 - **Zenless Zone Zero** : anticipation marquée (compression), étirement pendant la frappe, prolongement puis rebond. Dash avec des images rémanentes, de la poussière au départ et une glissade de récupération. L'impact est lisible sans flash plein écran.
 - **Principes retenus** : anticipation → frappe (smear et étirement) → prolongement → retour. Hit-stop d'environ 40 ms sur les coups normaux et 90 ms sur le finisseur. Les étincelles partent dans le sens du coup. Tout est réglable dans la table `ANIM10` (`src/8v_anim10.js`).
+
+## Dialogue writing (v0.10.5)
+- **Short, punchy lines.** One idea per line, most under 12 words. Hades (Supergiant, Greg Kasavin) uses many short, reactive barks instead of long speeches. Players read them at combat pace.
+- **Show, don't tell / subtext.** Characters don't explain their feelings; the line implies them ("Idiot. …I'm with you." rather than "I trust you"). Ghost of Tsushima's dialogue is restrained: silence and short replies carry the weight.
+- **Character voice (Naruto/Boruto anime):**
+  - Boruto: cocky, clipped and casual, warm with Hima.
+  - Sarada: sharp, direct, Uchiha pride, says "Idiot" affectionately.
+  - Kawaki: cold and hostile, very short.
+  - Code: contemptuous.
+  - Iruka: warm teacher, firm commands.
+  - Himawari: soft and sincere.
+  - Kurama: gruff, calls him "brat".
+  - Shikamaru: "What a drag".
+  - Teuchi: jolly.
+  - Jura: polite menace, plant metaphors ("ripe", "harvest").
+- **Game best practice:**
+  - Front-load the objective in the last line before control returns.
+  - Choices are short verbs.
+  - Avoid exposition dumps; narrator lines are fragments.
+  - Use canon names (Kashin Koji, Claw Grimes, Shinju, Omnipotence).
+- **Pipeline:**
+  - The FR source text is the key; translations live in `lang/<lang>.tsv`, and `python3 lang/gen.py` generates `src/8z_lang10.js`.
+  - `LANG10.t` handles exact matches and `{}` templates.
+  - Untranslated lines are collected in `LANG10.miss`; the play bot prints them.
