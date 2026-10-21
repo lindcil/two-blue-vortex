@@ -1,3 +1,10 @@
+# v0.9.6 — Animations de base
+- **Combo M1** : 3 poses distinctes (anticipation → frappe avec smear et étirement → prolongement → retour), hit-stop et étincelles orientées. Le finisseur a sa propre pose, un double smear et une onde de choc.
+- **Dash** : images rémanentes, poussière au départ, penché, glissade de récupération.
+- **Kawarimi** : nuage de fumée, bûche avec kunai et parchemin, réapparition dans le dos avec une traînée de lumière.
+- **Autres mouvements** : réaction aux coups étirée avec étincelles, pose de garde bras croisés, course de Naruto.
+- Tout est réglable dans `ANIM10`. L'équilibrage est inchangé.
+
 # v0.9.5 — Susanoo fidèle à l'anime
 - Couleur et armes selon l'utilisateur : Itachi en rouge (Totsuka, Yata), Sasuke en violet (arc et flèche), Madara en bleu (ailes et deux lames), Shisui en vert (lance et aiguilles), Kakashi en cyan (lame et shuriken Kamui).
 - Halo translucide en couches et bord de flammes qui vacille.

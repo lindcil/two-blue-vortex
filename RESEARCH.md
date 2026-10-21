@@ -23,3 +23,9 @@ Sources : Narutopedia (naruto.fandom.com/wiki/Susanoo), naruto-wiki.com/wiki/sus
 - L'utilisateur flotte au centre de la cage, dans un noyau de chakra.
 - Montée en puissance dans l'ordre flamme → os → chair → armure : d'abord des braises qui convergent, puis une teinte qui change selon la phase, puis un petit rebond à la fin.
 - Attaques avec squash/stretch façon ZZZ : on se ramasse avant le coup, on s'étire pendant, puis le rebond. La réduction des flashs reste respectée.
+
+# Animations de base — références (v0.9.6)
+- **Naruto Storm (CyberConnect2)** : combo de corps à corps en 3 à 5 coups, chacun avec une pose propre (jab, coup de pied tournant, finisseur qui projette). Le Kawarimi laisse un nuage de fumée et une bûche, puis le personnage réapparaît dans le dos de l'ennemi. Course de Naruto avec les bras en arrière et le corps penché.
+- **Demon Slayer : Hinokami Chronicles** : smear frames et traînées sur chaque frappe, hit-stop court sur les coups légers et long sur le finisseur, étincelles orientées dans le sens du coup.
+- **Zenless Zone Zero** : anticipation marquée (compression), étirement pendant la frappe, prolongement puis rebond. Dash avec des images rémanentes, de la poussière au départ et une glissade de récupération. L'impact est lisible sans flash plein écran.
+- **Principes retenus** : anticipation → frappe (smear et étirement) → prolongement → retour. Hit-stop d'environ 40 ms sur les coups normaux et 90 ms sur le finisseur. Les étincelles partent dans le sens du coup. Tout est réglable dans la table `ANIM10` (`src/8v_anim10.js`).
