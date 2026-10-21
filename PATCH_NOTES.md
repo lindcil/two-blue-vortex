@@ -1,3 +1,8 @@
+## v0.10.16 — Missions rapprochées
+- Missions hors murs : l’équipe part de la grande porte, camps juste au-delà (1,7–2,4 k px au lieu de 6–9,6 k).
+- Chat, herbes, Kara rapprochés du bureau (1,2–2,1 k px).
+- Test tests/mis10.js : marche réelle avec collisions, échoue au-delà de 2,6 k px.
+
 ## v0.10.15 — Audit des animations
 - Chidori : course basse, main traînée en arrière (distinct du Rasengan).
 - Ultime : accroupi (écrasement) → montée de puissance (tremblement) → détente étirée ; le visage reste visible.

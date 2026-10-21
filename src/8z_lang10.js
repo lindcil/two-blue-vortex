@@ -323,7 +323,8 @@
 "Embuscade !": "Ambush!",
 "Arc I terminé": "Arc I complete",
 "Arc III terminé": "Arc III complete",
-"Genin !": "Genin!"
+"Genin !": "Genin!",
+"L’équipe se retrouve à la grande porte.": "The team regroups at the great gate."
 }
 };
   const L = window.LANG10 = { DATA, miss: new Set(), get lang() { return (Save.set && Save.set.lang) || 'en'; }, set lang(v) { Save.set.lang = v; try { Save.saveSet && Save.saveSet(); } catch (e) {} },
