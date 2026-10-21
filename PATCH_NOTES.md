@@ -1,3 +1,7 @@
+# v0.9 — 21 octobre 2026 — Couche VFX et performances
+- **Toutes les techniques ont des effets plus riches** : traînées, étincelles, éclats et marques au sol propres à chaque élément (langues de feu, gouttes, éclairs ramifiés, croissants de vent, éclats de roche). Anticipation à l'incantation, effets d'impact plus marqués. « Réduire les flashs » est respecté.
+- **Performances** : effets lumineux pré-rendus, particules regroupées au dessin, rien de dessiné hors écran, et la qualité s'ajuste toute seule (budget de particules, résolution de rendu). Scène chargée en test : 11,4 → 14 images/s sur processeur ralenti ×4.
+
 # v0.8 — 21 octobre 2026 — Modes, constellation, variantes, carte en sections, Créatif
 - **Modes à étages** (C maintenu au-delà du max pour les dōjutsu, Z pour le manteau ; on monte d'étage en maintenant la touche, avec la jauge de combat) :
   - Sharingan 1 → 2 → 3 tomoe → Mangekyō → Susanoo côtes → squelette → humanoïde → samouraï → parfait (géant contrôlable, coups et techniques géants) ;
