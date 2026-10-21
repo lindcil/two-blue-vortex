@@ -11,7 +11,7 @@ const ACTIONS = { up: 'Haut', down: 'Bas', left: 'Gauche', right: 'Droite', atk:
 const DEFAULT_KEYS = { up: ['KeyW', 'ArrowUp'], down: ['KeyS', 'ArrowDown'], left: ['KeyA', 'ArrowLeft'], right: ['KeyD', 'ArrowRight'], atk: ['KeyJ', 'Mouse0'], dodge: ['ShiftLeft', 'KeyK'], s1: ['Digit1', 'KeyU'], s2: ['Digit2', 'KeyI'], s3: ['Digit3', 'KeyO'], s4: ['Digit4', 'KeyP'], ult: ['KeyR', 'KeyL'], use: ['KeyE', 'Enter'], menu: ['Escape', 'Tab'], map: ['KeyM'] };
 // codes physiques : sur AZERTY, KeyW = Z, KeyA = Q → ZQSD par défaut
 const PAD = { atk: 2, dodge: 1, s1: 4, s2: 5, s3: 6, s4: 7, ult: 3, use: 0, menu: 9, map: 8 };
-const DEF_SET = { diff: 1, cb: 'none', ts: 1, speed: 1, shake: 1, rf: true, low: false, vol: 0.7, mus: 0.4, hc: false, keys: null };
+const DEF_SET = { diff: 1, cb: 'none', ts: 1, speed: 1, shake: 1, rf: true, low: false, vol: 0.7, mus: 0.4, hc: false, keys: null, cine: 'first' };
 const Save = {
   K: 'tbv_save_v1', S: 'tbv_set_v1',
   set: Object.assign({}, DEF_SET),
@@ -50,7 +50,7 @@ const Input = {
   label(a) { if (this.lastDev === 'pad') { const n = { atk: 'X', dodge: 'B', s1: 'LB', s2: 'RB', s3: 'LT', s4: 'RT', ult: 'Y', use: 'A', menu: 'Start', map: 'Select' }; return n[a] || a; } if (this.lastDev === 'touch') return ''; return keyName((Save.set.keys[a] || [])[0]); },
 };
 const Touch = {
-  show() { const t = $('#touch'); t.style.display = 'block'; const btn = [['atk', 'M1', 90, 120, 84], ['dodge', '⤳', 22, 200, 64], ['s1', '1', 190, 60, 60], ['s2', '2', 190, 140, 60], ['s3', '3', 120, 218, 60], ['s4', '4', 40, 280, 60], ['ult', '極', 270, 140, 56], ['use', 'E', 250, 230, 50]];
+  show() { const t = $('#touch'); t.style.display = 'block'; const btn = [['atk', 'M1', 90, 120, 84], ['dodge', '⤳', 18, 200, 80], ['s1', '1', 190, 60, 60], ['s2', '2', 190, 140, 60], ['s3', '3', 120, 218, 60], ['s4', '4', 40, 280, 60], ['ult', '極', 262, 132, 76], ['use', 'E', 250, 230, 50]];
     Input.virt = {}; Input.vhit = new Set();
     for (const [a, l, r, b, s] of btn) { const d = document.createElement('div'); d.className = 'tb'; d.textContent = l; Object.assign(d.style, { right: r + 'px', bottom: b + 'px', width: s + 'px', height: s + 'px' }); d.dataset.a = a; t.appendChild(d);
       d.addEventListener('touchstart', (e) => { e.preventDefault(); Input.virt[a] = true; Input.vhit.add(a); }, { passive: false }); d.addEventListener('touchend', (e) => { e.preventDefault(); Input.virt[a] = false; }, { passive: false }); }

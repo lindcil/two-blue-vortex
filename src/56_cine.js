@@ -25,25 +25,25 @@ V.ink = (x, y, a, c = INK, len = 90) => FX.custom({ x, y, life: 0.45, draw: (g, 
 
 const ULT_NAME = { uzuhiko: 'Rasengan Uzuhiko', kirin: 'Kirin', goryuka: 'Gōryūka', daibakufu: 'Daibakufu', taigyoku: 'Taigyoku Rasengan', doryu: 'Doryūheki', susanoo: 'Susanoo', daikokuten: 'Daikokuten', bijuudama: 'Bijūdama' };
 const Cine = { on: null,
-  play(u, id, el, done, o = {}) { const c = elc(el || 'wind'); this.on = { u, id, c, t: 0, dur: o.dur || 3.2, done, tgt: o.tgt, name: o.name || ULT_NAME[id] || (SK[id] && SK[id].n) || 'Ultime', z0: Cam.tz, signs: 0, enemy: o.enemy };
+  seen: {}, play(u, id, el, done, o = {}) { const c = elc(el || 'wind'); const md = Save.set.cine || 'first'; if (md === 'never' || (md === 'first' && this.seen[id + (u.isHero ? 'h' : u.n)])) { FX.shock(u.x, u.y - 40, c, 140, 0.4, 8); V.signFx(u, el, 3, 0.35); Game.later(0.4, () => { Game.slowT = 0.5; done && done(); }); return; } this.seen[id + (u.isHero ? 'h' : u.n)] = 1; this.on = { u, id, c, t: 0, dur: o.dur || 3.2, done, tgt: o.tgt, name: o.name || ULT_NAME[id] || (SK[id] && SK[id].n) || 'Ultime', z0: Cam.tz, signs: 0, enemy: o.enemy };
     Game.cine = true; Sfx.play('charge'); },
   skip() { if (this.on) this.on.t = Math.max(this.on.t, this.on.dur - 0.05); },
   update(dt) { const C = this.on; if (!C) return; C.t += dt; const u = C.u, T = C.t;
     if (T > 0.35 && (Input.pressed('atk') || Input.pressed('use') || Input.hit.has('Escape') || Input.hit.has('Space'))) this.skip();
     const tg = C.tgt || u; let fx = u.x, fy = u.y - 40, z = 1.6;
     if (T < 0.5) z = lerp(C.z0, 1.7, T / 0.5); else if (T < 1.3) z = 1.9; else if (T < 2.1) { z = 2.1; fx += u.face * -30; } else if (T < 2.8) { const k = (T - 2.1) / 0.7; fx = lerp(u.x, tg.x, k * k); fy = lerp(u.y, tg.y, k * k) - 40; z = lerp(2.0, 1.25, k); }
-    Cam.tz = z; Cam.z = lerp(Cam.z, z, 1 - Math.pow(0.0005, dt)); Cam.x = lerp(Cam.x, fx, 1 - Math.pow(0.0005, dt)); Cam.y = lerp(Cam.y, fy, 1 - Math.pow(0.0005, dt));
+    const rot = T < 1.3 ? 0 : T < 2.1 ? -0.09 * u.face : T < 2.8 ? lerp(-0.09 * u.face, 0.06 * u.face, (T - 2.1) / 0.7) : 0.06 * u.face * (1 - (T - 2.8) / 0.4); Cam.rot = lerp(Cam.rot || 0, rot, 1 - Math.pow(0.002, dt)); Cam.tz = z; Cam.z = lerp(Cam.z, z, 1 - Math.pow(0.0005, dt)); Cam.x = lerp(Cam.x, fx, 1 - Math.pow(0.0005, dt)); Cam.y = lerp(Cam.y, fy, 1 - Math.pow(0.0005, dt));
     if (T > 1.3 && C.signs < 1) { C.signs = 1; V.signFx(u, null, 4, 0.7); }
     if (T > 1.4 && T < 2.1 && Math.random() < 0.7) FX.mote(u.x + rnd(-160, 160), u.y - 40 + rnd(-140, 100), u.x, u.y - 50, C.c, 0.5);
     if (T > 2.05 && !C.charged) { C.charged = 1; FX.shock(u.x, u.y - 40, C.c, 160, 0.4, 8); Sfx.play('boom'); Cam.shake(0.4); }
     u.anim += dt * 3;
-    if (T >= C.dur) { this.on = null; Game.cine = Talk.on; Cam.tz = C.z0 || 1; Game.slowT = 0.9; C.done && C.done(); } },
+    if (T >= C.dur) { this.on = null; Cam.rot = 0; Cam.z *= 1.1; Game.cine = Talk.on; Cam.tz = C.z0 || 1; Game.slowT = 0.9; C.done && C.done(); } },
   draw(g, vw, vh) { const C = this.on; if (!C) return; const T = C.t, u = C.u; const bar = Math.min(1, T / 0.3) * vh * 0.11; g.fillStyle = '#05070f'; g.fillRect(0, 0, vw, bar); g.fillRect(0, vh - bar, vw, bar);
     // cut-in
     if (T > 0.5 && T < 1.45) { const k = Math.min(1, (T - 0.5) / 0.15), out = T > 1.3 ? (T - 1.3) / 0.15 : 0, sx = (1 - k) * vw * (C.enemy ? -1 : 1) - out * vw * (C.enemy ? 1 : -1);
       g.save(); g.translate(sx, 0); g.beginPath(); g.moveTo(0, vh * 0.28); g.lineTo(vw, vh * 0.16); g.lineTo(vw, vh * 0.7); g.lineTo(0, vh * 0.82); g.closePath(); g.fillStyle = C.c; g.fill(); g.save(); g.clip();
       g.fillStyle = 'rgba(5,7,15,.55)'; g.fillRect(0, 0, vw, vh); g.strokeStyle = 'rgba(255,255,255,.55)'; g.lineWidth = 3; for (let i = 0; i < 26; i++) { const y = ((i * 97 + T * 2600) % (vh * 0.7)) + vh * 0.14; const x = (i * 211) % vw; g.beginPath(); g.moveTo(x, y); g.lineTo(x + 180 + (i % 3) * 80, y - 30); g.stroke(); }
-      const s = vh / 260; g.translate(vw * 0.3, vh * 0.92); g.scale(s, s); const P = u.P; drawRig(g, Object.assign({}, u, { x: 0, y: 0, face: C.enemy ? -1 : 1, P, sq: 0, flash: 0, hurtT: 0 })); g.restore();
+      const s = vh / 135; g.translate(vw * 0.3, vh * 1.22); g.scale(s, s); const P = u.P; drawRig(g, Object.assign({}, u, { x: 0, y: 0, face: C.enemy ? -1 : 1, P, sq: 0, flash: 0, hurtT: 0 })); g.restore();
       g.strokeStyle = INK; g.lineWidth = 6; g.stroke(); g.font = `400 ${Math.round(vh * 0.075)}px 'TBV Ext','Lilita One',sans-serif`; g.textAlign = 'right'; g.lineWidth = 10; g.strokeStyle = INK; g.strokeText(C.name, vw * 0.94, vh * 0.62); g.fillStyle = '#fff'; g.fillText(C.name, vw * 0.94, vh * 0.62); g.restore(); }
     // lignes de vitesse pendant la charge et la frappe
     if (T > 1.6) { const k = T > 2.1 ? 1 : (T - 1.6) / 0.5; g.strokeStyle = `rgba(11,16,32,${0.5 * k})`; g.lineWidth = 2.5; const cx = vw / 2, cy = vh / 2; for (let i = 0; i < 40; i++) { const an = (i / 40) * TAU + T * 0.7, r0 = Math.max(vw, vh) * (0.36 + ((i * 37) % 10) / 60); g.beginPath(); g.moveTo(cx + Math.cos(an) * r0, cy + Math.sin(an) * r0); g.lineTo(cx + Math.cos(an) * r0 * 1.8, cy + Math.sin(an) * r0 * 1.8); g.stroke(); } }
