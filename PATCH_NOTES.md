@@ -1,3 +1,8 @@
+## v0.10.15 — Audit des animations
+- Chidori : course basse, main traînée en arrière (distinct du Rasengan).
+- Ultime : accroupi (écrasement) → montée de puissance (tremblement) → détente étirée ; le visage reste visible.
+- Planche d’audit : screens/v10/anim/.
+
 ## v0.10.14 — Sceaux Tigre, Dragon, Serpent lisibles
 - Tigre : index+majeurs joints en une seule pointe.
 - Dragon : mains en V, pouces et auriculaires tendus.
