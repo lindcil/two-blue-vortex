@@ -1,3 +1,8 @@
+# v0.9.9 — Fluidité
+- **Poses** : mélange des poses par lissage exponentiel en temps réel, indépendant des FPS. Plus de saut entre repos, course, coup, réaction, dash et technique, pour le héros, les ennemis, les alliés et les PNJ.
+- **Caméra et interface** : tremblement de caméra lissé (bruit continu), transitions douces des barres et panneaux.
+- **Tests** : pas d’image déterministe (`SMOOTH10.manual` / `step`) pour des captures précises, avec un ennemi dans le champ.
+
 # v0.9.8 — Constellation : l’espace mental
 - **Image d’impact (cerveau) supprimée.** Transition douce : zoom sur le héros, puis un iris d’étoiles s’ouvre avec des étoiles étirées par la vitesse. La fermeture se fait en sens inverse.
 - **Vide cosmique** : 3 couches d’étoiles en parallaxe et des nébuleuses qui dérivent.
