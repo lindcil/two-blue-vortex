@@ -1,3 +1,8 @@
+## v0.10.4
+- Quêtes réparées après l’agrandissement ×10 : camps des missions (bandits, Grimes, déserteur, Kurogane, escorte, Kara), vagues de la guerre, civils de l’examen, flammes du prologue, téléports des scènes, mode Créatif, embuscades, zone du chat Tora.
+- Chapitre 1 : plus de blocage si les racines sont purifiées avant.
+- Tests : audit d’atteignabilité de chaque objectif + bot qui joue Histoire, Ta voie et toutes les missions.
+
 ## v0.10.3
 - Techniques de mode (Sharingan, Byakugan, Jōgan, Kāma, Ermite…) : animations faites main (anticipation, frappe, suite) + poses signatures (Gōkakyū, Amaterasu, Kaiten, Kirin…).
 

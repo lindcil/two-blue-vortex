@@ -7,7 +7,7 @@ const Roam = { t: 60, beast: null,
     if (['chunin', 'jonin'].includes(Voie.rank) && Math.random() < 0.45) { const spots = [[K10 * 420, K10 * 520], [K10 * 2900, K10 * 2700], [K10 * 380, K10 * 2700]]; const [x, y] = spots[(Math.random() * spots.length) | 0]; const bj = ['matatabi', 'songoku', 'gyuki'][(Math.random() * 3) | 0];
       const b = spawnFoe('bijuu', x, y, { tag: 'roam', bj, n: BIJUU[bj].n, size: 1.4, leash: [x, y, 380], hpMul: 0.8 }); this.beast = b; UI.toast(BIJUU[bj].n + ' rôde hors des murs', 1); V.roar(b); return; }
     // embuscade : ninja errant
-    const a = Math.random() * TAU, x = clamp(h.x + Math.cos(a) * 380, 120, 3080), y = clamp(h.y + Math.sin(a) * 300, 120, 2880); if (y > 2250 && y < 2350) return;
+    const a = Math.random() * TAU, x = clamp(h.x + Math.cos(a) * 380, 120, K10 * 3080), y = clamp(h.y + Math.sin(a) * 300, 120, K10 * 2880); if (y > K10 * 2250 && y < K10 * 2350) return;
     const n = Voie.rank === 'genin' ? 1 : 2; for (let i = 0; i < n; i++) { const f = spawnFoe(i ? 'bandit' : 'rogue', x + i * 50, y, { tag: 'amb', leash: [x, y, 420] }); f.aggro = true; FX.smoke(f.x, f.y - 20, 12); }
     UI.toast('Embuscade !', 1); } };
 (() => { const vu = Voie.update.bind(Voie); Voie.update = function (dt) { vu(dt); Roam.update(dt); };

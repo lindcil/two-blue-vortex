@@ -116,7 +116,7 @@
       const fresh = pool.filter((x) => !seen[x.id]); const C = low.length ? low : ctx.length && Math.random() < 0.6 ? ctx : fresh.length ? fresh : pool; v = C[(Math.random() * C.length) | 0]; }
     seen[v.id] = (seen[v.id] || 0) + 1; V7.ev.vign.push(v.id); const D = Object.assign({ id: 'v_' + v.id, card: pick(['Le lendemain', 'Quelques heures plus tard', 'Ce soir-là', 'Entre deux missions']), sub: v.n.toUpperCase() }, v.mk()); return Scene.play(D); };
   /* ---------- branchements sur Ta voie ---------- */
-  const tp = (x, y) => { const h = Game.hero; h.x = x; h.y = y; h.vx = h.vy = 0; for (const a of Game.allies) { a.x = x + rnd(-60, 60); a.y = y + rnd(20, 60); } Cam.x = x; Cam.y = y; };
+  const tp = (x, y) => { x *= K10; y *= K10; const h = Game.hero; h.x = x; h.y = y; h.vx = h.vy = 0; for (const a of Game.allies) { a.x = x + rnd(-60, 60); a.y = y + rnd(20, 60); } Cam.x = x; Cam.y = y; };
   V7.tp = tp;
   const vs = Voie.set.bind(Voie);
   Voie.set = function (s) { const prev = this.step; vs(s); if (Game.creative || prev === s || !Voie.me) return; const F = (this.flags.sc = this.flags.sc || {}); const once = (k) => (F[k] ? false : (F[k] = 1));
@@ -130,7 +130,7 @@
   Voie.rivalDone = function (S2, r) { rd(S2, r); };
   const sA5 = Voie.set; Voie.set = function (s) { const prev = this.step; sA5.call(this, s); if (s === 'a5' && prev !== 'a5' && !Game.creative) { const F = (this.flags.sc = this.flags.sc || {}); if (F.grad) return; F.grad = 1;
       (async () => { await Scene.play(K.graduation()); unlock('elem', 2); await Scene.play(K.meeting()); await Scene.play(K.bell()); startBell(); })(); } };
-  function startBell() { const V2 = Voie, Tm = V2.team; if (V2.step !== 'a5') return; V2.formTeam(); V2.set('a6'); V2.lesson = 0; tp(2250, 1000); const se2 = spawnFoe('sensei', 2250, 860, { tag: 'sensei', look: Tm.sensei.look, n: Tm.sensei.name, leash: [2250, 860, 300] }); se2.aggro = true; se2.onTag = () => V2.tag(se2); }
+  function startBell() { const V2 = Voie, Tm = V2.team; if (V2.step !== 'a5') return; V2.formTeam(); V2.set('a6'); V2.lesson = 0; tp(2250, 1000); const se2 = spawnFoe('sensei', K10 * 2250, K10 * 860, { tag: 'sensei', look: Tm.sensei.look, n: Tm.sensei.name, leash: [K10 * 2250, K10 * 860, 300] }); se2.aggro = true; se2.onTag = () => V2.tag(se2); }
   const ti = Voie.talkIruka.bind(Voie); Voie.talkIruka = function () { if (this.step === 'a5' && this.flags.sc && this.flags.sc.grad && Scene.busy) return; if (this.step === 'a5' && this.flags.sc && this.flags.sc.grad && this.team.name) { startBell(); return; } return ti(); };
   // bureau des missions → bureau du Hokage mis en scène
   const bd = Voie.board.bind(Voie); Voie.board = function () { if (Game.creative || this.step !== 'free' || this.mis) return bd(); const D = K.hokage(); Scene.open(); Scene.bg = D.bg; Scene.cast = D.cast.map((a) => Object.assign({}, a, { y: Scene.Y(a.y) })); Scene.state = {}; Scene.wipe = 0;
@@ -155,7 +155,7 @@
     $('#create h2').textContent = creative ? 'Créatif — ton ninja sur mesure' : 'Ta voie'; };
   $('#cGo').onclick = () => { const S2 = Create.st; S2.name = (S2.name || '').trim() || pick(NAMES); if (Create.creative) { const sk = [...document.querySelectorAll('[data-ts]')].map((s) => s.value); Game.startVoie({ name: S2.name, clan: S2.clan, look: S2.look, creative: 1, el: $('#cEl').value, sk }); startCreative(); } else Game.startVoie({ name: S2.name, clan: S2.clan, look: S2.look }); };
   function startCreative() { const V2 = Voie; Game.creative = true; V2.flags.sc = { class: 1, grad: 1, exam: 1, war: 1, r1: 1, j1: 1 }; V2.rank = 'jonin'; V2.step = 'free'; V2.team.name = 'Équipe Créative'; V2.formTeam(); Game.lvl = 10; Game.heroStats(Game.hero); Game.ultV = 100; World.foes_ = World.foes_.filter((f) => f.tag !== 'yard'); tp(2850, 1300);
-    for (let i = 0; i < 3; i++) spawnFoe('dummy', 2760 + i * 90, 1240, { tag: 'crea' }); const r = spawnFoe('rival', 3000, 1300, { tag: 'crea', look: V2.team.rival.look, n: V2.team.rival.name + ' (entraînement)', hpMul: 1.5, el: V2.team.rival.el, leash: [2900, 1300, 300] }); r.aggro = false; UI.objective(); UI.toast('Mode Créatif : aucune sauvegarde. Menu › Ninjutsu pour tout tester.', 1); }
+    for (let i = 0; i < 3; i++) spawnFoe('dummy', K10 * 2760 + i * 90, K10 * 1240, { tag: 'crea' }); const r = spawnFoe('rival', K10 * 3000, K10 * 1300, { tag: 'crea', look: V2.team.rival.look, n: V2.team.rival.name + ' (entraînement)', hpMul: 1.5, el: V2.team.rival.el, leash: [K10 * 2900, K10 * 1300, 300] }); r.aggro = false; UI.objective(); UI.toast('Mode Créatif : aucune sauvegarde. Menu › Ninjutsu pour tout tester.', 1); }
   const gs = Game.save.bind(Game); Game.save = function () { if (this.creative) return; return gs(); };
   const ob = Voie.obj.bind(Voie); Voie.obj = function () { if (Game.creative) return ['Créatif', 'Mannequins et rival d’entraînement au terrain. Aucune sauvegarde.']; return ob(); };
   // bouton Créatif sur l'écran titre + bouton retour aux jeux
