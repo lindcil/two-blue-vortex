@@ -1,3 +1,6 @@
+## v0.10.2
+- Boucle à pas fixe + interpolation (fluide même à bas FPS), coût FPS nul.
+
 # v0.10.1
 - **Amaterasu** : vraies flammes noires (cœur noir opaque, liseré violet sombre, braises sombres), sans aucun orange.
 - **Combo M1** : smears et impacts vérifiés image par image. Captures corrigées.
