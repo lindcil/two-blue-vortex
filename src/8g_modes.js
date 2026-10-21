@@ -124,7 +124,7 @@
   const fs = fireSkill; fireSkill = function (u, S, id) { if (S && S.m8) { const P = pw(u), h = u.hand || { x: u.x + u.face * 20, y: u.y - 40 }; if (MODE08.sus(u)) MODE08.swing(u); if (!isFinite(u.aimA)) { const f = near(u.x, u.y, 600); u.aimA = f ? Math.atan2(f.y - u.y, f.x - u.x) : (u.face < 0 ? Math.PI : 0); } KIND[S.m8.kind](u, S.m8, P * (u.giant ? 1.4 : 1), u.aimA, h); if (u.md) u.md.up += 4; return; } return fs(u, S, id); };
   // touche « page »
   DEFAULT_KEYS.page = ['KeyX']; for (const p in KEY_PRESETS) if (KEY_PRESETS[p] && typeof KEY_PRESETS[p] === 'object') KEY_PRESETS[p].page = KEY_PRESETS[p].page || ['KeyX'];
-  if (Save.set.keys && !Save.set.keys.page) Save.set.keys.page = ['KeyX'];
+  if (Save.set.keys && !Save.set.keys.page) Save.set.keys.page = ['KeyX']; if (Save.set.keys && !Save.set.keys.tree) Save.set.keys.tree = ['KeyT'];
   // dégâts : réduction sous Susanoo / bête, jauge de combat
   const ht = hurt; hurt = function (t, dmg, src, o) { if (t && t.isHero && t.md) { const S = F[t.md.fam].st[t.md.st - 1]; if (S.sus) dmg *= 1 - [0, 0.2, 0.3, 0.4, 0.5, 0.7][S.sus]; if (S.beast) dmg *= 0.4; } const r = ht(t, dmg, src, o); if (src && src.isHero && src.md && r !== 0) { src.md.up = Math.min(100, src.md.up + 1.5); src.md.g = Math.min(100, src.md.g + 1.2); } return r; };
   // M1 géant
@@ -132,7 +132,7 @@
   // ---------- boucle ----------
   const up = Game.update.bind(Game);
   Game.update = function (dt) { const r = up(dt); const h = this.hero, d = dt || 0; flipT = Math.max(0, flipT - d); if (!h || !this.running || this.paused) return r;
-    if (Save.set.keys && !Save.set.keys.page) Save.set.keys.page = ['KeyX'];
+    if (Save.set.keys && !Save.set.keys.page) Save.set.keys.page = ['KeyX']; if (Save.set.keys && !Save.set.keys.tree) Save.set.keys.tree = ['KeyT'];
     const M = h.md; if (M) { const free = !this.cine && h.hp > 0 && !(window.Scene && Scene.on); M.t += d; if (M.build != null) M.build = Math.min(1, M.build + d / 1.4);
       const Fm = F[M.fam], hold = free && Input.is(M.key === 'C' ? 'charge' : 'mode') && !h.act;
       if (this.inCombat() || hold) M.g -= d * (M.st >= Fm.st.length ? 3.2 : 2.2); else M.g -= d * 0.8;
