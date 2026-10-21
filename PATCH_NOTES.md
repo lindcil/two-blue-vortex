@@ -1,3 +1,21 @@
+# v0.8 — 21 octobre 2026 — Modes, constellation, variantes, carte en sections, Créatif
+- **Modes à étages** (C maintenu au-delà du max pour les dōjutsu, Z pour le manteau ; on monte d'étage en maintenant la touche, avec la jauge de combat) :
+  - Sharingan 1 → 2 → 3 tomoe → Mangekyō → Susanoo côtes → squelette → humanoïde → samouraï → parfait (géant contrôlable, coups et techniques géants) ;
+  - Byakugan (5 étages, puis Tenseigan), Jōgan (4), Kāma (4), manteau de chakra / bijū (5) ;
+  - modes de clan : Nara, Akimichi, Yamanaka, Aburame, Inuzuka, Senju.
+  - Susanoo redessiné façon anime : contour en flammes, armure, épée et ailes au stade parfait.
+- **8 techniques par 2 pages** : la touche X (modifiable) tourne la page ; balayage sur mobile. 4 icônes, petit indicateur de page. Chaque étage a son ultime sur R.
+- **Constellation** (T, ou ✦ sur mobile) : zoom sur le visage, impact dans l'esprit (version douce si « réduire les flashs »), puis l'espace mental. 7 branches, 24 nouvelles techniques canon, des étoiles « ? » cachées jusqu'à ce que les stats soient atteintes, 2e élément au niveau 8.
+- **Ultimes refaits** : l'ultime de base dépend de ta branche dominante (Renge, Kokuangyō, Ōkasho, Senkō, élément ou clan). Plus jamais Susanoo d'office.
+- **328 variantes de techniques** sur 64 techniques (4 à 6 chacune) : tap, maintien, dash, combo, aérien, recul, parade, mode, élément, duo, clone, terrain, PV bas. Exemple : Rasengan maintenu = un clone t'aide à former l'Ōdama.
+- **IA bien plus maligne** : rôles de groupe (mêlée, flanc, distance, soutien), garde puis contre après 3 à 5 coups d'affilée, esquive des techniques annoncées, phases de boss. **Le spam de M1 perd.**
+- **Joueur rééquilibré** : M1 plus faibles et dégressifs, temps de recharge ×1,3, esquive plus courte, ultime plus lent à charger.
+- **Carte en 12 sections** avec transition à l'encre : maison, terrain d'entraînement (Iruka), arène (rival), et mission de la Grande Porte sur une grande zone à part.
+- **Créatif** : carte de test avec galerie (filtres élément / type / rareté / variante), aperçu, mannequins et cibles, ralenti, caméra, rejouer, hitbox.
+- **11 grandes scènes cinématiques** : Chibaku Tensei (vrai cratère), Gōka Mekkyaku, Daibakufu, Kirin, Rasenshuriken, golem Doton, Bijūdama, Shinra Tensei, Amaterasu, Flèche d'Indra, Daikokuten.
+- **Nouvelles scènes** : 8 scènes en Histoire (le retour, les affiches, le rocher, la planque, Kawaki sur les toits, l'écho de Kurama, le serment, l'épilogue) et 12 nouvelles vignettes (34 au total).
+- Missions un peu plus dures.
+
 # v0.7 — 21 octobre 2026 — Scènes, techniques et commandes
 - **Scènes mises en scène** : plus de carte générique pour les moments clés de Ta voie. Chacun a son décor animé :
   - salle de classe de l'Académie ;

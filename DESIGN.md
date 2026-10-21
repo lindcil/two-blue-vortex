@@ -44,3 +44,33 @@ Difficulté (Histoire / Normal / Défi), daltonisme (protan/deutan/tritan + form
 
 ## Préférences reprises
 AZERTY ZQSD + flèches par défaut, tout remappable, XP ×5, peu de texte, cadres d'impact rares, squash & stretch, animation ZZZ exagérée, rig hiérarchique à orientation unique, signes des mains dessinés.
+
+## v0.8
+### Modes à étages (`8g_modes.js`)
+- Activation : C maintenu au-delà du max (dōjutsu, clan) ; Z (manteau, bijū). On monte d'étage en maintenant la touche, si la jauge de combat le permet. Indicateur : pastilles sous la barre de PV, plus une icône d'œil.
+- Sharingan : 9 étages (1, 2, 3 tomoe, Mangekyō, puis Susanoo côtes, squelette, humanoïde, samouraï, parfait). Le stade parfait est un géant contrôlable : M1 géant, caméra dézoomée.
+- Autres familles : Byakugan/Tenseigan 5, Jōgan 4, Kāma 4, manteau 5, Nara 4, Akimichi 4, Yamanaka 3, Aburame 3, Inuzuka 4, Senju 4.
+- Pages : X (modifiable) bascule entre 4 techniques de base et 4 techniques du mode ; balayage sur mobile. Chaque étage a son ultime.
+- Limite : les techniques des modes viennent d'une fabrique commune (`S8`, 9 comportements). Elles ont des noms et couleurs canon, mais une forme partagée.
+### Constellation (`8i_tree.js`)
+- 7 branches (nin, tai, gen, élément, contrôle, clan, corps) de 12 rangs. 3 points au départ, +1 par niveau et par mission.
+- Les techniques sont cachées (« ? ») tant que leurs prérequis de stats ne sont pas atteints. 2e élément au niveau 8 avec élément ≥ 4.
+- Ouverture : zoom sur le visage, impact dans le cerveau (adouci avec « réduire les flashs »), puis l'espace mental.
+- Ultime de base selon la branche dominante, jamais Susanoo.
+### Variantes (`8j_var.js`)
+- 13 contextes : tap, maintien, dash, combo, air, recul, parade, mode, élément, duo, clone, terrain, PV bas.
+- 4 à 6 variantes par technique : **328 variantes sur 64 techniques**. Une icône d'arc signale chaque variante.
+- Signatures faites main : Rasengan maintenu (clone, Ōdama), Rasengan et Chidori en dash, Gōkakyū géant, 128 Paumes, souffle en recul, Kage Shuriken.
+### IA et équilibrage (`8h_ai.js`)
+- Rôles des ennemis : mêlée, flanc, distance, soutien.
+- Garde après 3 à 5 M1, puis parade et contre. Esquive des techniques annoncées, appât et repli, super-armure des ennemis lourds, phases de boss à 66 % et 33 %.
+- Joueur : M1 ×0,7, dégressifs, verrou de 0,38 s après le 3e coup ; temps de recharge ×1,3 ; invulnérabilité d'esquive ≤ 0,17 s ; ultime ×0,65.
+- Vérifié par bots : le spam de M1 perd, le jeu propre gagne.
+### Zones (`8k_zones.js`)
+- 12 sections reliées par un volet d'encre. Salles à part : maison, Grande Porte (2800×1800, 3 vagues), arène (rival), terrain d'entraînement (Iruka), Créatif. L'état du joueur est conservé d'une zone à l'autre.
+### Créatif (`8n_crea.js`) et mises en scène (`8m_set.js`)
+- Galerie avec filtres, aperçu, variantes, cibles, ralenti, caméra, rejouer, hitbox, remise à zéro des cratères.
+- 11 mises en scène : Chibaku, Mekkyaku, Daibakufu, Kirin, Rasenshuriken, golem, Bijūdama, Shinra, Amaterasu, Indra, Daikokuten. En jeu, elles sont débloquées par les étages de mode et la constellation.
+### Scènes (`8o_scenes08.js`)
+- 8 scènes en Histoire, déclenchées aux étapes p1, p2, p3, c1, c3, k1, k3 et end.
+- 12 nouvelles vignettes : 34 au total.

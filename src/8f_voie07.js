@@ -110,7 +110,7 @@
     { id: 'parchemin', n: 'Le parchemin du clan', mk: () => ({ bg: 'clan', cast: [me(640, 640, { pose: 'kneel' })], lines: [['', 'Un vieux parchemin. Une technique à moitié effacée.']], qte: { kind: 'seq', n: 4, label: 'Déchiffre les signes' }, react: (s) => [['', s >= 0.75 ? 'Les signes prennent sens.' : 'Le texte reste obscur.']], reward: (s) => { if (s >= 0.75) unlock('clan', null); else gain('ch', 1); } }) },
   ];
   function P0t(g, x, y) { for (const [r, c] of [[50, '#f4ead2'], [36, '#c0392b'], [22, '#f4ead2'], [10, '#c0392b']]) { g.fillStyle = c; g.beginPath(); g.arc(x, y, r, 0, TAU); g.fill(); } g.strokeStyle = INK; g.lineWidth = 3; g.beginPath(); g.arc(x, y, 50, 0, TAU); g.stroke(); g.fillStyle = '#8a6a44'; g.fillRect(x - 6, y + 50, 12, 130); }
-  V7.VG = VG;
+  V7.VG = VG; V7.H = { A, me, t0, t1, se, rv, ir, N, n0, n1, ns, nr, TEUCHI, HOKAGE, kid, gain, bond };
   V7.playVignette = async function (id) { if (!Voie.team || Game.creative) return; const pool = VG.filter((v) => !v.cond || v.cond()); const seen = (Voie.me.vseen = Voie.me.vseen || {});
     let v = id ? VG.find((x) => x.id === id) : null; if (!v) { const night = World.time > 19 || World.time < 5; const ctx = pool.filter((x) => (night ? ['toit', 'etoiles', 'festival', 'bains'] : []).includes(x.id)); const low = Game.hero.hp < Game.hero.maxHp * 0.5 ? pool.filter((x) => x.id === 'hopital') : [];
       const fresh = pool.filter((x) => !seen[x.id]); const C = low.length ? low : ctx.length && Math.random() < 0.6 ? ctx : fresh.length ? fresh : pool; v = C[(Math.random() * C.length) | 0]; }
