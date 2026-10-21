@@ -1,14 +1,14 @@
 'use strict';
 /* ============ Noyau : réglages, sauvegarde, entrées, audio ============ */
-const VERSION = '0.7';
+const VERSION = '0.8';
 const $ = (s) => document.querySelector(s);
 const TAU = Math.PI * 2, clamp = (v, a, b) => (v < a ? a : v > b ? b : v), lerp = (a, b, t) => a + (b - a) * t;
 const rnd = (a, b) => a + Math.random() * (b - a), pick = (a) => a[(Math.random() * a.length) | 0];
 const dist = (a, b) => Math.hypot(a.x - b.x, a.y - b.y);
 const ease = { out: (t) => 1 - Math.pow(1 - t, 3), back: (t) => 1 + 2.7 * Math.pow(t - 1, 3) + 1.7 * Math.pow(t - 1, 2), inout: (t) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2) };
 
-const ACTIONS = { up: 'Haut', down: 'Bas', left: 'Gauche', right: 'Droite', atk: 'Frappe (M1)', dodge: 'Dash / esquive', mode: 'Charge de mode (bête)', charge: 'Charge de chakra (puis dōjutsu)', s1: 'Technique 1', s2: 'Technique 2', s3: 'Technique 3', s4: 'Technique 4', ult: 'Ultime', use: 'Parler / interagir', menu: 'Menu', map: 'Carte' };
-const DEFAULT_KEYS = { up: ['ArrowUp'], down: ['ArrowDown'], left: ['ArrowLeft'], right: ['ArrowRight'], atk: ['Mouse0', 'KeyJ'], dodge: ['KeyQ', 'Mouse2'], mode: ['KeyW'], charge: ['KeyC'], s1: ['Digit1', 'KeyU'], s2: ['Digit2', 'KeyI'], s3: ['Digit3', 'KeyO'], s4: ['Digit4', 'KeyP'], ult: ['KeyR', 'KeyL'], use: ['KeyE', 'Enter'], menu: ['Escape', 'Tab'], map: ['KeyM'] };
+const ACTIONS = { up: 'Haut', down: 'Bas', left: 'Gauche', right: 'Droite', atk: 'Frappe (M1)', dodge: 'Dash / esquive', mode: 'Charge de mode (bête)', charge: 'Charge de chakra (puis dōjutsu)', s1: 'Technique 1', s2: 'Technique 2', s3: 'Technique 3', s4: 'Technique 4', ult: 'Ultime', page: 'Page de techniques (mode)', use: 'Parler / interagir', menu: 'Menu', map: 'Carte' };
+const DEFAULT_KEYS = { up: ['ArrowUp'], down: ['ArrowDown'], left: ['ArrowLeft'], right: ['ArrowRight'], atk: ['Mouse0', 'KeyJ'], dodge: ['KeyQ', 'Mouse2'], mode: ['KeyW'], charge: ['KeyC'], s1: ['Digit1', 'KeyU'], s2: ['Digit2', 'KeyI'], s3: ['Digit3', 'KeyO'], s4: ['Digit4', 'KeyP'], ult: ['KeyR', 'KeyL'], page: ['KeyX'], use: ['KeyE', 'Enter'], menu: ['Escape', 'Tab'], map: ['KeyM'] };
 // codes physiques : sur AZERTY, KeyQ = A (dash), KeyW = Z (charge de mode), KeyC = C (chakra). Déplacement : flèches par défaut, préréglage ZQSD au choix (charge de mode → F).
 const KEY_PRESETS = { fleches: DEFAULT_KEYS_F(), zqsd: Object.assign(DEFAULT_KEYS_F(), { up: ['KeyW', 'ArrowUp'], down: ['KeyS', 'ArrowDown'], left: ['KeyA', 'ArrowLeft'], right: ['KeyD', 'ArrowRight'], mode: ['KeyF'] }) };
 function DEFAULT_KEYS_F() { return JSON.parse(JSON.stringify(DEFAULT_KEYS)); }
