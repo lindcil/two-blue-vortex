@@ -1,3 +1,8 @@
+## v0.10.17 — Torsion du buste, traduction
+- Torsion : le buste s’incline vers la direction en diagonale (cisaillement léger), lecture 3/4 plus naturelle.
+- Ura Renge traduit (Hidden Lotus) ; plus aucun texte manquant en anglais.
+- Planche géants en 8 directions : screens/v10/look/geants-8directions.png.
+
 ## v0.10.16 — Missions rapprochées
 - Missions hors murs : l’équipe part de la grande porte, camps juste au-delà (1,7–2,4 k px au lieu de 6–9,6 k).
 - Chat, herbes, Kara rapprochés du bureau (1,2–2,1 k px).
