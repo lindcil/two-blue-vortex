@@ -1,3 +1,12 @@
+# v0.9.3 — Éditeur de techniques
+- **Créatif → ✎ Éditeur** :
+  - curseurs pour le temps, les dégâts, le nombre, la vitesse, la taille et les effets ;
+  - choix de l'élément, de la couleur, de la forme et du projectile ;
+  - ajout ou retrait de couches d'effets, JSON éditable ;
+  - Tester et Boucle, avec rendu immédiat ;
+  - Exporter et Copier le JSON, Sauver ; création de techniques perso.
+- Guide `ADDING_TECHNIQUES.md` : une technique = un bloc de données.
+
 # v0.9.2 — Susanoo redessiné
 - **Flammes de chakra translucides** au bord mouvant, qui scintillent même au repos.
 - **Anatomie réelle** : colonne, 7 paires de côtes, clavicules, crâne et mâchoire, bras à deux os et mains.
