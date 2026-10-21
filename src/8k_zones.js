@@ -15,7 +15,7 @@
       if (t >= 1 && !swapped) { swapped = true; mid(); } if (t > 0.9 && t < 1.6 && label) { g.fillStyle = '#e8eefc'; g.font = `400 ${Math.round(H / 18)}px ${getComputedStyle(document.body).getPropertyValue('--f-title') || 'serif'}`; g.textAlign = 'center'; g.globalAlpha = Math.min(1, (1.6 - t) * 3); g.fillText(label, W / 2, H / 2); g.globalAlpha = 1; }
       if (t < 2.25) requestAnimationFrame(step); else { ink.style.display = 'none'; busy = false; } }; step(); };
   // ---------- salles ----------
-  const RX = 6000; // les salles vivent hors de la carte extérieure
+  const RX = 20000; // les salles vivent hors de la carte extérieure
   const ROOMS = {
     maison: { n: 'Maison', x: RX, y: 400, w: 1100, h: 760, spawn: [RX + 550, 1080] },
     porte: { n: 'Grande porte de Konoha', x: RX, y: 1500, w: 2800, h: 1800, spawn: [RX + 1400, 3150] },
@@ -24,17 +24,17 @@
     creatif: { n: 'Dōjō des techniques', x: RX + 5300, y: 400, w: 2200, h: 1500, spawn: [RX + 5300 + 700, 1300] } };
   for (const k in ROOMS) ROOMS[k].id = k;
   const Z = window.ZONE8 = { SECS, ROOMS, sec: null, room: null, ret: null, wipe, secAt,
-    bounds() { const r = this.room || this.sec; return r ? [r.x, r.y, r.x + r.w, r.y + r.h] : [0, 0, W, H]; },
+    bounds() { const r = this.room || this.sec; return r ? [r.x, r.y, r.x + r.w, r.y + r.h] : [0, 0, W * K10, H * K10]; },
     inside(u) { const [x0, y0, x1, y1] = this.bounds(); return u.x >= x0 - 40 && u.x <= x1 + 40 && u.y >= y0 - 40 && u.y <= y1 + 40; },
     enter(id, o = {}) { const R = ROOMS[id], h = Game.hero; if (!R || !h) return; const go = () => { if (!this.room) this.ret = { x: h.x, y: h.y }; this.room = R; const dx = R.spawn[0] - h.x, dy = R.spawn[1] - h.y; h.x = R.spawn[0]; h.y = R.spawn[1];
         for (const u of [...(o.bring || []), ...Game.allies, ...Game.clones]) { if (!u) continue; u.x += dx; u.y += dy; if (u.hx != null) { u.hx += dx; u.hy += dy; } if (u.leash) { u.leash[0] += dx; u.leash[1] += dy; } u.x = clamp(u.x, R.x + 40, R.x + R.w - 40); u.y = clamp(u.y, R.y + 360, R.y + R.h - 40); }
         Cam.x = h.x; Cam.y = h.y; Proj.length = 0; o.after && o.after(R); }; o.instant ? go() : wipe(go, R.n); },
     exit(o = {}) { if (!this.room) return; const h = Game.hero; const go = () => { const R = this.room; this.room = null; if (this.ret) { const dx = this.ret.x - h.x, dy = this.ret.y - h.y; h.x = this.ret.x; h.y = this.ret.y + 10; for (const u of [...Game.allies, ...Game.clones]) { u.x += dx; u.y += dy; } }
-        World.foes_ = World.foes_.filter((f) => !(f.x >= R.x - 50 && f.x <= R.x + R.w + 50 && f.y >= R.y - 50 && f.y <= R.y + R.h + 50) || f.tag === 'yard'); for (const f of World.foes_) if (f.tag === 'yard' && f.hx > W) { f.x = f.hx = f.ox8 || f.hx; f.y = f.hy = f.oy8 || f.hy; }
+        World.foes_ = World.foes_.filter((f) => !(f.x >= R.x - 50 && f.x <= R.x + R.w + 50 && f.y >= R.y - 50 && f.y <= R.y + R.h + 50) || f.tag === 'yard'); for (const f of World.foes_) if (f.tag === 'yard' && f.hx > W * K10) { f.x = f.hx = f.ox8 || f.hx; f.y = f.hy = f.oy8 || f.hy; }
         this.sec = secAt(h.x, h.y); Cam.x = h.x; Cam.y = h.y; Proj.length = 0; o.after && o.after(); }; o.instant ? go() : wipe(go, this.sec ? secAt(this.ret ? this.ret.x : h.x, this.ret ? this.ret.y : h.y).n : ''); } };
   // ---------- caméra / collisions bornées à la section ou à la salle ----------
   window.camBounds = () => (Game.titleMode ? [0, 0, 3200, 3000] : Z.bounds());
-  const col = World.collide.bind(World); World.collide = function (u) { if (Z.room && (u.x > W - 30 || Z.inside(u))) { const R = Z.room; u.x = clamp(u.x, R.x + 30, R.x + R.w - 30); u.y = clamp(u.y, R.y + (R.top || 330), R.y + R.h - 24); for (const s of R.solids || []) if (u.x > s.x && u.x < s.x + s.w && u.y > s.y && u.y < s.y + s.h) { const l = u.x - s.x, r = s.x + s.w - u.x, t = u.y - s.y, b = s.y + s.h - u.y, m = Math.min(l, r, t, b); if (m === l) u.x = s.x; else if (m === r) u.x = s.x + s.w; else if (m === t) u.y = s.y; else u.y = s.y + s.h; } return; } return col(u); };
+  const col = World.collide.bind(World); World.collide = function (u) { if (Z.room && (u.x > W * K10 - 30 || Z.inside(u))) { const R = Z.room; u.x = clamp(u.x, R.x + 30, R.x + R.w - 30); u.y = clamp(u.y, R.y + (R.top || 330), R.y + R.h - 24); for (const s of R.solids || []) if (u.x > s.x && u.x < s.x + s.w && u.y > s.y && u.y < s.y + s.h) { const l = u.x - s.x, r = s.x + s.w - u.x, t = u.y - s.y, b = s.y + s.h - u.y, m = Math.min(l, r, t, b); if (m === l) u.x = s.x; else if (m === r) u.x = s.x + s.w; else if (m === t) u.y = s.y; else u.y = s.y + s.h; } return; } return col(u); };
   // les unités hors de la zone active sont « déchargées » (gelées)
   const fu = foeUpdate; foeUpdate = function (f, dt) { if (!Game.titleMode && Game.hero && !Z.inside(f)) return; return fu(f, dt); };
   const wf = World.foes.bind(World); World.foes = function () { const L = wf(); return Game.hero && !Game.titleMode && (Z.room || Z.sec) ? L.filter((f) => Z.inside(f)) : L; };
@@ -44,11 +44,11 @@
     else if (Z.room.id === 'maison' && !busy && h.y > Z.room.y + Z.room.h - 40 && Math.abs(h.x - (Z.room.x + Z.room.w / 2)) < 90) Z.exit();
     door(h); rooms(h); return r; };
   // ---------- portes : maison & mission de la porte ----------
-  let home = null; const findHome = () => { if (home) return home; const H2 = World.props.filter((p) => p.kind === 'house' && p.y < WALL_Y - 100 && p.x < 1500).sort((a, b) => Math.hypot(a.x - 800, a.y - 1250) - Math.hypot(b.x - 800, b.y - 1250))[0]; home = H2 ? { x: H2.x, y: H2.y + 8 } : { x: 800, y: 1250 }; return home; };
+  let home = null; const findHome = () => { if (home) return home; const H2 = World.props.filter((p) => p.kind === 'house' && p.y < K10 * (WALL_Y - 100) && p.x < K10 * 1500).sort((a, b) => Math.hypot(a.x - K10 * 800, a.y - K10 * 1250) - Math.hypot(b.x - K10 * 800, b.y - K10 * 1250))[0]; home = H2 ? { x: H2.x, y: H2.y + 8 } : { x: K10 * 800, y: K10 * 1250 }; return home; };
   let useHit = 0, doorK = null; const tryDoor = () => { if (doorK === 'maison') { doorK = null; UI.prompt(null); Z.enter('maison'); return true; } if (doorK === 'porte') { doorK = null; UI.prompt(null); gateMission(); return true; } return false; };
   addEventListener('keydown', (e) => { const ks = (Save.set.keys && Save.set.keys.use) || ['KeyE']; if (!e.repeat && ks.includes(e.code) && doorK && !Talk.on && tryDoor()) { e.stopImmediatePropagation(); e.preventDefault(); } }, true);
   addEventListener('touchstart', (e) => { if (e.target && e.target.dataset && e.target.dataset.a === 'use' && doorK && tryDoor()) e.stopImmediatePropagation(); }, { passive: true, capture: true });
-  const GATE = { x: 1600, y: WALL_Y + 80 }; let gateDone = 0;
+  const GATE = { x: K10 * 1600, y: K10 * (WALL_Y + 40) + 40 }; let gateDone = 0;
   const door = (h) => { if (Z.room || Game.cine || Game.mode !== 'voie' || Game.creative) { doorK = null; return; } const hm = findHome();
     doorK = null; if (Math.hypot(h.x - hm.x, h.y - hm.y) < 60) { doorK = 'maison'; UI.prompt(`<kbd>${Input.label('use')}</kbd> Entrer chez toi`); return; }
     if (Math.hypot(h.x - GATE.x, h.y - GATE.y) < 90 && Voie.rank && !/^a/.test(Voie.step || 'a') && !Voie.mis && !gateDone) { doorK = 'porte'; UI.prompt(`<kbd>${Input.label('use')}</kbd> Mission : garder la grande porte`); return; } };

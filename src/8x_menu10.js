@@ -1,0 +1,9 @@
+// v0.9.7 — Menu : retour à l'écran titre (sauvegarde puis rechargement propre) et choix des jeux (hub lindcil.github.io).
+(() => { const HUB = 'https://lindcil.github.io/';
+  const st = document.createElement('style'); st.textContent = '#m10{position:absolute;left:16px;bottom:calc(14px + env(safe-area-inset-bottom));display:flex;gap:8px;z-index:5}#m10 button{opacity:.85}#bHub{display:none!important}body.sheet10 #dq9{visibility:hidden}'; document.head.appendChild(st);
+  window.MENU10 = { title() { if (Game.running && Game.inCombat && Game.inCombat() && !confirm('Un combat est en cours. Ta progression est sauvegardée (sauf ce combat). Revenir à l’écran titre ?')) return; try { if (Game.running && !Game.titleMode && !Game.creative) Game.save(); } catch (e) {} try { sessionStorage.setItem('tbv_title', '1'); } catch (e) {} location.reload(); }, hub() { if (window.V07 && V07.back) return V07.back(); try { if (Game.running && !Game.titleMode && !Game.creative) Game.save(); } catch (e) {} location.href = HUB; } };
+  const rd = UI.render.bind(UI); UI.render = function () { const r = rd.apply(this, arguments); const sh = document.getElementById('sheet'); if (sh && !document.getElementById('m10')) { const box = document.createElement('div'); box.id = 'm10';
+      box.innerHTML = '<button class="b" id="m10title">Écran titre</button><button class="b" id="m10hub">Choix des jeux</button>'; sh.appendChild(box);
+      box.querySelector('#m10title').onclick = (e) => { e.stopPropagation(); MENU10.title(); }; box.querySelector('#m10hub').onclick = (e) => { e.stopPropagation(); MENU10.hub(); }; } return r; };
+  const op = UI.open.bind(UI), cl = UI.close.bind(UI); UI.open = function () { document.body.classList.add('sheet10'); return op.apply(this, arguments); }; UI.close = function () { document.body.classList.remove('sheet10'); return cl.apply(this, arguments); };
+})();

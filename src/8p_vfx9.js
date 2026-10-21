@@ -97,7 +97,7 @@
   const RPOOL = []; // tampons des rubans réutilisés
   // ---------- texte : suppression O(1) ----------
   // ---------- sol : on ne copie que la portion visible de la carte ----------
-  if (World.drawGround) { const dg = World.drawGround.bind(World); World.drawGround = function (g) { if (!this.ground || !this.gsc) return dg(g); view(); const x0 = Math.max(0, VX0), y0 = Math.max(0, VY0), x1 = Math.min(W, VX1), y1 = Math.min(H, VY1); if (x1 <= x0 || y1 <= y0) return; const s = this.gsc;
+  if (World.drawGround) { const dg = World.drawGround.bind(World); World.drawGround = function (g) { if (!this.ground || !this.gsc || this.k10) return dg(g); view(); const x0 = Math.max(0, VX0), y0 = Math.max(0, VY0), x1 = Math.min(W, VX1), y1 = Math.min(H, VY1); if (x1 <= x0 || y1 <= y0) return; const s = this.gsc;
       g.drawImage(this.ground, x0 * s, y0 * s, (x1 - x0) * s, (y1 - y0) * s, x0, y0, x1 - x0, y1 - y0); for (const h of this.hazards) { g.globalAlpha = 0.5 * (1 - h.t / h.life) + 0.2; g.fillStyle = elc(h.el); g.beginPath(); g.ellipse(h.x, h.y, h.r, h.r * 0.5, 0, 0, TAU2); g.fill(); g.globalAlpha = 1; } }; }
   // ---------- flamme en sprites (remplace 3 dégradés recréés à chaque image) ----------
   V.flame = function (g, x, y, r, t) { g.save(); g.globalCompositeOperation = 'lighter'; g.globalAlpha = 0.5; g.drawImage(SPR.get('glow', '#ff4614'), x - r * 1.6, y - r * 1.6, r * 3.2, r * 3.2); g.globalAlpha = 0.8; g.drawImage(SPR.get('glow', '#ff8c1e'), x - r * 1.1, y - r * 1.1, r * 2.2, r * 2.2);

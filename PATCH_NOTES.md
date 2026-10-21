@@ -1,3 +1,10 @@
+# v0.9.7 — Grande carte et saut d’arbre
+- **Cartes extérieures ×10 en surface** : décor, bâtiments, arbres, collisions, lumières, sections, PNJ, quêtes et ennemis passent à la nouvelle échelle. Tout le décor est plus grand. Les intérieurs ne changent pas. Les anciennes sauvegardes sont converties.
+- **Bordures de zone** : aucun bâtiment n’est coupé. Les bâtiments sont recalés dans une seule section, et la bordure du mur d’enceinte passe sous le mur et la porte.
+- **Vitesse** : déplacement ×1,9 à l’extérieur, course ninja ×2,6.
+- **Saut d’arbre** : ESPACE pendant la course ninja fait bondir d’arbre en arbre en arc. Images rémanentes, lignes de vitesse, caméra qui recule, poussière et feuilles à l’atterrissage, pose de réception. Touche remappable. Forêts densifiées (environ 1 000 arbres).
+- **Menu** : boutons « Écran titre » (sauvegarde puis retour au titre) et « Choix des jeux » (hub).
+
 # v0.9.6 — Animations de base
 - **Combo M1** : 3 poses distinctes (anticipation → frappe avec smear et étirement → prolongement → retour), hit-stop et étincelles orientées. Le finisseur a sa propre pose, un double smear et une onde de choc.
 - **Dash** : images rémanentes, poussière au départ, penché, glissade de récupération.

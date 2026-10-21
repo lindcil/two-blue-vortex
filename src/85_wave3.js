@@ -4,7 +4,7 @@ const Roam = { t: 60, beast: null,
     if (this.beast) { const b = this.beast; if (b.gone || b.hp <= 0) { this.beast = null; return; } if (b.hp < b.maxHp * 0.35 && !b.passive) { b.passive = true; b.casting = null; Game.impact(b.x, b.y, 0.2);
         Talk.say([['', BIJUU[b.bj].n + ' se calme.'], ['', 'Il te jauge… puis s’éloigne.']], () => { FX.smoke(b.x, b.y - 60, 40); b.gone = true; this.beast = null; Game.gainXp(600 * 5); Game.ryo += 2000; UI.reward(BIJUU[b.bj].n + ' apaisé', '#ff9a2e'); Voie.flags.calmed = (Voie.flags.calmed || 0) + 1; Game.save(); }); } return; }
     if (Voie.mis) return; this.t -= dt; if (this.t > 0) return; this.t = 70 + Math.random() * 50;
-    if (['chunin', 'jonin'].includes(Voie.rank) && Math.random() < 0.45) { const spots = [[420, 520], [2900, 2700], [380, 2700]]; const [x, y] = spots[(Math.random() * spots.length) | 0]; const bj = ['matatabi', 'songoku', 'gyuki'][(Math.random() * 3) | 0];
+    if (['chunin', 'jonin'].includes(Voie.rank) && Math.random() < 0.45) { const spots = [[K10 * 420, K10 * 520], [K10 * 2900, K10 * 2700], [K10 * 380, K10 * 2700]]; const [x, y] = spots[(Math.random() * spots.length) | 0]; const bj = ['matatabi', 'songoku', 'gyuki'][(Math.random() * 3) | 0];
       const b = spawnFoe('bijuu', x, y, { tag: 'roam', bj, n: BIJUU[bj].n, size: 1.4, leash: [x, y, 380], hpMul: 0.8 }); this.beast = b; UI.toast(BIJUU[bj].n + ' rôde hors des murs', 1); V.roar(b); return; }
     // embuscade : ninja errant
     const a = Math.random() * TAU, x = clamp(h.x + Math.cos(a) * 380, 120, 3080), y = clamp(h.y + Math.sin(a) * 300, 120, 2880); if (y > 2250 && y < 2350) return;
