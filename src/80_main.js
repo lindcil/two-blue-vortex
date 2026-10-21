@@ -81,7 +81,7 @@ const Game = {
     Input.end(); },
   render() { const dpr = Math.min(Save.set.low ? 1 : 2, devicePixelRatio || 1), vw = innerWidth, vh = innerHeight; if (cv.width !== Math.round(vw * dpr) || cv.height !== Math.round(vh * dpr)) { cv.width = Math.round(vw * dpr); cv.height = Math.round(vh * dpr); }
     g.setTransform(1, 0, 0, 1, 0, 0); g.fillStyle = '#0b1020'; g.fillRect(0, 0, cv.width, cv.height); if (!this.running || !this.hero) return;
-    const z = clamp(vw / 1150, 0.62, 1.25) * Cam.z; Cam.x = clamp(Cam.x, vw / 2 / z, 3200 - vw / 2 / z); Cam.y = clamp(Cam.y, vh / 2 / z, 3000 - vh / 2 / z); const W2 = () => { g.setTransform(dpr, 0, 0, dpr, dpr * vw / 2, dpr * vh / 2); if (Cam.rot) g.rotate(Cam.rot); g.scale(z, z); g.translate(-(Cam.x + Cam.kx), -(Cam.y + Cam.ky)); }; W2();
+    const z = clamp(vw / 1150, 0.62, 1.25) * Cam.z; const CB8 = window.camBounds ? camBounds() : [0, 0, 3200, 3000]; Cam.x = clamp(Cam.x, CB8[0] + vw / 2 / z, Math.max(CB8[0] + vw / 2 / z, CB8[2] - vw / 2 / z)); Cam.y = clamp(Cam.y, CB8[1] + vh / 2 / z, Math.max(CB8[1] + vh / 2 / z, CB8[3] - vh / 2 / z)); const W2 = () => { g.setTransform(dpr, 0, 0, dpr, dpr * vw / 2, dpr * vh / 2); if (Cam.rot) g.rotate(Cam.rot); g.scale(z, z); g.translate(-(Cam.x + Cam.kx), -(Cam.y + Cam.ky)); }; W2();
     const vx0 = Cam.x - vw / 2 / z - 200, vx1 = Cam.x + vw / 2 / z + 200, vy0 = Cam.y - vh / 2 / z - 200, vy1 = Cam.y + vh / 2 / z + 300;
     World.drawGround(g); FX.draw(g, 0);
     for (const it of Story.items) { const b = Math.sin(this.t * 4) * 4; g.fillStyle = '#ffd166'; g.beginPath(); g.moveTo(it.x, it.y - 30 + b); g.lineTo(it.x + 9, it.y - 18 + b); g.lineTo(it.x, it.y - 6 + b); g.lineTo(it.x - 9, it.y - 18 + b); g.fill(); g.strokeStyle = INK; g.lineWidth = 2; g.stroke(); }
