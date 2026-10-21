@@ -1,3 +1,8 @@
+# v0.9.1 — Techniques en données
+- Les techniques s'écrivent désormais comme un simple bloc de données : temps d'incantation et de récupération, animation, zone d'effet (projectile, cercle, cône, faisceau, ruée, pluie, mur, chaîne), couches d'effets, son et variantes.
+- 11 techniques intermédiaires refaites avec des effets en couches : Hōsenka, Karyū Endan (version maintenue : dragon de feu), Kamaitachi, Shinkūgyoku, Teppōdama, Raikyū, Raijū Tsuiga, Doryūdan, Haisekishō, Daitoppa, Nagashi.
+- Les techniques des modes à étages reçoivent aussi les effets de leur élément.
+
 # v0.9 — 21 octobre 2026 — Couche VFX et performances
 - **Toutes les techniques ont des effets plus riches** : traînées, étincelles, éclats et marques au sol propres à chaque élément (langues de feu, gouttes, éclairs ramifiés, croissants de vent, éclats de roche). Anticipation à l'incantation, effets d'impact plus marqués. « Réduire les flashs » est respecté.
 - **Performances** : effets lumineux pré-rendus, particules regroupées au dessin, rien de dessiné hors écran, et la qualité s'ajuste toute seule (budget de particules, résolution de rendu). Scène chargée en test : 11,4 → 14 images/s sur processeur ralenti ×4.

@@ -76,7 +76,7 @@
     jukai(u, a, P) { Cam.shake(0.25); for (let k = 0; k < 8; k++) V.spikes(u.x, u.y, k / 8 * TAU, 5, 1, (x, y) => { for (const f of foes()) if (Math.hypot(f.x - x, f.y - y) < 50) { hurt(f, 9 * P, u, { el: 'earth', k: 0.6 }); f.st.slow = 3; } }); FX.glow(u.x, u.y - 20, 'rgba(120,200,90,1)', 90, 0.5); },
   };
   window.TECH07 = fns;
-  const fs = fireSkill; fireSkill = function (u, S, id) { const f = fns[id]; if (!f) return fs.apply(this, arguments); const a = u.aimA != null ? u.aimA : aimAt(u), h = u.hand || { x: u.x + u.face * 20, y: u.y - 40 }; f(u, a, pw(u), h); };
+  const fs = fireSkill; fireSkill = function (u, S, id) { if (window.TECH9 && TECH9.db[id] && !TECH9.off) return TECH9.run(u, id, TECH9.cv); const f = fns[id]; if (!f) return fs.apply(this, arguments); const a = u.aimA != null ? u.aimA : aimAt(u), h = u.hand || { x: u.x + u.face * 20, y: u.y - 40 }; f(u, a, pw(u), h); };
   // projectiles maison : mise à jour + collision « onHit » + dessin
   const pu = projUpdate; projUpdate = function (dt) { for (const p of Proj) if (p.upd) p.upd(p, dt); const oh = Proj.filter((p) => p.onHit); const r = pu(dt); for (const p of oh) if (!p._oh && p.hit && p.hit.size) { p._oh = 1; try { p.onHit(p); } catch (e) {} } return r; };
   const dp = drawProj; drawProj = function (g) { const mine = Proj.filter((p) => p.draw); if (!mine.length) return dp(g); const keep = Proj.slice(); Proj.length = 0; for (const p of keep) if (!p.draw) Proj.push(p); try { dp(g); } finally { Proj.length = 0; for (const p of keep) Proj.push(p); }
