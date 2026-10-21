@@ -1,3 +1,6 @@
+## v0.10.3
+- Techniques de mode (Sharingan, Byakugan, Jōgan, Kāma, Ermite…) : animations faites main (anticipation, frappe, suite) + poses signatures (Gōkakyū, Amaterasu, Kaiten, Kirin…).
+
 ## v0.10.2
 - Boucle à pas fixe + interpolation (fluide même à bas FPS), coût FPS nul.
 
