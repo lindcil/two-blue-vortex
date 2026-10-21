@@ -1,3 +1,9 @@
+# v0.9.8 — Constellation : l’espace mental
+- **Image d’impact (cerveau) supprimée.** Transition douce : zoom sur le héros, puis un iris d’étoiles s’ouvre avec des étoiles étirées par la vitesse. La fermeture se fait en sens inverse.
+- **Vide cosmique** : 3 couches d’étoiles en parallaxe et des nébuleuses qui dérivent.
+- **Branches** : chaque branche est une constellation propre. Les étoiles acquises pulsent, les verrouillées restent pâles. Les techniques sont des glyphes satellites.
+- **Navigation et déblocage** : survol, zoom à la molette, déplacement en glissant, double-clic pour recentrer. Le déblocage déclenche une onde, des étincelles et une ligne qui se trace.
+
 # v0.9.7 — Grande carte et saut d’arbre
 - **Cartes extérieures ×10 en surface** : décor, bâtiments, arbres, collisions, lumières, sections, PNJ, quêtes et ennemis passent à la nouvelle échelle. Tout le décor est plus grand. Les intérieurs ne changent pas. Les anciennes sauvegardes sont converties.
 - **Bordures de zone** : aucun bâtiment n’est coupé. Les bâtiments sont recalés dans une seule section, et la bordure du mur d’enceinte passe sous le mur et la porte.
