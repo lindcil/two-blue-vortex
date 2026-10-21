@@ -48,7 +48,8 @@
   const baseDraw = FX.draw.bind(FX);
   FX.draw = function (g, layer) { view(); STATS.drawn = 0; STATS.culled = 0; STATS.batches = 0; for (const a of BUCK.values()) a.length = 0;
     const P = this.P; const lo = Q9.tier === 0;
-    for (let i = 0; i < P.length; i++) { const p = P[i]; const gl = p.k === 'puddle' || p.ground || p.k === 'decal'; if (layer === 0 && !gl) continue; if (layer === 1 && gl) continue;
+    for (let pass = 0; pass < (layer === 0 ? 2 : 1); pass++)
+    for (let i = 0; i < P.length; i++) { const p = P[i]; if (layer === 0 && (p.ground === 2) !== (pass === 1)) continue; const gl = p.k === 'puddle' || p.ground || p.k === 'decal'; if (layer === 0 && !gl) continue; if (layer === 1 && gl) continue;
       if (CULL[p.k] && (p.x < VX0 || p.x > VX1 || p.y < VY0 || p.y > VY1)) { STATS.culled++; continue; }
       STATS.drawn++; const q = p.t / p.life, al = 1 - q;
       switch (p.k) {

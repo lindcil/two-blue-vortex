@@ -1,3 +1,11 @@
+# v0.9.2 — Susanoo redessiné
+- **Flammes de chakra translucides** au bord mouvant, qui scintillent même au repos.
+- **Anatomie réelle** : colonne, 7 paires de côtes, clavicules, crâne et mâchoire, bras à deux os et mains.
+- **Humanoïde** au visage de tengu : yeux en fente, crocs, collier de magatama.
+- **Samouraï** : plaques du plastron, épaulières, casque à cimier, épée de flammes avec rubans à chaque coup, bouclier de Yata.
+- **Susanoo parfait** : ailes à plumes, jupe de plaques et seconde paire d'yeux.
+- **Assemblage progressif** à chaque palier, noyau lumineux autour du porteur, couleur propre à chaque joueur, caméra qui recule selon la taille.
+
 # v0.9.1 — Techniques en données
 - Les techniques s'écrivent désormais comme un simple bloc de données : temps d'incantation et de récupération, animation, zone d'effet (projectile, cercle, cône, faisceau, ruée, pluie, mur, chaîne), couches d'effets, son et variantes.
 - 11 techniques intermédiaires refaites avec des effets en couches : Hōsenka, Karyū Endan (version maintenue : dragon de feu), Kamaitachi, Shinkūgyoku, Teppōdama, Raikyū, Raijū Tsuiga, Doryūdan, Haisekishō, Daitoppa, Nagashi.
