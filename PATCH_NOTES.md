@@ -1,3 +1,8 @@
+## v0.10.10
+- Visages refaits, plus doux : yeux simples avec reflet, bouche discrète, joues légères, cri et blessure adoucis. Plus de vue de face : la tête suit exactement le corps (profil, ou dos en montant).
+- Cheveux : plus de traits d’encre dans la chevelure, les mèches s’arrêtent au front (les deux yeux restent visibles). Mitsuki canon (cheveux clairs, yeux de serpent dorés), Sarada yeux noirs.
+- Lunettes en calque : deux verres, pont et branche. Marques violettes de Code/Jura retirées.
+
 ## v0.10.9
 - Rig : jambes plus longues, épaules, col de veste, ceinture, vraies mains (paume + pouce), cape/écharpe à ressort.
 - Vue de face et de dos à pleine largeur (seuls les ¾ sont compressés).

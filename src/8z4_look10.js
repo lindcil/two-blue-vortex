@@ -4,17 +4,17 @@
   // ---------- looks canon supplémentaires ----------
   Object.assign(LOOKS.boruto, { hs: 'boruto', wh: 2, brow: '#c9a640' });
   Object.assign(LOOKS.himawari, { hs: 'hima', wh: 2 });
-  Object.assign(LOOKS.sarada, { hs: 'sarada' });
+  Object.assign(LOOKS.sarada, { hs: 'sarada', eye: '#2a2232' });
   Object.assign(LOOKS.kawaki, { hs: 'kawaki' });
   Object.assign(LOOKS.code, { hs: 'code' });
   Object.assign(LOOKS.clone, { hs: 'boruto', wh: 2 });
   LOOKS.naruto = LOOKS.naruto || { hair: '#f2c94c', hs: 'naruto', wh: 3, skin: '#f0c49a', eye: '#3a8cff', top: '#f07a2a', bot: '#1b1f2e', cloak: '#f4f1ea', band: 1 };
   LOOKS.sasuke = LOOKS.sasuke || { hair: '#1a1a26', hs: 'sasuke', skin: '#efd2b8', eye: '#1a1a26', top: '#2a2438', bot: '#1b1b26', cloak: '#3a3448', sword: 1 };
-  LOOKS.mitsuki = LOOKS.mitsuki || { hair: '#cfe0e8', hs: 'mitsuki', skin: '#e4ecef', eye: '#f2d24a', top: '#f2f2f2', bot: '#3a3a5a', band: 1 };
+  LOOKS.mitsuki = LOOKS.mitsuki || { hair: '#cfe0e8', hs: 'mitsuki', skin: '#e4ecef', eye: '#f2c23a', snake: 1, top: '#f2f2f2', bot: '#3a3a5a', band: 1 };
   const DOJ = { sharingan: '#e0202e', byakugan: '#e8eaf6', jogan: '#7ad0ff', rinnegan: '#a48ad8' };
-  const eyeOf = (u, L) => { const f = u.md && u.md.fam; if (f && DOJ[f]) return [DOJ[f], f]; if (u.eyeFx) { const e = String(u.eyeFx).toLowerCase(); if (/^#(d0283a|ff3b4a|e0202e)$/.test(e)) return [DOJ.sharingan, 'sharingan']; return [u.eyeFx, 'fx']; } return [L.eye || '#3a2a1e', null]; };
+  const eyeOf = (u, L) => { const f = u.md && u.md.fam; if (f && DOJ[f]) return [DOJ[f], f]; if (u.eyeFx) { const e = String(u.eyeFx).toLowerCase(); if (/^#(d0283a|ff3b4a|e0202e)$/.test(e)) return [DOJ.sharingan, 'sharingan']; return [u.eyeFx, 'fx']; } return [L.eye || '#3a2a1e', L.snake ? 'snake' : null]; };
   // ---------- vue selon le cap ----------
-  const viewOf = (u) => { if (u.hd == null) return ['side', 0]; const vz = -Math.sin(u.hd); if (vz > 0.8) return ['back', vz]; if (vz > 0.4) return ['qback', vz]; if (vz < -0.8) return ['front', vz]; if (vz < -0.35) return ['q', vz]; return ['side', vz]; };
+  const viewOf = (u) => { if (u.hd == null) return ['side', 0]; const vz = -Math.sin(u.hd); return vz > 0.45 ? ['back', vz] : ['side', vz]; };
   // ---------- expression ----------
   const exprOf = (u, P) => { const a = u.act; if (u.flash > 0 || (u.hurtT || 0) > 0 || (a && a.k === 'hurt')) return 'hurt'; if (a && (a.k === 'm1' || a.k === 'cast' || a.k === 'ult' || a.k === 'dash')) return 'shout'; if (P.mouth > 0.5) return 'shout'; if (u.combat || u.aggro) return 'angry'; return 'neutral'; };
   // ---------- ressorts (cheveux / écharpe) ----------
@@ -28,25 +28,23 @@
   const LOD = (u) => { if (u.isHero || u.boss || (Game.allies || []).includes(u)) return 0; if (Save.set.low) return 1; const d = Math.hypot(u.x - Cam.x, u.y - Cam.y); return d > 700 ? 1 : 0; };
   const line = (g, pts, w, c) => { g.strokeStyle = c; g.lineWidth = w; g.beginPath(); g.moveTo(pts[0], pts[1]); for (let i = 2; i < pts.length; i += 2) g.lineTo(pts[i], pts[i + 1]); g.stroke(); };
   // un œil anime. sx < 1 = vu de biais
-  function eye(g, x, y, sc, sx, col, doj, ex, blink, side) { g.save(); g.translate(x, y); g.scale(sx * sc, sc);
-    if (blink || ex === 'hurt') { g.strokeStyle = INK; g.lineWidth = 1.6; g.lineCap = 'round'; g.beginPath(); if (ex === 'hurt') { g.moveTo(-2.4, -1.6); g.lineTo(1.6, 0); g.lineTo(-2.4, 1.6); } else { g.moveTo(-2.6, 0.4); g.quadraticCurveTo(0, 1.8, 2.6, 0.4); } g.stroke(); g.restore(); return; }
-    const h = ex === 'angry' || ex === 'shout' ? 3.0 : 3.6;
-    g.fillStyle = '#fff'; g.beginPath(); g.ellipse(0, 0.3, 2.8, h, 0, 0, TAU); g.fill();
-    g.fillStyle = col; g.beginPath(); g.ellipse(side * 0.5, 0.7, 1.9, 2.6, 0, 0, TAU); g.fill();
-    g.fillStyle = 'rgba(0,0,0,.35)'; g.beginPath(); g.ellipse(side * 0.5, -0.6, 1.9, 1.2, 0, Math.PI, TAU); g.fill();
-    if (doj === 'sharingan') { g.fillStyle = '#111'; g.beginPath(); g.arc(side * 0.5, 0.7, 0.7, 0, TAU); g.fill(); for (let i = 0; i < 3; i++) { const a = i * TAU / 3 + Game.t * 3; g.beginPath(); g.arc(side * 0.5 + Math.cos(a) * 1.3, 0.7 + Math.sin(a) * 1.3, 0.45, 0, TAU); g.fill(); } }
-    else if (doj === 'byakugan') { g.strokeStyle = 'rgba(120,130,170,.8)'; g.lineWidth = 0.4; g.beginPath(); g.ellipse(side * 0.5, 0.7, 1.4, 2, 0, 0, TAU); g.stroke(); }
-    else if (doj === 'jogan') { g.fillStyle = '#fff'; g.beginPath(); g.arc(side * 0.5, 0.7, 0.9, 0, TAU); g.fill(); g.strokeStyle = '#1a6ad0'; g.lineWidth = 0.4; g.beginPath(); g.arc(side * 0.5, 0.7, 1.5, 0, TAU); g.stroke(); }
-    else { g.fillStyle = '#0e0e16'; g.beginPath(); g.ellipse(side * 0.5, 0.9, 0.85, 1.3, 0, 0, TAU); g.fill(); }
-    g.fillStyle = '#fff'; g.beginPath(); g.arc(side * 0.5 + 0.7, -0.4, 0.75, 0, TAU); g.fill();
-    // cils (trait supérieur épais) + coin
-    g.strokeStyle = INK; g.lineWidth = 1.5; g.lineCap = 'round'; g.beginPath(); g.moveTo(-3, -h * 0.55); g.quadraticCurveTo(0, -h - 0.8, 3.1, -h * 0.5); g.lineTo(3.8, -h * 0.75); g.stroke();
+  function eye(g, x, y, sc, sx, col, doj, ex, blink, side) { g.save(); g.translate(x, y); g.scale(sc, sc); g.lineCap = 'round';
+    if (blink || ex === 'hurt') { g.strokeStyle = '#2a1c22'; g.lineWidth = 1.3; g.beginPath(); if (ex === 'hurt') { g.moveTo(-2.3, 0.2); g.quadraticCurveTo(0, -1.4, 2.3, 0.2); } else { g.moveTo(-2.4, 0.6); g.quadraticCurveTo(0, 2, 2.4, 0.6); } g.stroke(); g.restore(); return; }
+    const h = ex === 'angry' || ex === 'shout' ? 3.4 : 3.9;
+    g.fillStyle = '#fbfbff'; g.beginPath(); g.ellipse(0, 0.4, 2.5, h, 0, 0, TAU); g.fill();
+    const ir = doj === 'byakugan' ? '#dfe3f4' : col; const gr = g.createLinearGradient(0, -h, 0, h); gr.addColorStop(0, shade(shade(ir))); gr.addColorStop(0.55, ir); gr.addColorStop(1, ir); g.fillStyle = gr; g.beginPath(); g.ellipse(0.5, 0.8, 1.95, h - 0.5, 0, 0, TAU); g.fill();
+    if (doj === 'sharingan') { g.fillStyle = 'rgba(20,10,14,.85)'; for (let i = 0; i < 3; i++) { const a = i * TAU / 3 + Game.t * 3; g.beginPath(); g.arc(0.5 + Math.cos(a) * 1.15, 1 + Math.sin(a) * 1.5, 0.42, 0, TAU); g.fill(); } }
+    else if (doj === 'jogan') { g.fillStyle = 'rgba(255,255,255,.9)'; g.beginPath(); g.arc(0.5, 1, 0.8, 0, TAU); g.fill(); }
+    else if (doj === 'snake') { g.fillStyle = 'rgba(30,20,10,.85)'; g.beginPath(); g.ellipse(0.6, 1, 0.45, 2.2, 0, 0, TAU); g.fill(); }
+    else if (doj !== 'byakugan') { g.fillStyle = 'rgba(16,14,30,.55)'; g.beginPath(); g.ellipse(0.6, 1.1, 1.1, 1.7, 0, 0, TAU); g.fill(); }
+    g.fillStyle = 'rgba(255,255,255,.95)'; g.beginPath(); g.ellipse(1.2, -0.6, 0.9, 1.1, 0, 0, TAU); g.fill(); g.fillStyle = 'rgba(255,255,255,.6)'; g.beginPath(); g.arc(-0.2, 2.3, 0.45, 0, TAU); g.fill();
+    g.strokeStyle = '#2a1c22'; g.lineWidth = 1.2; g.beginPath(); g.moveTo(-2.4, -h * 0.5); g.quadraticCurveTo(0, -h - 0.5, 2.6, -h * 0.45); g.stroke();
     g.restore(); }
-  function brow(g, x, y, sx, ex, c, side) { const a = ex === 'angry' || ex === 'shout' ? 1.6 : ex === 'hurt' ? -1.2 : 0; g.strokeStyle = c; g.lineWidth = 1.7; g.lineCap = 'round'; g.beginPath(); g.moveTo(x - 2.8 * sx, y - 0.2 - a * side * 0.3); g.lineTo(x + 2.8 * sx, y - 0.6 + a * side * 0.6); g.stroke(); }
+  function brow(g, x, y, sx, ex, c, side) { const a = ex === 'angry' || ex === 'shout' ? 1.1 : ex === 'hurt' ? -0.9 : 0; g.strokeStyle = c; g.lineWidth = 1.2; g.lineCap = 'round'; g.beginPath(); g.moveTo(x - 2.8 * sx, y - 0.2 - a * side * 0.3); g.lineTo(x + 2.8 * sx, y - 0.6 + a * side * 0.6); g.stroke(); }
   function mouth(g, x, y, ex, sx, mo) { g.strokeStyle = INK; g.lineWidth = 1.4; g.lineCap = 'round';
-    if (ex === 'shout' || mo > 0.5) { g.fillStyle = '#4a141c'; g.beginPath(); g.moveTo(x - 2.4 * sx, y - 0.6); g.lineTo(x + 2.4 * sx, y - 0.6); g.quadraticCurveTo(x + 1.6 * sx, y + 3.6, x, y + 3.6); g.quadraticCurveTo(x - 1.6 * sx, y + 3.6, x - 2.4 * sx, y - 0.6); g.fill(); g.stroke(); g.fillStyle = '#d85a6a'; g.beginPath(); g.ellipse(x, y + 2.6, 1.2 * sx, 0.7, 0, 0, TAU); g.fill(); return; }
-    if (ex === 'hurt') { g.beginPath(); g.moveTo(x - 2 * sx, y + 1); g.lineTo(x - 0.7 * sx, y); g.lineTo(x + 0.7 * sx, y + 1); g.lineTo(x + 2 * sx, y); g.stroke(); return; }
-    g.beginPath(); g.moveTo(x - 1.8 * sx, y); g.quadraticCurveTo(x, y + (ex === 'angry' ? -0.4 : 0.8), x + 1.8 * sx, y); g.stroke(); }
+    if (ex === 'shout' || mo > 0.5) { g.fillStyle = '#7a3a42'; g.beginPath(); g.moveTo(x - 1.2 * sx, y - 0.2); g.lineTo(x + 1.2 * sx, y - 0.2); g.quadraticCurveTo(x + 0.8 * sx, y + 1.7, x, y + 1.7); g.quadraticCurveTo(x - 0.8 * sx, y + 1.7, x - 1.2 * sx, y - 0.2); g.fill(); return; g.fillStyle = '#d85a6a'; g.beginPath(); g.ellipse(x, y + 2.6, 1.2 * sx, 0.7, 0, 0, TAU); g.fill(); return; }
+    if (ex === 'hurt') { g.fillStyle = 'rgba(110,50,55,.7)'; g.beginPath(); g.ellipse(x, y + 0.6, 0.9 * sx, 0.8, 0, 0, TAU); g.fill(); return; }
+    g.strokeStyle = 'rgba(80,40,40,.75)'; g.lineWidth = 1.1; g.beginPath(); g.moveTo(x - 1.2 * sx, y); g.quadraticCurveTo(x, y + (ex === 'angry' ? -0.3 : 0.6), x + 1.2 * sx, y); g.stroke(); }
   // cheveux : forme canon. fr = 1 face, 0 profil. lg = traînée ressort
   function hairBack(g, L, hy, R, fr, lg, C, ink, tint) { g.fillStyle = C(L.hair); g.strokeStyle = ink; g.lineWidth = 2.4; const hs = L.hs; g.beginPath();
     if (hs === 'sarada' || hs === 'hima' || hs === 'bob') { g.ellipse(lg * 0.3, hy + 1, R * 1.15, R * 1.12, 0, 0, TAU); }
@@ -65,14 +63,14 @@
       if (fr) { g.lineTo(R - 1, hy - 6); for (let i = 0; i < 5; i++) { g.lineTo(R - 3 - i * 4.4, hy - 4.5 + (i % 2) * 1.5 + (hs === 'boruto' && i === 1 ? 2.5 : 0)); g.lineTo(R - 5 - i * 4.4, hy - 8); } } else { g.lineTo(9, hy - 6); g.lineTo(6, hy - 4 + (hs === 'boruto' ? 2 : 0)); g.lineTo(4, hy - 8); } g.closePath(); }
     else if (hs === 'sasuke') { g.moveTo(R, hy - 2); g.quadraticCurveTo(R - 1, hy - 14, -1, hy - 13); g.lineTo(-R - 6 + lg, hy - 12); g.lineTo(-R, hy - 7); g.lineTo(-R - 5 + lg, hy - 4); g.lineTo(-R, hy + 1); g.quadraticCurveTo(-R, hy - 10, 2, hy - 11); g.lineTo(fr ? 4 : 7, hy + 6); g.lineTo(fr ? 1 : 4, hy - 6); g.lineTo(fr ? -5 : -2, hy + 3); g.lineTo(-4, hy - 9); g.closePath(); }
     else if (hs === 'sarada' || hs === 'bob' || hs === 'hima') { g.moveTo(R + 1, hy + (fr ? 6 : 0)); g.quadraticCurveTo(R + 1, hy - 15, 0, hy - 13.5); g.quadraticCurveTo(-R - 2, hy - 12, -R - 1, hy + 7); g.lineTo(-R + 4, hy + 7); g.lineTo(-R + 3, hy - 4); if (fr) { g.lineTo(-3, hy - 6); g.lineTo(-1, hy - 3); g.lineTo(3, hy - 7); g.lineTo(R - 3, hy - 3); g.lineTo(R - 2, hy + 6); } else { g.lineTo(3, hy - 7); g.lineTo(7, hy - 4); } g.closePath(); }
-    else if (hs === 'mitsuki') { g.moveTo(R, hy - 1); g.quadraticCurveTo(R, hy - 14, 0, hy - 13); g.quadraticCurveTo(-R - 1, hy - 12, -R, hy + 4); g.lineTo(-R + 3, hy - 3); g.lineTo(fr ? -2 : 2, hy - 6); g.lineTo(fr ? 0 : 4, hy + 2); g.lineTo(fr ? 3 : 6, hy - 6); g.lineTo(R - 2, hy - 3); g.closePath(); }
+    else if (hs === 'mitsuki') { g.moveTo(R + 0.5, hy + 1); g.quadraticCurveTo(R + 1, hy - 14, 0, hy - 13.5); g.quadraticCurveTo(-R - 1, hy - 12, -R - 0.5, hy + 5); g.lineTo(-R + 3, hy + 3); g.lineTo(-R + 3, hy - 5); g.lineTo(1, hy - 7); g.lineTo(4, hy - 5); g.lineTo(7, hy - 7.5); g.lineTo(R - 1, hy - 5); g.closePath(); }
     else if (hs === 'kawaki' || hs === 'messy') { g.moveTo(-R - 1, hy + 3); for (let i = 0; i < 7; i++) { const a = Math.PI + 0.1 + (i / 6) * (Math.PI - 0.2); g.lineTo(Math.cos(a) * (R + 5 + (i % 2) * 2) + lg, hy - 1 + Math.sin(a) * (R + 3)); g.lineTo(Math.cos(a + 0.25) * (R - 1), hy - 2 + Math.sin(a + 0.25) * (R - 1)); } g.lineTo(R, hy + 2); g.lineTo(fr ? 2 : 8, hy - 3); g.lineTo(fr ? -2 : 5, hy + 1); g.closePath(); }
     else if (hs === 'code' || hs === 'slick') { g.moveTo(R - 2, hy - 6); g.quadraticCurveTo(4, hy - 16, -6, hy - 13); g.lineTo(-R - 7 + lg, hy - 11); g.lineTo(-R, hy - 6); g.lineTo(-R - 6 + lg, hy - 2); g.lineTo(-R, hy); g.lineTo(-R - 1, hy + 3); g.quadraticCurveTo(-R - 2, hy - 10, 0, hy - 12.5); g.closePath(); }
     else if (hs === 'pineapple') { g.moveTo(-6, hy - 9); for (let i = 0; i < 5; i++) { g.lineTo(-12 + i * 3 + lg, hy - 22 - (i % 2) * 5); g.lineTo(-9 + i * 3, hy - 13); } g.lineTo(R - 1, hy - 4); g.quadraticCurveTo(0, hy - 14, -R, hy - 2); g.closePath(); }
     else if (hs === 'buzz') { g.moveTo(R, hy - 4); g.quadraticCurveTo(4, hy - 14, -6, hy - 12); g.quadraticCurveTo(-R - 1, hy - 9, -R - 1, hy - 1); g.lineTo(-9, hy - 4); g.quadraticCurveTo(0, hy - 10, R, hy - 4); }
     else if (hs === 'bald') { g.moveTo(-R, hy - 2); g.lineTo(-9, hy - 6); g.lineTo(-7, hy); g.closePath(); }
     else { g.moveTo(R, hy - 3); g.quadraticCurveTo(8, hy - 15, -2, hy - 13.5); g.quadraticCurveTo(-R - 1, hy - 12, -R - 0.5, hy + 2); g.lineTo(-7, hy - 1); g.lineTo(0, hy - 8); g.lineTo(5, hy - 5); g.closePath(); }
-    g.fill(); if (!tint) g.stroke(); }
+    if (!tint) { g.lineWidth = 4; g.stroke(); } g.fill(); }
   const OLDHS = { boruto: 'spiky', naruto: 'spiky', sarada: 'bob', hima: 'bob', kawaki: 'messy', code: 'slick', sasuke: 'slick', mitsuki: 'bob' };
   drawHead = function (g, u, L, C, ink, tint, kid, vel, wav, P) { if (LOD(u) || L.ghost && tint) { const h = OLDHS[L.hs]; if (h) { const a = [...arguments]; a[2] = Object.assign({}, L, { hs: h }); return old.apply(this, a); } return old.apply(this, arguments); }
     const R = kid ? 12.5 : 11.5, hy = -10, S = u.spr10 || { x: 0, y: 0 }, lg = S.x * 1.2 - vel * 3; const [view] = viewOf(u); const back = view === 'back' || view === 'qback'; const fr = view === 'front' ? 1 : view === 'q' ? 0.5 : 0;
@@ -86,18 +84,20 @@
     g.fill(); if (!tint) g.stroke();
     if (!tint && !back) { const [col, doj] = eyeOf(u, L); const ex = exprOf(u, P); const blink = ex !== 'shout' && (Math.sin(Game.t * 0.9 + (u.x || 0) * 0.013) > 0.992 || Math.sin(Game.t * 1.37 + (u.y || 0)) > 0.996); const ey = hy + 0.5;
       const bc = L.brow || shade(L.hair === '#e8e8f0' ? '#b0b0c0' : L.hair);
-      if (fr === 1) { for (const sd of [-1, 1]) { eye(g, sd * 4.4, ey, 1, 0.95, col, doj, ex, blink, sd); brow(g, sd * 4.4, ey - 5.6, -sd, ex, bc, -sd); } line(g, [0.4, ey + 2.6, -0.4, ey + 4.2], 1.1, 'rgba(120,60,40,.55)'); mouth(g, 0, hy + 7.6, ex, 1, P.mouth); }
-      else if (fr === 0.5) { eye(g, 6.6, ey, 1, 0.85, col, doj, ex, blink, 1); eye(g, -0.6, ey, 0.92, 0.62, col, doj, ex, blink, 1); brow(g, 6.6, ey - 5.4, 0.85, ex, bc, 1); brow(g, -0.6, ey - 5.2, 0.6, ex, bc, 1); line(g, [R - 1.4, ey + 2, R, ey + 3.8, R - 1.6, ey + 4.4], 1.1, 'rgba(120,60,40,.6)'); mouth(g, 5.6, hy + 7.4, ex, 0.8, P.mouth); }
-      else { eye(g, 6.2, ey, 1, 0.72, col, doj, ex, blink, 1); brow(g, 6.4, ey - 5.4, 0.75, ex, bc, 1); line(g, [R + 0.5, ey + 1.6, R + 1.8, ey + 3.8, R, ey + 4.2], 1.2, ink); mouth(g, 8, hy + 7.2, ex, 0.7, P.mouth); }
+      eye(g, 4.8, ey, 1, 1, col, doj, ex, blink, 1); brow(g, 5, ey - 5.6, 0.8, ex, bc, 1); line(g, [R - 1.2, ey + 2.6, R - 0.4, ey + 3.6], 0.9, 'rgba(150,90,70,.5)'); mouth(g, 7, hy + 7.4, ex, 0.8, P.mouth);
       // joues / moustaches
-      if (L.wh) { g.strokeStyle = 'rgba(60,40,30,.75)'; g.lineWidth = 1; for (let i = 0; i < L.wh; i++) { const yy = ey + 3.5 + i * 1.6; if (fr === 1) for (const sd of [-1, 1]) { g.beginPath(); g.moveTo(sd * 4.5, yy); g.lineTo(sd * 8, yy - 0.6 + i * 0.4); g.stroke(); } else { g.beginPath(); g.moveTo(fr ? 3 : 3.6, yy); g.lineTo(fr ? 6.5 : 7.2, yy - 0.5 + i * 0.4); g.stroke(); } } }
-      if (ex !== 'hurt' && ex !== 'angry') { g.fillStyle = 'rgba(255,120,120,.22)'; g.beginPath(); g.ellipse(fr === 1 ? -6 : 3, ey + 4, 2.2, 1.2, 0, 0, TAU); g.fill(); if (fr === 1) { g.beginPath(); g.ellipse(6, ey + 4, 2.2, 1.2, 0, 0, TAU); g.fill(); } }
-      if (L.scar) { g.strokeStyle = '#b25a4a'; g.lineWidth = 1.4; const sx = fr === 1 ? 4.4 : 6.4; g.beginPath(); g.moveTo(sx, ey - 7); g.lineTo(sx + 0.6, ey + 5.5); g.stroke(); }
-      if (L.glasses) { g.strokeStyle = '#d04050'; g.lineWidth = 1.4; if (fr === 1) { g.strokeRect(-7.6, ey - 3, 6.4, 5.4); g.strokeRect(1.2, ey - 3, 6.4, 5.4); line(g, [-1.2, ey - 1, 1.2, ey - 1], 1.2, '#d04050'); } else g.strokeRect(3.4, ey - 3, 6.6, 5.4); }
-      if (L.marks) { g.strokeStyle = '#7a6aff'; g.lineWidth = 1.3; g.beginPath(); g.moveTo(-2, ey + 3); g.lineTo(3, ey + 8); g.stroke(); }
+      if (L.wh) { g.strokeStyle = 'rgba(90,60,45,.45)'; g.lineWidth = 0.7; for (let i = 0; i < L.wh; i++) { const yy = ey + 3.5 + i * 1.6; if (fr === 1) for (const sd of [-1, 1]) { g.beginPath(); g.moveTo(sd * 4.5, yy); g.lineTo(sd * 8, yy - 0.6 + i * 0.4); g.stroke(); } else { g.beginPath(); g.moveTo(3.2, yy + 0.6); g.lineTo(6, yy + 0.2 + i * 0.3); g.stroke(); } } }
+      if (ex !== 'hurt' && ex !== 'angry') { g.fillStyle = 'rgba(255,130,130,.12)'; g.beginPath(); g.ellipse(3, ey + 4.6, 1.8, 0.9, 0, 0, TAU); g.fill(); }
+      if (L.scar) { g.strokeStyle = 'rgba(178,90,74,.7)'; g.lineWidth = 1; const sx = fr === 1 ? 4.4 : 6.4; g.beginPath(); g.moveTo(sx, ey - 7); g.lineTo(sx + 0.6, ey + 5.5); g.stroke(); }
+      if (L.glasses) { g.save(); g.lineJoin = 'round'; g.fillStyle = 'rgba(200,225,255,.14)'; g.strokeStyle = '#a8263a'; g.lineWidth = 1;
+        g.beginPath(); g.roundRect ? g.roundRect(1.7, ey - 3.3, 6.2, 5.9, 1.8) : g.rect(1.7, ey - 3.3, 6.2, 5.9); g.fill(); g.stroke(); // verre proche
+        g.beginPath(); g.moveTo(7.9, ey - 1.6); g.lineTo(R + 0.6, ey - 1.9); g.stroke(); // pont vers le verre lointain
+        g.beginPath(); g.moveTo(R + 0.4, ey - 3.4); g.lineTo(R + 1.6, ey - 3.4); g.lineTo(R + 1.6, ey + 2.6); g.lineTo(R + 0.4, ey + 2.6); g.stroke(); // verre lointain (raccourci)
+        g.beginPath(); g.moveTo(1.7, ey - 2.4); g.lineTo(-4.5, ey - 3.2); g.stroke(); g.restore(); } // branche vers l'oreille
+      
       if (u.karma > 0 || (L.karma && u.isHero && Game.ultA > 0)) { const k = clamp(u.karma || Game.ultA || 0, 0, 1); g.strokeStyle = `rgba(20,20,30,${0.9 * k})`; g.lineWidth = 1.8; const kx = fr === 1 ? -4.4 : -3; g.beginPath(); g.moveTo(kx, ey - 6); g.lineTo(kx - 5 - 3 * k, ey - 2); g.lineTo(kx - 1, ey + 4 * k); g.stroke(); }
       if (L.mask) { g.fillStyle = '#2a2c36'; g.strokeStyle = INK; g.lineWidth = 2; g.beginPath(); g.moveTo(-R + 1, hy + 2); g.lineTo(R, hy + 2); g.quadraticCurveTo(R - 2, hy + R, 0, hy + R); g.quadraticCurveTo(-R + 2, hy + R - 1, -R + 1, hy + 2); g.fill(); g.stroke(); } }
-    hairFront(g, L, hy, R, fr, lg, C, ink, tint, back);
+    if (!back && !tint) { g.save(); g.beginPath(); g.rect(-60, -80, 120, 140); g.moveTo(-4, hy - 4.6); g.lineTo(R + 6, hy - 4.6); g.lineTo(R + 6, hy + R + 4); g.lineTo(-4, hy + R + 4); g.closePath(); g.clip('evenodd'); hairFront(g, L, hy, R, fr, lg, C, ink, tint, back); g.restore(); } else hairFront(g, L, hy, R, fr, lg, C, ink, tint, back);
     if (L.band && !tint) { g.fillStyle = L.band === 2 ? '#555' : '#2a3a6a'; g.strokeStyle = INK; g.lineWidth = 1.2; g.beginPath(); g.moveTo(-R, hy - 7.5); g.lineTo(R, hy - 6.5); g.lineTo(R, hy - 3); g.lineTo(-R, hy - 4); g.closePath(); g.fill(); g.stroke();
       if (!back) { const px = fr === 1 ? -3.5 : 2.5; g.fillStyle = '#c8d2e4'; g.fillRect(px, hy - 7.4, 7, 4.2); g.strokeRect(px, hy - 7.4, 7, 4.2); g.beginPath(); g.moveTo(px + 1.5, hy - 5.2); g.quadraticCurveTo(px + 3.5, hy - 7, px + 5.5, hy - 5.2); g.stroke(); if (L.band === 2) { g.beginPath(); g.moveTo(px, hy - 5.3); g.lineTo(px + 7, hy - 5.3); g.stroke(); } }
       else { g.strokeStyle = '#2a3a6a'; g.lineWidth = 2; g.beginPath(); g.moveTo(-1, hy - 5); g.quadraticCurveTo(-6 + lg, hy + 2 + S.y, -9 + lg * 1.4, hy + 7); g.moveTo(1, hy - 5); g.quadraticCurveTo(-2 + lg, hy + 3, -4 + lg * 1.4, hy + 9); g.stroke(); } }
