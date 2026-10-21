@@ -1,3 +1,8 @@
+# v0.10.1
+- **Amaterasu** : vraies flammes noires (cœur noir opaque, liseré violet sombre, braises sombres), sans aucun orange.
+- **Combo M1** : smears et impacts vérifiés image par image. Captures corrigées.
+- **Éditeur** : les 17 nouvelles techniques sont dans la liste et l’export JSON.
+
 # v0.10.0 — 17 nouvelles techniques canon
 Chaque technique a sa propre pose d’incantation en images clés, ses couches VFX, ses prérequis dans la constellation et ses variantes.
 - **Katon** : Zukokku, Bakufū Ranbu

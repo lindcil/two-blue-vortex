@@ -104,7 +104,7 @@ button.b.p{background:var(--gold);color:var(--ink)}button.b.p2{background:var(--
 <script>
 'use strict';
 /* ============ Noyau : réglages, sauvegarde, entrées, audio ============ */
-const VERSION = '0.10.0';
+const VERSION = '0.10.1';
 const K10 = Math.sqrt(10); // v0.9.7 : échelle des cartes extérieures (surface ×10)
 const $ = (s) => document.querySelector(s);
 const TAU = Math.PI * 2, clamp = (v, a, b) => (v < a ? a : v > b ? b : v), lerp = (a, b, t) => a + (b - a) * t;
@@ -3659,12 +3659,19 @@ addEventListener('touchstart',()=>document.body.classList.add('touch07'),{passiv
       pose: [k(0, { ...P.eye, aF: 2.1 }), k(0.6, { ...P.eye, aF: 2.1, head: 0.3, lean: 0.15 }), k(1, P.eye)], anim: [{ t: 0.4, sq: -0.2, shake: 0.15 }],
       hit: { shape: 'circle', at: 'foe', range: 480, r: 120, dmg: 46, delay: 0.55, pull: 0.6, stun: 0.8 }, c: '#5a2a9a',
       vfx: { tele: [{ fx: 'dist', r: 120, c: '#5a2a9a' }, { fx: 'burst', conv: 1, n: 18, c: ['#a46bff', '#2a1a4a'], spr: 'wisp', sp: [140, 260], size: [5, 9], add: 0 }], impact: [{ fx: 'dist', r: 160, c: '#2a1a4a' }, { fx: 'ring', r: 30, c: '#a46bff', life: 0.4 }, { fx: 'arcs', n: 4, r: [30, 80], c: '#a46bff' }, { fx: 'cam', shake: 0.2, hitstop: 0.05 }] } },
-    { id: 'amaterasu', n: 'Amaterasu', el: 'fire', glyph: '天', cd: 13, ch: 36, sign: 'tora', cast: 0.35, end: 0.3, cat: 'eye', clan: ['uchiha'], c: '#1a0a1a', req: { clan: 5, elem: 3 },
+    { id: 'amaterasu', n: 'Amaterasu', el: 'yin', glyph: '天', cd: 13, ch: 36, sign: 'tora', cast: 0.35, end: 0.3, cat: 'eye', clan: ['uchiha'], c: '#0a040c', req: { clan: 5, elem: 3 }, black: 1,
       pose: [k(0, { ...P.eye, aF: 2.2, head: 0.2 }), k(0.5, { ...P.eye, aF: 2.2, head: -0.1, lean: 0.25, sx: 1.06 }), k(1, P.eye)], anim: [{ t: 0.35, sq: -0.2, shake: 0.12 }],
       hit: { shape: 'circle', at: 'foe', range: 520, r: 90, dmg: 18, delay: 0.25, ticks: 4, every: 0.45, slow: 1.5 },
-      vfx: { charge: [{ fx: 'glow', r: 24, c: '#ff2a3a', life: 0.3 }], tele: [{ fx: 'glow', r: 40, c: '#ff2a3a', life: 0.25 }], impact: [{ fx: 'licks', n: 10, w: 70, c: '#1a0a1a' }, { fx: 'burst', n: 10, c: ['#2a0a2a', '#5a1a3a'], spr: 'ember', sp: [40, 120], g: -200, size: [3, 5], add: 0 }, { fx: 'decal', dk: 'burn', r: 70, oy: 10 }] } },
+      vfx: { charge: [{ fx: 'glow', r: 22, c: '#c0182a', life: 0.3 }], tele: [{ fx: 'glow', r: 34, c: '#c0182a', life: 0.25 }], impact: [{ fx: 'amat' }] } },
   ];
+  VFX9.EMIT.amat = (L, x, y, o, s) => { const n = 9, life = 1.1; FX.custom({ x, y, life, draw: (g, p, q) => { const t = Game.t, a = q < 0.15 ? q / 0.15 : q > 0.75 ? (1 - q) / 0.25 : 1; g.save();
+      for (let i = 0; i < n; i++) { const ox = x + (i - (n - 1) / 2) * 16 * s, h = (46 + 26 * Math.sin(t * 9 + i * 1.7)) * s * a, w = (13 + 4 * Math.sin(t * 7 + i)) * s, sw = Math.sin(t * 6 + i) * 6 * s;
+        g.globalAlpha = 0.55 * a; g.fillStyle = '#4a1a6a'; g.beginPath(); g.moveTo(ox - w - 2, y); g.quadraticCurveTo(ox - w + sw, y - h * 0.6, ox + sw * 1.4, y - h - 6); g.quadraticCurveTo(ox + w + sw, y - h * 0.5, ox + w + 2, y); g.closePath(); g.fill();
+        g.globalAlpha = 0.95 * a; g.fillStyle = '#07030a'; g.beginPath(); g.moveTo(ox - w, y); g.quadraticCurveTo(ox - w * 0.8 + sw, y - h * 0.6, ox + sw * 1.4, y - h); g.quadraticCurveTo(ox + w * 0.8 + sw, y - h * 0.5, ox + w, y); g.closePath(); g.fill(); }
+      g.globalAlpha = 0.5 * a; g.fillStyle = '#07030a'; g.beginPath(); g.ellipse(x, y + 2, (n * 9 + 8) * s, 12 * s, 0, 0, Math.PI * 2); g.fill(); g.restore(); } });
+    for (let i = 0; i < 6; i++) FX.add({ k: 'sp', spr: 'ember', c: '#2a0a3a', x: x + (Math.random() - 0.5) * 120 * s, y: y - Math.random() * 40, vx: (Math.random() - 0.5) * 30, vy: -40 - Math.random() * 60, s: 3 + Math.random() * 3, life: 0.9, add: 0 }); };
   for (const e of D) TECH9.def(e);
+  TECH9.BUILTIN.push(...D.map((e) => e.id).filter((id) => !TECH9.BUILTIN.includes(id)));
   // ---------- constellation : prérequis + filtre par élément / clan ----------
   const NEW = {}; for (const e of D) { TREE8.REQ[e.id] = e.req; NEW[e.id] = e; }
   const pool0 = TREE8.pool; TREE8.pool = function () { const me = Voie.me, L = pool0.call(this); return L.filter((id) => { const e = NEW[id]; if (!e) return true; if (['fire', 'wind', 'water', 'bolt', 'earth'].includes(e.cat) && e.cat !== me.el && e.cat !== me.el2) return false; if (e.clan && !e.clan.includes(me.clan)) return false; return true; }); };
