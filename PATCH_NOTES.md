@@ -1,3 +1,11 @@
+# v0.9.5 — Susanoo fidèle à l'anime
+- Couleur et armes selon l'utilisateur : Itachi en rouge (Totsuka, Yata), Sasuke en violet (arc et flèche), Madara en bleu (ailes et deux lames), Shisui en vert (lance et aiguilles), Kakashi en cyan (lame et shuriken Kamui).
+- Halo translucide en couches et bord de flammes qui vacille.
+- L'utilisateur flotte dans la cage thoracique.
+- Formation teintée flamme → os → chair → armure, avec un rebond à la fin.
+- Squash/stretch façon ZZZ sur les coups. La réduction des flashs reste respectée.
+- Références dans RESEARCH.md.
+
 # v0.9.4 — Entraînement et quêtes du jour
 - **8 activités au terrain d'entraînement** (E près d'une station). Chacune donne de l'XP de branche, et 100 XP valent un point de constellation.
   - **Méditation d'ermite** : reste immobile dans le cercle pendant que l'énergie naturelle afflue. Des feuilles tourbillonnent, le crapaud Fukasaku veille et des ennemis viennent interrompre. Elle débloque le **Mode Ermite** (Z, 3 paliers).

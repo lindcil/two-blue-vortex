@@ -81,13 +81,13 @@
     if (lvl >= 2 && b > 0.45) { g.globalAlpha = cl((b - 0.45) * 5); g.fillStyle = lvl >= 3 ? '#ffffff' : pale; const ey = lvl >= 3 ? -252 : -242;
       for (const s of [-1, 1]) { g.beginPath(); if (lvl >= 3) { g.moveTo(s * 26, ey - 4); g.lineTo(s * 8, ey + 2); g.lineTo(s * 24, ey + 4); } else g.ellipse(s * 13, ey, 8, 6, 0, 0, TAU2); g.fill(); g.drawImage(glow, s * 16 - 14, ey - 14, 28, 28); } if (lvl >= 5) { for (const s of [-1, 1]) { g.beginPath(); g.moveTo(s * 22, ey + 22); g.lineTo(s * 8, ey + 26); g.lineTo(s * 20, ey + 28); g.fill(); } } }
     // épée de Totsuka (flamme) + ruban de taille
-    if (lvl >= 4 && b > 0.8) { const a2 = cl((b - 0.8) * 5); g.save(); g.translate(140, -80); g.rotate(0.35 + sw * 1.9 - (sw > 0 ? 1.6 * Math.sin(sw * Math.PI) : 0)); g.globalAlpha = a2; g.drawImage(glow, -40, -300, 80, 320);
+    if (lvl >= 4 && b > 0.8 && !o.alt) { const a2 = cl((b - 0.8) * 5); g.save(); g.translate(140, -80); g.rotate(0.35 + sw * 1.9 - (sw > 0 ? 1.6 * Math.sin(sw * Math.PI) : 0)); g.globalAlpha = a2; g.drawImage(glow, -40, -300, 80, 320);
       g.fillStyle = ca(light, 0.75); g.beginPath(); g.moveTo(-8, 0); g.lineTo(-10, -240); g.quadraticCurveTo(0, -290, 10, -240); g.lineTo(8, 0); g.closePath(); g.fill(); g.strokeStyle = pale; g.lineWidth = 2; g.stroke();
       for (let i = 0; i < (tier ? 8 : 4); i++) { const yy = -30 - i * 28, L = 18 + 8 * Math.sin(t * 10 + i); g.save(); g.translate(i % 2 ? 9 : -9, yy); g.rotate(i % 2 ? 0.5 : -0.5); g.drawImage(lickL, -L * 0.4, -L * 1.3, L * 0.8, L * 1.5); g.restore(); }
       g.fillStyle = c; g.fillRect(-18, -4, 36, 8); g.restore();
       if (sw > 0.02) { for (let k = 0; k < (tier ? 5 : 3); k++) { const a0 = -2.8 + sw * 1.4, a1 = -1.2 + sw * 2.6 - k * 0.12; g.globalAlpha = 0.35 * sw * (1 - k / 5); g.strokeStyle = k ? c : light; g.lineWidth = 26 * sw * (1 - k / 6); g.beginPath(); g.arc(140, -80, 250 - k * 6, a0, a1); g.stroke(); } } }
     // bouclier de Yata : miroir octogonal, anneaux, tomoe tournants
-    if (lvl >= 4 && b > 0.85) { const a3 = cl((b - 0.85) * 6), sx = -150, sy = -110; g.globalAlpha = 0.5 * a3; g.drawImage(SPR9.get('glow', '#ffd166'), sx - 80, sy - 80, 160, 160); g.globalAlpha = 0.8 * a3;
+    if (lvl >= 4 && b > 0.85 && !o.alt) { const a3 = cl((b - 0.85) * 6), sx = -150, sy = -110; g.globalAlpha = 0.5 * a3; g.drawImage(SPR9.get('glow', '#ffd166'), sx - 80, sy - 80, 160, 160); g.globalAlpha = 0.8 * a3;
       g.fillStyle = 'rgba(255,220,140,.22)'; g.strokeStyle = '#ffe9a8'; g.lineWidth = 4; g.beginPath(); for (let i = 0; i < 8; i++) { const a = i / 8 * TAU2 + Math.PI / 8; g.lineTo(sx + Math.cos(a) * 58, sy + Math.sin(a) * 58); } g.closePath(); g.fill(); g.stroke();
       g.lineWidth = 2; for (const rr of [44, 30]) { g.beginPath(); g.arc(sx, sy, rr, 0, TAU2); g.stroke(); } for (let i = 0; i < 3; i++) magatama(g, sx + Math.cos(t * 2 + i * TAU2 / 3) * 18, sy + Math.sin(t * 2 + i * TAU2 / 3) * 18, 6, t * 2 + i * TAU2 / 3, '#fff3c0'); }
     // Yasaka no Magatama en orbite (palier 3+) et noyau intérieur lumineux autour du porteur
