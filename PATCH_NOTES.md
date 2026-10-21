@@ -1,3 +1,6 @@
+# v0.6.2 — 21 octobre 2026 (correctif)
+- Ton personnage ne reste plus figé en pose « touché » (penché en arrière) pendant les scènes de chapitre. La pose de coup reçu du héros ne se terminait jamais et les alliés se figeaient pendant les cinématiques. Désormais, chaque début et fin de dialogue ou de scène remet tout le monde en pose de repos et te rend la main, dans les deux modes.
+
 # v0.6.1 — 21 octobre 2026
 - Porte du village : Kotetsu et Izumo montent la garde de part et d’utre de l’ouverture, ils ne bloquent plus le passage.
 

@@ -104,7 +104,7 @@ button.b.p{background:var(--gold);color:var(--ink)}button.b.p2{background:var(--
 <script>
 'use strict';
 /* ============ Noyau : réglages, sauvegarde, entrées, audio ============ */
-const VERSION = '0.6.1';
+const VERSION = '0.6.2';
 const $ = (s) => document.querySelector(s);
 const TAU = Math.PI * 2, clamp = (v, a, b) => (v < a ? a : v > b ? b : v), lerp = (a, b, t) => a + (b - a) * t;
 const rnd = (a, b) => a + Math.random() * (b - a), pick = (a) => a[(Math.random() * a.length) | 0];
@@ -1515,5 +1515,24 @@ const Shop = { open_: false, sel: 0, data: (() => { try { return JSON.parse(loca
     if (s === 'kara2') { const d = World.foes_.find((f) => f.tag === 'delta' && !f.gone); if (d && d.hp < d.maxHp * 0.25 && !d.passive) { d.passive = true; Game.impact(d.x, d.y, 0.2); Talk.say([['Delta', 'Tch. Kashin Kōji s’occupera de vous.'], ['', 'Elle disparaît dans un éclat de lumière.']], () => { FX.smoke(d.x, d.y, 24); d.gone = true; Game.gainXp(900 * 5); this.set('kara3'); }); } }
     if (s === 'kara3' && Math.hypot(h.x - 420, h.y - 2700) < 280) { World.time = Math.max(World.time, 20); const k = spawnFoe('leader', 440, 2660, { tag: 'kashin', leash: [420, 2700, 420] }); k.n = 'Kashin Kōji'; k.look = makeLook(404, { hair: '#d8d8d8', hs: 'long', cloak: '#2a2a3a' }); k.hp *= 1.6; k.maxHp = k.hp; Talk.say([['Kashin Kōji', 'Le ninja qui a calmé les bijū. Montre-moi.']], () => { k.aggro = true; this.set('kara4'); }); }
     if (s === 'kara4') { const k = World.foes_.find((f) => f.tag === 'kashin' && !f.gone); if (k && k.hp < k.maxHp * 0.2 && !k.passive) { k.passive = true; Game.impact(k.x, k.y, 0.26); Talk.say([['Kashin Kōji', 'Intéressant. Nous nous reverrons.'], [this.team.t0.name, 'On l’a fait reculer… ensemble.']], () => { FX.smoke(k.x, k.y, 30); k.gone = true; Game.gainXp(1500 * 5); Game.ryo += 3000; UI.reward('Arc Kara terminé', '#ffd166'); this.set('karafin'); }); } } }; })();
+
+// v0.6.2 — correctif : pose « touché » figée. hurtT du héros n'était jamais décrémenté (seuls ennemis/alliés le faisaient),
+// et pendant les cinématiques allyUpdate ne tourne pas. On décrémente partout + remise à zéro à chaque début/fin de scène.
+(() => {
+  const calm = (u) => { if (!u) return; u.hurtT = 0; u.relT = 0; u.flash = 0; u.sq = 0; if (u.hp > 0) { u.act = null; u.buf = null; u.koT = null; if (u.st) { u.st.stun = 0; u.st.confuse = 0; } } u.vx = u.vy = 0; u.P = null; };
+  const calmAll = () => { try { const G = Game; calm(G.hero); for (const a of G.allies || []) if (!a.down) calm(a); for (const c of G.clones || []) calm(c); } catch (e) {} };
+  window.TBVcalm = calmAll;
+  const up = Game.update.bind(Game);
+  Game.update = function (dt) { const r = up(dt); const d = dt || 0; const L = [this.hero, ...(this.allies || []), ...(this.clones || [])];
+    for (const u of L) if (u) { if (u.hurtT > 0) u.hurtT = Math.max(0, u.hurtT - d); if (u.flash > 0) u.flash = Math.max(0, u.flash - d); if (this.cine && u.relT > 0) u.relT = Math.max(0, u.relT - d); if (this.cine && u.hp > 0 && u.sq) u.sq *= Math.pow(0.0001, d); }
+    // filet de sécurité : plus aucune scène active mais cine resté vrai → on rend la main
+    if (this.cine && !Talk.on && !(typeof Cine !== "undefined" && Cine.on) && !(window.Scene && Scene.on)) { this._cineStuck = (this._cineStuck || 0) + d; if (this._cineStuck > 2.5) { this.cine = false; this._cineStuck = 0; calmAll(); } } else this._cineStuck = 0;
+    return r; };
+  const ts = Talk.say.bind(Talk), tc = Talk.choose.bind(Talk), tn = Talk.next.bind(Talk), tp = Talk.pick.bind(Talk);
+  Talk.say = function (l, cb) { calmAll(); return ts(l, cb); };
+  Talk.choose = function (l, o, cb) { calmAll(); return tc(l, o, cb); };
+  Talk.next = function () { const was = this.on; const r = tn(); if (was && !this.on) calmAll(); return r; };
+  Talk.pick = function (i) { calmAll(); return tp(i); };
+})();
 
 </script></body></html>
