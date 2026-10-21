@@ -1,0 +1,4 @@
+const {chromium}=require('playwright-core');(async()=>{const b=await chromium.launch({executablePath:'/usr/bin/google-chrome',args:['--no-sandbox']});const p=await b.newPage();await p.goto('file:///workspace/two-blue-vortex/index.html');await p.waitForTimeout(900);if(await p.$('#lay07'))await p.click('#lay1');
+const r=await p.evaluate(async()=>{Game.startVoie({name:'Aoi',clan:'uchiha',look:makeLook(9)});const o=[];const H=()=>[Game.hero.x|0,Game.hero.y|0,ZONE8.room?ZONE8.room.id:'-',Voie.step];o.push(['start',...H()]);
+ for(let i=0;i<300;i++){if(Talk.on){Talk.t=1;Talk.showing?Talk.pick(0):Talk.next()}if(Scene.on)Scene.skip=true;await new Promise(r=>setTimeout(r,30));if(Voie.step==='a1')break}
+ o.push(['a1',...H()]);o.push(['iruka',Voie.iruka.x|0,Voie.iruka.y|0]);o.push(['yard',...World.foes_.filter(f=>f.tag==='yard').map(f=>[f.x|0,f.y|0])]);o.push(['target',Voie.target()]);return o});console.log(JSON.stringify(r));await b.close()})();

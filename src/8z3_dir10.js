@@ -20,8 +20,8 @@
   const po = poseOf; poseOf = function (u) { const P = po(u); if (!u || u.hd == null) return P; const vz = -Math.sin(u.hd); const act = u.act && (u.act.k === 'm1' || u.act.k === 'cast' || u.act.k === 'ult');
     const Q = Object.assign({}, P); Q.head = (P.head || 0) - vz * 0.28; if (act) { Q.aF = P.aF + vz * 0.85; Q.lean = P.lean - vz * 0.12; } return Q; };
   // rendu : rotation du corps + vue de dos
-  const dr = drawRig; drawRig = function (g, u, tint) { if (!u || u.hd == null || u.big || u.bj) return dr(g, u, tint); const vz = -Math.sin(u.hd), az = Math.abs(vz); if (az < 0.2) return dr(g, u, tint);
-    const k = 1 - 0.16 * Math.sin(Math.PI * Math.min(1, az)); u._back = !tint && vz > 0.45 ? Math.min(1, (vz - 0.45) / 0.3) : 0; g.save(); g.translate(u.x, u.y); g.scale(k, 1); g.translate(-u.x, -u.y); dr(g, u, tint); g.restore(); u._back = 0; if (u.hand) u.hand.x = u.x + (u.hand.x - u.x) * k;
+  const dr = drawRig; drawRig = function (g, u, tint) { if (!u || u.hd == null || u.bj) return dr(g, u, tint); const vz = -Math.sin(u.hd), az = Math.abs(vz); if (az < 0.2) return dr(g, u, tint);
+    const k = 1 - 0.16 * Math.sin(Math.PI * Math.min(1, az)); u._back = !tint && !u.big && vz > 0.45 ? Math.min(1, (vz - 0.45) / 0.3) : 0; g.save(); g.translate(u.x, u.y); g.scale(k, 1); g.translate(-u.x, -u.y); dr(g, u, tint); g.restore(); u._back = 0; if (u.hand) u.hand.x = u.x + (u.hand.x - u.x) * k;
   };
   // vue de dos : la tête est recouverte par les cheveux (dans le repère de la tête, donc toujours bien placée)
   const dh = drawHead; drawHead = function (g, u, L, C, ink, tint, kid, vel, wav, P) { const r = dh.apply(this, arguments); const a = u && u._back; if (!a) return r; const R = kid ? 12.5 : 11.5, hy = -10;

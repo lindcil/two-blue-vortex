@@ -1,0 +1,7 @@
+const {chromium}=require('playwright-core');
+(async()=>{const b=await chromium.launch({executablePath:'/usr/bin/google-chrome',args:['--no-sandbox']});const p=await b.newPage({viewport:{width:1280,height:720}});let n=0;
+p.on('pageerror',e=>{if(n++<2)console.log('PE',e.message.slice(0,80),e.stack.split('\n').slice(1,4).join('|'))});
+await p.goto('file:///workspace/two-blue-vortex/index.html');await p.waitForTimeout(1200);if(await p.$('#lay07'))await p.click('#lay1');
+await p.evaluate(()=>{Game.startVoie({name:'Aoi',clan:'uchiha',look:makeLook(9)});});await p.waitForTimeout(1500);
+const r=await p.evaluate(async()=>{Talk.on&&Talk.end&&Talk.end();Game.cine=false;const h=Game.hero;h.iframe=999;const wait=(ms)=>new Promise(r=>setTimeout(r,ms));const g0=FX.glow.bind(FX);let bad=null;FX.glow=function(x,y,c,r){if(!isFinite(x+y+r)&&!bad)bad=new Error().stack.split('\n').slice(2,5).join('|')+' r='+r+' c='+c;return g0.apply(FX,arguments)};
+ for(const fam in MODE08.F){MODE08.exit(h);Voie.me.clan={sharingan:'uchiha',byakugan:'hyuga'}[fam]||fam;MODE08.enter(h,fam==='manteau'?'Z':'C');for(let s=1;s<=MODE08.F[fam].st.length;s++){MODE08.stage(h,s);await wait(50);if(bad)return fam+s+' stage '+bad;for(const id of Game.skills){h.cd={};h.ch=999;fireSkill(h,SK[id],id);await wait(300);if(bad||!isFinite(h.x))return id+' '+bad+' '+h.x;}ULT_FX[Game.ultId](h,h.x+200,h.y,1);await wait(200);if(bad)return 'ult '+Game.ultId+bad}}return 'ok'});console.log(r);await b.close()})();

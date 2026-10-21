@@ -1,0 +1,11 @@
+const {chromium}=require('playwright-core');const SH='/workspace/two-blue-vortex/screens/v09/';
+(async()=>{const b=await chromium.launch({executablePath:'/usr/bin/google-chrome',args:['--no-sandbox']});const errs=[];const p=await b.newPage({viewport:{width:1280,height:720}});
+p.on('pageerror',e=>errs.push('PE '+e.message));p.on('console',m=>{if(m.type()=='error')errs.push(m.text().slice(0,200))});
+await p.goto('file:///workspace/two-blue-vortex/index.html');await p.waitForTimeout(1000);if(await p.$('#lay07'))await p.click('#lay1');
+await p.evaluate(()=>{Game.startVoie({name:'Aoi',clan:'uzumaki',look:makeLook(9)});window.__au=setInterval(()=>{if(Talk.on&&Talk.t>0.3){if(Talk.showing)Talk.pick(0);else Talk.next()}},300)});
+const wf=async(js,t=40000)=>{const t0=Date.now();while(Date.now()-t0<t){if(await p.evaluate(js))return true;await p.waitForTimeout(150)}console.log('TIMEOUT',js);return false};
+await wf(()=>Voie.step==='a1'&&!Scene.on&&!Talk.on);await p.evaluate(()=>{clearInterval(window.__au);Game.cine=false;ZONE8.enter('entrainement')});await p.waitForTimeout(1800);
+await p.evaluate(()=>{const s=TRAIN9.ST[0];const h=Game.hero;h.x=ZONE8.room.x+s[4];h.y=ZONE8.room.y+s[5];TRAIN9.start('sage');window.__iv=setInterval(()=>{h.iframe=1},100)});
+await wf(()=>!TRAIN9.cur,20000);await p.waitForTimeout(300);console.log('sage',await p.evaluate(()=>Voie.me.sage));
+await p.evaluate(()=>{const h=Game.hero;h.ch=h.maxCh;MODE08.enter(h,'Z')});await p.waitForTimeout(1200);await p.screenshot({path:SH+'train-mode-ermite.png'});
+console.log(await p.evaluate(()=>[Game.hero.md&&Game.hero.md.fam,Game.skills.join()]));console.log('errs',errs.length,errs.slice(0,4));await b.close()})();

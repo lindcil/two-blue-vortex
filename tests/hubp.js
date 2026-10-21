@@ -1,0 +1,4 @@
+const {chromium}=require('playwright-core');(async()=>{const b=await chromium.launch({executablePath:'/usr/bin/google-chrome',args:['--no-sandbox']});
+for(const [n,f] of [['s1','/workspace/shinobi-eternel-2/index.html'],['s2','/workspace/shinobi-2/index.html'],['ng','/workspace/shinobi-next-gen/index.html']]){const errs=[];const p=await b.newPage({viewport:{width:1280,height:800}});p.on('pageerror',e=>errs.push(e.message));p.on('console',m=>{if(m.type()=='error')errs.push(m.text())});
+await p.goto('file://'+f);await p.waitForTimeout(1500);const r=await p.evaluate(async()=>{G.mode='survival';G.over=false;UI.pause();await new Promise(r=>setTimeout(r,500));const b=document.getElementById('phubsel');return b&&b.offsetParent?b.textContent:'NONE'});
+await p.screenshot({path:'/workspace/pub/screens/'+n+'-pause-retour-jeux.png'});console.log(n,r,errs.slice(0,3));await p.close()}await b.close()})()

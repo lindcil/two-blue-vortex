@@ -1,0 +1,12 @@
+const {chromium}=require('playwright-core');const SH='/workspace/two-blue-vortex/screens/v08/';
+(async()=>{const b=await chromium.launch({executablePath:'/usr/bin/google-chrome',args:['--no-sandbox']});const errs=[];const p=await b.newPage({viewport:{width:1280,height:720}});
+p.on('pageerror',e=>errs.push('PE '+e.message+' @'+(e.stack||'').split('\n')[1]));p.on('console',m=>{if(m.type()=='error'||m.type()=='warning')errs.push(m.text().slice(0,200))});
+const wf=async(js,t=30000)=>{const t0=Date.now();while(Date.now()-t0<t){if(await p.evaluate(js))return true;await p.waitForTimeout(150)}console.log('TIMEOUT',js);return false};
+await p.goto('file:///workspace/two-blue-vortex/index.html');await p.waitForTimeout(1200);if(await p.$('#lay07'))await p.click('#lay1');
+await p.evaluate(()=>{Game.startVoie({name:'Aoi',clan:'uchiha',look:makeLook(9)});window.__au=setInterval(()=>{if(Talk.on&&Talk.t>0.3){if(Talk.showing)Talk.pick(0);else Talk.next()}},300)});
+await wf(()=>Voie.step==='a1'&&!Scene.on&&!Talk.on,40000);
+await p.evaluate(()=>{window.__q=setInterval(()=>{if(Scene._qEnd)Scene._qEnd(false)},2500)});
+const run=async(js,n)=>{await p.evaluate('void '+js);for(let i=0;i<9;i++){await p.waitForTimeout(300);};await p.screenshot({path:SH+n+'.png'});await wf(()=>!Scene.on&&!Scene.busy&&!Talk.on,40000);console.log(n,errs.length)};
+for(const k of ['p1','p2','p3','c1','c3','k1','k3','end'])await run(`Scene.play(V07.STORY08['${k}']())`,'40-histoire-'+k);
+for(const v of ['archives','forge','stele','pluie','taijutsu','genjutsu','papier','eleves','marche','constellation','spectateur','veillee'])await run(`V07.playVignette('${v}')`,'41-vignette-'+v);
+console.log('VG',await p.evaluate(()=>V07.VG.length),'errs',errs);await b.close()})();

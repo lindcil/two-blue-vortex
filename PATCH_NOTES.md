@@ -1,3 +1,7 @@
+## v0.10.13 — Coiffures PNJ et géants orientés
+- 7 coiffures génériques distinctes pour les PNJ (pointue, ébouriffée, plaquée, queue, ananas, carré, chignons) au lieu de clones des héros.
+- Susanoo et bête géante suivent les 8 directions (compression de profil, dos estompé).
+
 ## v0.10.12 — Oreilles et lunettes
 - Oreille en C à l arrière de la tête (plus de faux monocle).
 - Lunettes de Sarada reculées, branche jusqu à l oreille.

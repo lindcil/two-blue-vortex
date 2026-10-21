@@ -25,8 +25,16 @@
     hima: { cap: 1, bob: 0.7, fr: [[-1.55, 4, 3, -0.6], [-1.85, 3.5, 3, 0.4]], bang: [[0, 5, 3.2], [-3, 5, 3]] },
     mitsuki: { cap: 1, bob: 0.85, fr: [[-1.6, 2.5, 4, -0.5]], bang: [[0, 6.5, 3.2], [-3.2, 6, 3]] },
     long: { cap: 1, bob: 1, long: 1, fr: [], bang: [[0, 5, 3.4]] },
+    // coiffures génériques (PNJ) : silhouettes distinctes des héros canon
+    spiky: { cap: 1, fr: [[-0.6, 4, 4, 0.3], [-1.1, 5, 4.5, -0.1], [-1.6, 5.5, 4.5, -0.4], [-2.1, 5, 4.5, -0.6], [-2.6, 4, 4, -0.6]], bang: [[0, 5, 3]] },
+    messy: { cap: 1, fr: [[-0.5, 3, 4, 0.8], [-1.0, 3.5, 4.5, -0.6], [-1.5, 3, 4.5, 0.7], [-2.0, 3.5, 4.5, -0.7], [-2.5, 3, 4, 0.6], [-2.95, 3, 4, -0.5]], bang: [[0, 6, 3.2], [-2.6, 5, 2.6]] },
+    slick: { cap: 1, fr: [[-1.9, 4, 6, -1.2], [-2.5, 5, 5.5, -1.1]], bang: [] },
+    pony: { cap: 1, fr: [[-3.0, 11, 3.4, -1.6], [-2.6, 3.5, 4.5, -0.2]], bang: [[0, 4.5, 3.4]] },
+    pineapple: { cap: 1, fr: [[-2.05, 7, 2.6, -0.4], [-2.25, 8, 2.6, -0.2], [-2.45, 7, 2.6, 0.1], [-2.3, 3, 4.5, 0]], bang: [[0, 4, 3.4]] },
+    bob: { cap: 1, bob: 0.75, fr: [], bang: [[0.4, 4.5, 3.6]] },
+    buns: { cap: 1, fr: [[-1.45, 3.6, 6, 0], [-2.45, 3.6, 6, 0]], bang: [[0, 5, 3.2], [-3, 4.5, 2.8]] },
   };
-  const ALIAS = { spiky: 'boruto', messy: 'kawaki', slick: 'code', bob: 'sarada', pony: 'sarada', buns: 'hima', jura: 'long', pineapple: 'kawaki', buzz: 'buzz', bald: 'bald' };
+  const ALIAS = { jura: 'long', buzz: 'buzz', bald: 'bald' };
   const hairDef = (hs) => H[hs] || H[ALIAS[hs]] || null;
   // une mèche effilée partant du crâne
   const clump = (g, a, len, w, bend, lg) => { const bx = Math.cos(a) * r * 0.98, by = c + Math.sin(a) * r * 0.98, nx = Math.cos(a), ny = Math.sin(a), tx = -ny, ty = nx;

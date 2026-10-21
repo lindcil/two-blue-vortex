@@ -1,0 +1,11 @@
+const {chromium}=require('playwright-core');
+(async()=>{const b=await chromium.launch({executablePath:'/usr/bin/google-chrome',args:['--no-sandbox']});const errs=[];const p=await b.newPage({viewport:{width:1280,height:720}});
+p.on('pageerror',e=>errs.push('PE '+e.message));p.on('console',m=>{if(m.type()=='error')errs.push(m.text().slice(0,200))});
+await p.route('https://lindcil.github.io/**',r=>r.fulfill({status:200,contentType:'text/html',body:'<title>hub</title>hub'}));
+const U='file:///workspace/two-blue-vortex/index.html';await p.goto(U);await p.waitForTimeout(900);if(await p.$('#lay07'))await p.click('#lay1');
+await p.evaluate(()=>{Game.startVoie({name:'Aoi',clan:'uchiha',look:makeLook(9),el:'fire'});setInterval(()=>{const sk=document.getElementById('scnskip');if(sk&&sk.offsetParent)sk.click();if(Talk.on&&Talk.t>0.3){if(Talk.showing)Talk.pick(0);else Talk.next()}},200)});
+await p.waitForTimeout(9000);await p.evaluate(()=>UI.open('reglages'));await p.waitForTimeout(400);await p.screenshot({path:'/workspace/two-blue-vortex/screens/v10/map/menu-boutons.png'});
+await p.click('#m10title');await p.waitForTimeout(1800);if(await p.$('#lay07'))await p.click('#lay1').catch(()=>{});const t=await p.evaluate(()=>({title:getComputedStyle(document.getElementById('title')).display,run:Game.running,hasSave:!!Save.gameV()}));console.log('titre',JSON.stringify(t));
+await p.evaluate(()=>{Game.startVoie(null)});await p.waitForTimeout(2500);await p.evaluate(()=>UI.open('carte'));await p.waitForTimeout(300);
+await Promise.all([p.waitForNavigation({timeout:5000}).catch(()=>{}),p.click('#m10hub')]);console.log('hub',p.url());
+console.log('errs',errs.length,errs.slice(0,4));await b.close()})();

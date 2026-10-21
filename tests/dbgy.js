@@ -1,0 +1,6 @@
+const {chromium}=require('playwright-core');
+(async()=>{const b=await chromium.launch({executablePath:'/usr/bin/google-chrome',args:['--no-sandbox']});const p=await b.newPage({viewport:{width:1280,height:720}});p.on('pageerror',e=>console.log('PE',e.message));
+await p.goto('file:///workspace/two-blue-vortex/index.html');await p.waitForTimeout(1000);if(await p.$('#lay07'))await p.click('#lay1');
+await p.evaluate(()=>{Game.startVoie({name:'Aoi',clan:'nara',look:makeLook(9)});window.__au=setInterval(()=>{if(Talk.on&&Talk.t>0.3){if(Talk.showing)Talk.pick(0);else Talk.next()}},250)});
+const t0=Date.now();while(Date.now()-t0<40000){if(await p.evaluate(()=>Voie.step==='a1'&&!Scene.on&&!Talk.on))break;await p.waitForTimeout(200)}await p.waitForTimeout(1500);
+const r=await p.evaluate(async()=>{const h=Game.hero;const d=World.foes_.find(f=>f.tag==='yard');h.x=d.x-50;h.y=d.y;const o=[];const hu=hurt;let n=0;hurt=function(t,dm,s,oo){if(t.tag==='yard')n++;return hu.apply(this,arguments)};for(let i=0;i<6;i++){Game.cine=false;startM1(h,0);await new Promise(r=>setTimeout(r,450));o.push([h.act&&h.act.k,h.m1Lock,Game.cine,Game.paused,Voie.lesson,n,World.foes().length,nearestFoe(h,320)&&nearestFoe(h,320).tag])}return o});console.log(JSON.stringify(r));await b.close()})();

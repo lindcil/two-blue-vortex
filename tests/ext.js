@@ -1,0 +1,13 @@
+const acorn=require('acorn'),walk=require('acorn-walk'),fs=require('fs');const D='/workspace/two-blue-vortex/src/';
+const out=new Map();const tpl=(n)=>{if(!n)return null;if(n.type==='Literal'&&typeof n.value==='string')return n.value;if(n.type==='TemplateLiteral')return n.quasis.map(q=>q.value.cooked).join('{}');if(n.type==='BinaryExpression'&&n.operator==='+'){const a=tpl(n.left),b=tpl(n.right);return (a??'{}')+(b??'{}')}if(n.type==='ConditionalExpression'){return null}return null};
+const sp=(n)=>n&&n.type==='Literal'?n.value:n&&n.type==='MemberExpression'?'<'+(n.object.property?n.object.property.name:'')+'.'+(n.property.name)+'>':'<?>';
+for(const f of fs.readdirSync(D).filter(f=>f.endsWith('.js'))){const src=fs.readFileSync(D+f,'utf8');let ast;try{ast=acorn.parse(src,{ecmaVersion:2022,allowReturnOutsideFunction:true})}catch(e){console.error(f,e.message);continue}
+ const add=(t,who,kind)=>{if(!t||!/[a-zà-ÿ]{2}/i.test(t)||t.replace(/\{\}/g,'').trim().length<2)return;if(!out.has(t))out.set(t,{t,who,kind,f})};
+ const pairs=(arr,kind)=>{if(!arr||arr.type!=='ArrayExpression')return;for(const e of arr.elements){if(e&&e.type==='ArrayExpression'&&e.elements.length>=2){add(tpl(e.elements[1]),sp(e.elements[0]),kind);if(e.elements[1]&&e.elements[1].type==='ConditionalExpression'){add(tpl(e.elements[1].consequent),sp(e.elements[0]),kind);add(tpl(e.elements[1].alternate),sp(e.elements[0]),kind)}}}};
+ walk.full(ast,(n)=>{if(n.type==='CallExpression'){const c=n.callee;const nm=c.type==='MemberExpression'?(c.object.name||'')+'.'+c.property.name:c.name;
+   if(/^(Talk\.say|Talk\.choose|sayP|chooseP)$/.test(nm)){pairs(n.arguments[0],'say');const o=n.arguments[1];if(o&&o.type==='ArrayExpression')for(const e of o.elements)add(tpl(e),'OPT','opt');}
+   if(nm==='Talk.say'||nm==='sayP'){const a=n.arguments[0];if(a&&a.type==='ConditionalExpression'){pairs(a.consequent,'say');pairs(a.alternate,'say')}}}
+  if(n.type==='Property'&&n.key&&(n.key.name==='lines')&&n.value.type==='ArrayExpression')for(const e of n.value.elements){if(e&&e.type==='ArrayExpression')continue;add(tpl(e),'NPC','npc');}
+  if(n.type==='ArrayExpression'&&n.elements.length===2&&n.elements[1]){const a=n.elements[0],b=n.elements[1];const okA=a&&((a.type==='Literal'&&typeof a.value==='string'&&a.value.length<30)||(a.type==='MemberExpression'&&a.property.name==='name')||a.type==='BinaryExpression');const t=tpl(b);if(okA&&t&&/\s/.test(t)&&/[a-zà-ÿ’]/.test(t))add(t,sp(a),'pair');}});
+}
+const L=[...out.values()];fs.writeFileSync('/tmp/dlg.json',JSON.stringify(L,null,1));console.log(L.length);const c={};for(const x of L)c[x.f]=(c[x.f]||0)+1;console.log(c);

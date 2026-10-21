@@ -1,0 +1,18 @@
+const {chromium}=require('playwright-core');const SH='/workspace/two-blue-vortex/screens/v08/';
+(async()=>{const b=await chromium.launch({executablePath:'/usr/bin/google-chrome',args:['--no-sandbox']});const errs=[];const p=await b.newPage({viewport:{width:1280,height:720}});
+p.on('pageerror',e=>errs.push('PE '+e.message+' @'+(e.stack||'').split('\n')[1]));p.on('console',m=>{if(m.type()=='error')errs.push(m.text().slice(0,200))});
+const shot=async(n)=>{await p.screenshot({path:SH+n+'.png'});console.log('shot',n,errs.length)};
+await p.goto('file:///workspace/two-blue-vortex/index.html');await p.waitForTimeout(1000);if(await p.$('#lay07'))await p.click('#lay1');
+await p.evaluate(()=>{Game.startVoie({name:'Aoi',clan:'uchiha',look:makeLook(9),creative:1,el:'fire',sk:['rasen','chidori','gokakyu','palms']});window.__au=setInterval(()=>{if(Talk.on&&Talk.t>0.3){if(Talk.showing)Talk.pick(0);else Talk.next()}},250)});
+await p.waitForTimeout(2500);console.log(await p.evaluate(()=>[CREA8.on,ZONE8.room&&ZONE8.room.id,World.foes().length]));await shot('50-creatif-galerie');
+await p.click('#c8ty');await p.selectOption('#c8ty','scene');await p.waitForTimeout(200);await shot('51-creatif-filtre-scenes');
+const go=async(id,ts,name)=>{await p.evaluate((id)=>{document.getElementById('c8clr').click();Game.cine=false},id);await p.waitForTimeout(300);await p.evaluate((id)=>{const it=document.querySelector(`[data-id="${id}"]`);if(it)it.click();else{CREA8.sel=id}},id);await p.evaluate(()=>document.getElementById('c8go').click());let t=0;for(const [d0,n] of ts){const d=d0+3300;await p.waitForTimeout(d-t);t=d;await shot(name+'-'+n)}await p.waitForTimeout(Math.max(0,9200-t));};
+await p.click('#c8tg');await p.waitForTimeout(300);
+await go('set_chibaku',[[1500,'1-sphere'],[3600,'2-masse'],[4700,'3-chute'],[5400,'4-explosion']],'60-chibaku');
+await go('set_mekkyaku',[[3200,'mer-de-flammes']],'61-mekkyaku');
+await go('set_tsunami',[[2800,'raz']],'62-tsunami');await go('set_kirin',[[2100,'orage'],[3100,'foudre']],'63-kirin');
+await go('set_rasenshuriken',[[2900,'lames']],'64-rasenshuriken');await go('set_golem',[[3200,'golem'],[4300,'impact']],'65-golem');
+await go('set_bijudama',[[2300,'charge'],[3400,'rayon']],'66-bijudama');await go('set_shinra',[[2700,'crater']],'67-shinra');
+await go('set_amaterasu',[[3400,'flammes-noires']],'68-amaterasu');await go('set_indra',[[3200,'arc'],[4200,'fleche']],'69-indra');await go('set_daikokuten',[[3600,'cubes']],'70-daikokuten');
+await p.evaluate(()=>document.getElementById('c8tg').click());await p.evaluate(()=>{document.getElementById('c8ty').value='';document.getElementById('c8hb').click();document.getElementById('c8sl').click()});await p.evaluate(()=>{CREA8.sel='gokakyu';CREA8.v='hold';document.getElementById('c8go').click()});await p.waitForTimeout(900);await shot('52-creatif-hitbox-ralenti');
+console.log('ERRORS',errs.length,errs.slice(0,6));await b.close()})();

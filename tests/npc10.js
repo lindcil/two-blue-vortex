@@ -1,0 +1,9 @@
+const {chromium}=require('playwright-core');const SH='/workspace/two-blue-vortex/screens/v10/look/';const PFX=process.argv[2]||'pnj';
+(async()=>{const b=await chromium.launch({executablePath:'/usr/bin/google-chrome',args:['--no-sandbox']});const errs=[];const p=await b.newPage({viewport:{width:1280,height:720}});
+p.on('pageerror',e=>errs.push('PE '+e.message));p.on('console',m=>{if(m.type()=='error')errs.push(m.text().slice(0,200))});
+await p.goto(process.env.U||'file:///workspace/two-blue-vortex/index.html');await p.waitForTimeout(900);if(await p.$('#lay07'))await p.click('#lay1');
+await p.evaluate(()=>{Game.startVoie({name:'Aoi',clan:'uchiha',look:makeLook(9)});});await p.waitForTimeout(800);
+const a=await p.evaluate(`(()=>{const hs=[['spiky','#8a5a2a'],['messy','#3a2a22'],['slick','#c8b070'],['pony','#6a3a7a'],['pineapple','#2a2a30'],['bob','#b04a3a'],['buns','#3a6a5a'],['long','#d8c090']];
+ const c=document.createElement('canvas');c.width=hs.length*150;c.height=2*150;const g=c.getContext('2d');g.fillStyle='#1b2238';g.fillRect(0,0,c.width,c.height);
+ hs.forEach(([h,col],j)=>[0.6,-2.0].forEach((hd,i)=>{const L=Object.assign({},LOOKS.boruto,{hs:h,hair:col,band:0,whisk:0,marks:0});const u={isHero:1,sheet10:1,x:0,y:0,look:L,face:Math.cos(hd)<0?-1:1,vx:0,vy:0,anim:1,r:12,st:{},hd};g.save();g.beginPath();g.rect(j*150,i*150,150,150);g.clip();g.translate(j*150+75,i*150+350);g.scale(2.7,2.7);try{drawRig(g,u)}catch(e){console.error(e.message)}g.restore();g.fillStyle='rgba(11,16,32,.75)';g.fillRect(j*150,i*150+132,150,18);g.fillStyle='#cfd8ee';g.font='12px sans-serif';g.fillText(h,j*150+6,i*150+145)}));return c.toDataURL()})()`);
+require('fs').writeFileSync(SH+PFX+'-coiffures.png',Buffer.from(a.split(',')[1],'base64'));console.log('errs',errs.length,errs.slice(0,3));await b.close()})();

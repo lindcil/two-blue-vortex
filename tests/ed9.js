@@ -1,0 +1,15 @@
+const {chromium}=require('playwright-core');const SH='/workspace/two-blue-vortex/screens/v09/';
+(async()=>{const b=await chromium.launch({executablePath:'/usr/bin/google-chrome',args:['--no-sandbox']});const errs=[];const p=await b.newPage({viewport:{width:1280,height:720},acceptDownloads:true});
+p.on('pageerror',e=>errs.push('PE '+e.message+' @'+(e.stack||'').split('\n')[1]));p.on('console',m=>{if(m.type()=='error')errs.push(m.text().slice(0,200))});
+await p.goto('file:///workspace/two-blue-vortex/index.html');await p.waitForTimeout(1000);if(await p.$('#lay07'))await p.click('#lay1');
+await p.evaluate(()=>{Game.startVoie({name:'Aoi',clan:'uchiha',look:makeLook(9),creative:1,el:'fire',sk:['rasen','chidori','gokakyu','karyu']});window.__au=setInterval(()=>{if(Talk.on&&Talk.t>0.3){if(Talk.showing)Talk.pick(0);else Talk.next()}},250)});
+await p.waitForTimeout(2500);
+await p.click('#c8ed');await p.waitForTimeout(300);await p.selectOption('#e9id','teppodama');await p.waitForTimeout(200);
+await p.evaluate(()=>{const i=document.querySelector('#e9num input[data-k="hit.r"]');i.value=48;i.oninput();const j=document.querySelector('#e9num input[data-k="hit.n"]');j.value=3;j.oninput();});
+await p.selectOption('#e9lp','impact');await p.selectOption('#e9pr','arcs');await p.click('#e9add');
+await p.click('#e9go');await p.waitForTimeout(520);await p.screenshot({path:SH+'after-editeur-test.png'});
+await p.click('#e9new');await p.evaluate(()=>{document.getElementById('e9el').value='bolt';document.getElementById('e9el').onchange();document.getElementById('e9sh').value='rain';document.getElementById('e9sh').onchange();});
+await p.click('#e9go');await p.waitForTimeout(700);await p.screenshot({path:SH+'after-editeur-nouvelle.png'});
+const [d]=await Promise.all([p.waitForEvent('download'),p.click('#e9exp')]);const fp='/tmp/exp9.json';await d.saveAs(fp);console.log('export',require('fs').readFileSync(fp,'utf8').slice(0,160).replace(/\n/g,' '));
+console.log(await p.evaluate(()=>[TECH9.count,SK.custom1&&SK.custom1.n,TECH9.get('teppodama').hit.r]));
+console.log('errs',errs.length,errs.slice(0,4));await b.close()})();

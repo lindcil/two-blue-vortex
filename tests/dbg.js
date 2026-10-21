@@ -1,0 +1,4 @@
+const {chromium}=require('playwright-core');(async()=>{const b=await chromium.launch({executablePath:'/usr/bin/google-chrome',args:['--no-sandbox']});const p=await b.newPage();
+await p.goto('file:///workspace/two-blue-vortex/index.html');await p.waitForTimeout(900);if(await p.$('#lay07'))await p.click('#lay1');
+await p.evaluate(()=>{Game.startVoie({name:'Aoi',clan:'uchiha',look:makeLook(9),creative:1,el:'fire',sk:['rasen','chidori','gokakyu','karyu']});});await p.waitForTimeout(2500);
+console.log(await p.evaluate(()=>{SMOOTH10.manual=true;const h=Game.hero;startM1(h,0);const o=[];for(let i=0;i<12;i++){Game.update(1/60);o.push([h.act&&h.act.k,h.act&&+h.act.t.toFixed(3),h.act&&h.act.hit,FX.P.filter(q=>q.k==='smear').length,Game.paused,Game.cine,Game.hs])}return JSON.stringify(o)}));await b.close()})();
