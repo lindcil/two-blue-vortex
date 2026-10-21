@@ -1,3 +1,8 @@
+## v0.10.14 — Sceaux Tigre, Dragon, Serpent lisibles
+- Tigre : index+majeurs joints en une seule pointe.
+- Dragon : mains en V, pouces et auriculaires tendus.
+- Serpent : mains jointes en diagonale, poings entrelacés.
+
 ## v0.10.13 — Coiffures PNJ et géants orientés
 - 7 coiffures génériques distinctes pour les PNJ (pointue, ébouriffée, plaquée, queue, ananas, carré, chignons) au lieu de clones des héros.
 - Susanoo et bête géante suivent les 8 directions (compression de profil, dos estompé).

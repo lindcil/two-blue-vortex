@@ -104,7 +104,7 @@ button.b.p{background:var(--gold);color:var(--ink)}button.b.p2{background:var(--
 <script>
 'use strict';
 /* ============ Noyau : réglages, sauvegarde, entrées, audio ============ */
-const VERSION = '0.10.13';
+const VERSION = '0.10.14';
 const K10 = Math.sqrt(10); // v0.9.7 : échelle des cartes extérieures (surface ×10)
 const $ = (s) => document.querySelector(s);
 const TAU = Math.PI * 2, clamp = (v, a, b) => (v < a ? a : v > b ? b : v), lerp = (a, b, t) => a + (b - a) * t;
@@ -3945,10 +3945,10 @@ addEventListener('touchstart',()=>document.body.classList.add('touch07'),{passiv
   const SEAL = {
     ne: [[-3, 3, 0.15, [C, C, C, C, C]], [3, -2, -0.1, [C, E, E, C, C]]],                       // Rat : index+majeur droits saisis dans le poing gauche
     ushi: [[-4, 0, -1.35, [E, E, E, E, E], 1], [5, 3, 0.2, [C, E, E, C, C]]],                    // Bœuf : main gauche à plat en travers, deux doigts droits levés
-    tora: [[-4, 0, 0.12, [I, E, E, I, I]], [4, 0, -0.12, [I, E, E, I, I]]],                     // Tigre : index+majeurs joints vers le haut
+    tora: [[-2.4, 0, 0.04, [C, E, E, C, C]], [2.4, 0, -0.04, [C, E, E, C, C]]],                     // Tigre : index+majeurs joints vers le haut
     u: [[-5, 2, -0.2, [E, E, E, E, E]], [5, 0, 0.6, [C, C, C, C, C], 1]],                        // Lièvre
-    tatsu: [[-4, 0, 0.1, [E, I, I, I, E]], [4, 0, -0.1, [E, I, I, I, E]]],                      // Dragon : pouces dressés, doigts entrelacés
-    mi: [[-4, 0, 0.12, [I, I, I, I, I]], [4, 0, -0.12, [I, I, I, I, I]]],                       // Serpent : mains jointes, doigts entrelacés
+    tatsu: [[-5.5, 0, 0.42, [E, C, C, C, E]], [5.5, 0, -0.42, [E, C, C, C, E]]],                      // Dragon : pouces dressés, doigts entrelacés
+    mi: [[-1.5, 2, 0.95, [I, C, C, C, C]], [1.5, 0, -0.95, [I, C, C, C, C], 1]],                       // Serpent : mains jointes, doigts entrelacés
     uma: [[-4, 0, 0.32, [E, E, I, I, I]], [4, 0, -0.32, [E, E, I, I, I]]],                      // Cheval : triangle index/pouces
     hitsuji: [[-3, 2, 0.05, [C, E, E, C, C]], [4, 0, -0.3, [C, C, C, C, C], 1]],                 // Bélier : index+majeur gauches levés, poing droit autour
     saru: [[-4, 0, 1.2, [E, E, E, E, E]], [4, 2, -1.2, [E, E, E, E, E], 1]],                     // Singe : paumes face à face, doigts croisés à l'horizontale
