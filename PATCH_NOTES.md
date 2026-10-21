@@ -1,5 +1,15 @@
 # Two Blue Vortex — Notes de version
 
+## v0.4 — « Vague 1 » (21/10/2026)
+- Réglage « Cinématiques d'ultime » : Toujours, La 1re fois (par défaut) ou Jamais. Les 15 ultimes ont été testés par script et touchent tous leurs cibles.
+- Cut-in : vrai portrait en buste, cadrage serré.
+- Caméra : roulis (angle hollandais) pendant les signes et la charge, recul à l'impact.
+- Musique procédurale par ambiance : jour, nuit, combat, boss, titre. Réglage du volume.
+- Villageois plus variés : enfants, anciens aux cheveux gris, marchands.
+- Équilibrage : ennemis plus solides selon ton rang en Ta voie (Genin ×1,15, Chūnin ×1,4, Jōnin ×1,7), boss +25 %.
+- Tactile : boutons Ultime et Esquive agrandis, toucher l'écran passe la cinématique.
+- Branches de Ta voie rejouées par bot : choix « poursuivre » à l'examen et Shukaku sans « parler ».
+
 ## v0.3 — « Cinématiques » (20/10/2026)
 - Ultimes façon Storm : courte séquence de 2,5 à 3,2 s qu'on peut passer (J / E / Échap). Bandes noires, zoom sur le lanceur, portrait en cut-in avec le nom de la technique, mudras, charge, lignes de vitesse vers la cible, impact puis ralenti, retour au jeu.
 - Ultime pour chaque clan de Ta voie : Susanoo (Uchiha), Hakke 64 Shō (Hyūga), Kage Kubi Shibari (Nara), Chōdan Bakugeki (Akimichi), Shinranshin (Yamanaka), Mushidama (Aburame), Garōga (Inuzuka), Jukai Kōtan (Senju).
