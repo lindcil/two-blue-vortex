@@ -2642,10 +2642,13 @@ addEventListener('touchstart',()=>document.body.classList.add('touch07'),{passiv
     door(h); rooms(h); return r; };
   // ---------- portes : maison & mission de la porte ----------
   let home = null; const findHome = () => { if (home) return home; const H2 = World.props.filter((p) => p.kind === 'house' && p.y < WALL_Y - 100 && p.x < 1500).sort((a, b) => Math.hypot(a.x - 800, a.y - 1250) - Math.hypot(b.x - 800, b.y - 1250))[0]; home = H2 ? { x: H2.x, y: H2.y + 8 } : { x: 800, y: 1250 }; return home; };
+  let useHit = 0, doorK = null; const tryDoor = () => { if (doorK === 'maison') { doorK = null; UI.prompt(null); Z.enter('maison'); return true; } if (doorK === 'porte') { doorK = null; UI.prompt(null); gateMission(); return true; } return false; };
+  addEventListener('keydown', (e) => { const ks = (Save.set.keys && Save.set.keys.use) || ['KeyE']; if (!e.repeat && ks.includes(e.code) && doorK && !Talk.on && tryDoor()) { e.stopImmediatePropagation(); e.preventDefault(); } }, true);
+  addEventListener('touchstart', (e) => { if (e.target && e.target.dataset && e.target.dataset.a === 'use' && doorK && tryDoor()) e.stopImmediatePropagation(); }, { passive: true, capture: true });
   const GATE = { x: 1600, y: WALL_Y + 80 }; let gateDone = 0;
-  const door = (h) => { if (Z.room || Game.cine || Game.mode !== 'voie' || Game.creative) { if (!Z.room) UI.prompt(null); return; } const hm = findHome();
-    if (Math.hypot(h.x - hm.x, h.y - hm.y) < 60) { UI.prompt(`<kbd>${Input.label('use')}</kbd> Entrer chez toi`); if (Input.pressed('use')) Z.enter('maison'); return; }
-    if (Math.hypot(h.x - GATE.x, h.y - GATE.y) < 90 && Voie.rank && Voie.step === 'free' && !gateDone) { UI.prompt(`<kbd>${Input.label('use')}</kbd> Mission : garder la grande porte`); if (Input.pressed('use')) gateMission(); return; } };
+  const door = (h) => { if (Z.room || Game.cine || Game.mode !== 'voie' || Game.creative) { doorK = null; return; } const hm = findHome();
+    doorK = null; if (Math.hypot(h.x - hm.x, h.y - hm.y) < 60) { doorK = 'maison'; UI.prompt(`<kbd>${Input.label('use')}</kbd> Entrer chez toi`); return; }
+    if (Math.hypot(h.x - GATE.x, h.y - GATE.y) < 90 && Voie.rank && !/^a/.test(Voie.step || 'a') && !Voie.mis && !gateDone) { doorK = 'porte'; UI.prompt(`<kbd>${Input.label('use')}</kbd> Mission : garder la grande porte`); return; } };
   const gateMission = () => { Z.enter('porte', { after: (R) => { const waves = [['bandit', 'bandit', 'bandit'], ['bandit', 'deserter', 'bandit', 'stormer'], ['rogue', 'bandit', 'deserter']]; let w = 0;
       const spawnW = () => { const L = waves[w]; L.forEach((t, i) => { const f = spawnFoe(t, R.x + 600 + i * 420, R.y + 700 + (i % 2) * 220, {}); f.aggro = true; }); UI.reward('Vague ' + (w + 1) + '/3', '#ff9a2a'); };
       spawnW(); const iv = setInterval(() => { if (Z.room !== R) { clearInterval(iv); return; } if (!World.foes().some((f) => f.hp > 0 && !f.passive)) { w++; if (w < waves.length) spawnW(); else { clearInterval(iv); gateDone = 1; Game.gainXp(300); if (Voie.me && Voie.me.tree) Voie.me.pts++; UI.reward('Porte défendue ! +1 point', '#ffd166', 1); setTimeout(() => Z.exit(), 2200); setTimeout(() => (gateDone = 0), 120000); } } }, 600); } }); };
@@ -2687,7 +2690,7 @@ addEventListener('touchstart',()=>document.body.classList.add('touch07'),{passiv
     creatif(g, R) { const { x, y, w, h } = R; g.fillStyle = '#141a30'; g.fillRect(x - 800, y - 800, w + 1600, h + 1600); g.fillStyle = '#1d2646'; g.fillRect(x, y + 300, w, h - 300); g.strokeStyle = 'rgba(143,211,255,.12)'; g.lineWidth = 1; for (let i = 0; i < w; i += 80) { g.beginPath(); g.moveTo(x + i, y + 300); g.lineTo(x + i, y + h); g.stroke(); } for (let j = 300; j < h; j += 80) { g.beginPath(); g.moveTo(x, y + j); g.lineTo(x + w, y + j); g.stroke(); }
       g.fillStyle = '#0e1326'; g.fillRect(x, y, w, 300); g.fillStyle = '#a46bff'; g.font = '400 48px serif'; g.textAlign = 'center'; g.globalAlpha = 0.5; g.fillText('術', x + w / 2, y + 200); g.globalAlpha = 1; g.strokeStyle = 'rgba(164,107,255,.4)'; g.lineWidth = 3; g.beginPath(); g.ellipse(x + w / 2 + 300, y + 1000, 360, 160, 0, 0, TAU); g.stroke(); },
   };
-  FX.custom({ x: 0, y: 0, life: 1e9, ground: 1, draw: (g) => { for (const k in ROOMS) { const R = ROOMS[k]; if (Z.room === R || (Math.abs(Cam.x - (R.x + R.w / 2)) < R.w + 900 && Math.abs(Cam.y - (R.y + R.h / 2)) < R.h + 900 && Game.hero && Game.hero.x > W)) { g.save(); DRAW[k](g, R); g.restore(); } }
+  FX.custom({ x: 0, y: 0, life: 1e9, ground: 1, draw: (g) => { for (const k in ROOMS) { const R = ROOMS[k]; if (Z.room === R || (window.CREA8 && CREA8.on && k === 'creatif')) { g.save(); DRAW[k](g, R); g.restore(); } }
     // Iruka dessiné au terrain d’entraînement
     if (Z.room && Z.room.id === 'entrainement' && Voie.iruka) { const I = Voie.iruka; const sx = I.x, sy = I.y; I.x = Z.room.x + 300; I.y = Z.room.y + 700; I.face = 1; try { drawRig(g, I); } catch (e) {} I.x = sx; I.y = sy; } } });
   // objets solides des salles
