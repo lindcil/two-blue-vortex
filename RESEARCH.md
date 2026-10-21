@@ -68,3 +68,6 @@ Sources : Narutopedia (naruto.fandom.com/wiki/Susanoo), naruto-wiki.com/wiki/sus
 - **Expressions:** a minimal set drives most anime acting: neutral, angry (brows down at the centre), shout (open trapezoid mouth with tongue), hurt (> < eyes, wavy mouth) and blink.
 - **Secondary motion:** hair, scarf and headband tails follow a damped spring (overlapping action, one of the 12 animation principles). Idle breathing is a ±1 % chest scale.
 - **LOD:** far NPCs use the old cheap head so FPS holds.
+
+## Profil anime (v0.10.11)
+Réf. tutos « anime head side view » : crâne rond, nez à ~1/2 hauteur, œil en coin à 1/5 du front, oreille derrière le milieu, contours = teinte foncée du remplissage.

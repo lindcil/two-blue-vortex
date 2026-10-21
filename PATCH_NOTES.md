@@ -1,3 +1,9 @@
+## v0.10.11 — Visages : vrai profil anime
+- Tête de profil : front, nez pointu, mâchoire, joue, oreille, cou.
+- Contours colorés fins, cel-shading (ombre + liseré), œil en amande.
+- Cheveux en mèches canon avec ombre et reflet ; franges au-dessus des yeux.
+- Lunettes de Sarada recalées ; dos de tête refait ; LOD conservé.
+
 ## v0.10.10
 - Visages refaits, plus doux : yeux simples avec reflet, bouche discrète, joues légères, cri et blessure adoucis. Plus de vue de face : la tête suit exactement le corps (profil, ou dos en montant).
 - Cheveux : plus de traits d’encre dans la chevelure, les mèches s’arrêtent au front (les deux yeux restent visibles). Mitsuki canon (cheveux clairs, yeux de serpent dorés), Sarada yeux noirs.
