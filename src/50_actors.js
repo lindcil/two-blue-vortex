@@ -131,7 +131,7 @@ const BIJUU = {
   kurama: { n: 'Kurama', tails: 9, body: '#f07a1e', belly: '#ffc070', mark: '#7a1e08', eye: '#ffe14a', pupil: '#c01010', ears: 'fox', snout: 1.15 },
   matatabi: { n: 'Matatabi', tails: 2, body: '#3a6aff', belly: '#9fd0ff', mark: '#1a2a6a', eye: '#ffe14a', pupil: '#111', ears: 'fox', snout: 0.9 },
   songoku: { n: 'Son Gokū', tails: 4, body: '#c0362a', belly: '#e8a080', mark: '#5a1a10', eye: '#fff', pupil: '#111', ears: 'round', snout: 1.0 },
-  gyuki: { n: 'Gyūki', tails: 8, body: '#7a4a9a', belly: '#c8a0d8', mark: '#2a1a3a', eye: '#fff', pupil: '#111', ears: 'round', snout: 1.05 },
+  gyuki: { n: 'Gyūki', horns: 1, tails: 8, body: '#7a4a9a', belly: '#c8a0d8', mark: '#2a1a3a', eye: '#fff', pupil: '#111', ears: 'round', snout: 1.05 },
   shukaku: { n: 'Shukaku', tails: 1, body: '#cfae70', belly: '#e8d29e', mark: '#2f3f8f', eye: '#ffe14a', pupil: '#111', ears: 'round', snout: 0.85 },
 };
 function beastMouth(u) { const s = u.size || 1, D = BIJUU[u.bj]; const jx = 104 * (D.snout || 1), hy = -112 + (u.rear || 0) * -20; return { x: u.x + u.face * s * jx, y: u.y + s * hy }; }
@@ -160,6 +160,7 @@ function drawBijuu(g, u) { const D = BIJUU[u.bj], s = u.size || 1, t = u.anim ||
   g.fillStyle = C(D.body); g.strokeStyle = INK; g.lineWidth = 4; g.beginPath(); g.moveTo(34, -100); g.quadraticCurveTo(58, -128, hx, hy - 12); g.lineTo(hx + 8, hy + 22); g.quadraticCurveTo(52, -66, 38, -60); g.closePath(); g.fill(); g.stroke();
   if (u.swallow > 0) { g.fillStyle = C(D.belly); g.beginPath(); g.arc(lerp(hx, 30, u.swallow), lerp(hy + 8, -90, u.swallow), 14 * (1 - u.swallow * 0.4), 0, TAU); g.fill(); g.stroke(); }
   g.save(); g.translate(hx, hy); g.rotate(hr); const sn = D.snout || 1;
+  if (D.horns) for (const sx of [-1, 1]) { g.fillStyle = '#efe6d0'; g.beginPath(); g.moveTo(-4 + sx * 8, -20); g.quadraticCurveTo(-4 + sx * 34, -34, -4 + sx * 30, -62 + Math.sin(t * 2) * 2); g.quadraticCurveTo(-4 + sx * 22, -36, -4 + sx * 2, -16); g.closePath(); g.fill(); g.stroke(); }
   if (D.ears === 'fox') for (const [ex, ey, w] of [[-14, -18, 1], [4, -22, 0.9]]) { g.fillStyle = C(D.body); g.beginPath(); g.moveTo(ex - 10, ey + 6); g.lineTo(ex - 6 + Math.sin(t * 2 + ex) * 2, ey - 34 * w); g.lineTo(ex + 10, ey + 4); g.closePath(); g.fill(); g.stroke(); g.fillStyle = D.mark; g.beginPath(); g.moveTo(ex - 5, ey + 2); g.lineTo(ex - 5, ey - 22 * w); g.lineTo(ex + 4, ey + 2); g.fill(); }
   else for (const ex of [-14, 6]) { g.fillStyle = C(D.body); g.beginPath(); g.arc(ex, -20, 11, 0, TAU); g.fill(); g.stroke(); }
   // crâne

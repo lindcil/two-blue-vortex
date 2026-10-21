@@ -104,7 +104,7 @@ button.b.p{background:var(--gold);color:var(--ink)}button.b.p2{background:var(--
 <script>
 'use strict';
 /* ============ Noyau : réglages, sauvegarde, entrées, audio ============ */
-const VERSION = '0.5';
+const VERSION = '0.6';
 const $ = (s) => document.querySelector(s);
 const TAU = Math.PI * 2, clamp = (v, a, b) => (v < a ? a : v > b ? b : v), lerp = (a, b, t) => a + (b - a) * t;
 const rnd = (a, b) => a + Math.random() * (b - a), pick = (a) => a[(Math.random() * a.length) | 0];
@@ -625,7 +625,7 @@ const BIJUU = {
   kurama: { n: 'Kurama', tails: 9, body: '#f07a1e', belly: '#ffc070', mark: '#7a1e08', eye: '#ffe14a', pupil: '#c01010', ears: 'fox', snout: 1.15 },
   matatabi: { n: 'Matatabi', tails: 2, body: '#3a6aff', belly: '#9fd0ff', mark: '#1a2a6a', eye: '#ffe14a', pupil: '#111', ears: 'fox', snout: 0.9 },
   songoku: { n: 'Son Gokū', tails: 4, body: '#c0362a', belly: '#e8a080', mark: '#5a1a10', eye: '#fff', pupil: '#111', ears: 'round', snout: 1.0 },
-  gyuki: { n: 'Gyūki', tails: 8, body: '#7a4a9a', belly: '#c8a0d8', mark: '#2a1a3a', eye: '#fff', pupil: '#111', ears: 'round', snout: 1.05 },
+  gyuki: { n: 'Gyūki', horns: 1, tails: 8, body: '#7a4a9a', belly: '#c8a0d8', mark: '#2a1a3a', eye: '#fff', pupil: '#111', ears: 'round', snout: 1.05 },
   shukaku: { n: 'Shukaku', tails: 1, body: '#cfae70', belly: '#e8d29e', mark: '#2f3f8f', eye: '#ffe14a', pupil: '#111', ears: 'round', snout: 0.85 },
 };
 function beastMouth(u) { const s = u.size || 1, D = BIJUU[u.bj]; const jx = 104 * (D.snout || 1), hy = -112 + (u.rear || 0) * -20; return { x: u.x + u.face * s * jx, y: u.y + s * hy }; }
@@ -654,6 +654,7 @@ function drawBijuu(g, u) { const D = BIJUU[u.bj], s = u.size || 1, t = u.anim ||
   g.fillStyle = C(D.body); g.strokeStyle = INK; g.lineWidth = 4; g.beginPath(); g.moveTo(34, -100); g.quadraticCurveTo(58, -128, hx, hy - 12); g.lineTo(hx + 8, hy + 22); g.quadraticCurveTo(52, -66, 38, -60); g.closePath(); g.fill(); g.stroke();
   if (u.swallow > 0) { g.fillStyle = C(D.belly); g.beginPath(); g.arc(lerp(hx, 30, u.swallow), lerp(hy + 8, -90, u.swallow), 14 * (1 - u.swallow * 0.4), 0, TAU); g.fill(); g.stroke(); }
   g.save(); g.translate(hx, hy); g.rotate(hr); const sn = D.snout || 1;
+  if (D.horns) for (const sx of [-1, 1]) { g.fillStyle = '#efe6d0'; g.beginPath(); g.moveTo(-4 + sx * 8, -20); g.quadraticCurveTo(-4 + sx * 34, -34, -4 + sx * 30, -62 + Math.sin(t * 2) * 2); g.quadraticCurveTo(-4 + sx * 22, -36, -4 + sx * 2, -16); g.closePath(); g.fill(); g.stroke(); }
   if (D.ears === 'fox') for (const [ex, ey, w] of [[-14, -18, 1], [4, -22, 0.9]]) { g.fillStyle = C(D.body); g.beginPath(); g.moveTo(ex - 10, ey + 6); g.lineTo(ex - 6 + Math.sin(t * 2 + ex) * 2, ey - 34 * w); g.lineTo(ex + 10, ey + 4); g.closePath(); g.fill(); g.stroke(); g.fillStyle = D.mark; g.beginPath(); g.moveTo(ex - 5, ey + 2); g.lineTo(ex - 5, ey - 22 * w); g.lineTo(ex + 4, ey + 2); g.fill(); }
   else for (const ex of [-14, 6]) { g.fillStyle = C(D.body); g.beginPath(); g.arc(ex, -20, 11, 0, TAU); g.fill(); g.stroke(); }
   // crâne
@@ -1083,7 +1084,7 @@ function genNinja(seed, clan, el, o = {}) { const R = mulb(seed), P = (a) => a[(
   return { name, clan, el, look, n: name + ' ' + C.n, skill: R() < 0.5 ? C.sk : ELEM_SK[el][0] }; }
 const Voie = { mode: 'voie',
   step: 'birth', q: {}, items: [], flags: {}, rank: 'eleve', done: 0, mis: null, bond: {}, me: null, team: null, lesson: 0,
-  obj() { const s = this.step, m = this.mis; const T = { birth: ['Naissance', '…'], a1: ['Académie — Leçon 1', 'Frappe les mannequins de la cour (' + Math.min(9, this.lesson) + '/9).'], a2: ['Académie — Leçon 2', 'Esquive les shurikens d’Iruka (' + Math.min(4, this.lesson) + '/4).'], a3: ['Académie — Leçon 3', 'Utilise ta technique et le Kage Bunshin sur un mannequin.'],
+  obj() { const s = this.step, m = this.mis; const T = { birth: ['Naissance', '…'], a1: ['Académie — Leçon 1', 'Frappe les mannequins de la cour (' + Math.min(9, this.lesson) + '/9).'], a2: ['Académie — Leçon 2', 'Esquive les shurikens d’Iruka (' + Math.min(4, this.lesson) + '/4).'], a3: ['Académie — Leçon 3', 'Touche un mannequin avec ta technique ou un clone.'],
       a4: ['Examen de sortie', 'Ton rival. Le premier à flancher perd.'], a5: ['Genin', 'Iruka t’attend devant l’Académie : ton équipe.'], a6: ['Test des clochettes', 'Touche ton sensei 3 fois (' + this.lesson + '/3).'],
       free: ['Rang ' + RANKS[this.rank], m ? `${m.r} — ${m.n}` + (m.need ? ` (${m.got || 0}/${m.need})` : '') : 'Prends une mission au bureau (tour du Hokage).'],
       r1: ['Arc I — L’Ombre', 'Ton rival t’attend à la grande porte. Ce soir.'], r2: ['Arc I — L’Ombre', 'Ton rival.'],
@@ -1125,11 +1126,11 @@ const Voie = { mode: 'voie',
   onHit(t, src) { if (t.tag === 'yard' && src && src.isHero) { if (this.step === 'a1' && src.act && src.act.k === 'm1') { this.lesson++; UI.objective(); if (this.lesson >= 9) this.next('a2'); }
       if (this.step === 'a3') { if (src.act && src.act.k === 'm1') return; this.flags.l3t = 1; this.checkL3(); } }
     if (t.tag === 'yard' && src && src.isClone && this.step === 'a3') { this.flags.l3c = 1; this.checkL3(); } },
-  checkL3() { if (this.flags.l3t && this.flags.l3c && this.step === 'a3') this.next('a4'); },
+  checkL3() { if ((this.flags.l3t || this.flags.l3c) && this.step === 'a3') this.next('a4'); },
   next(s) { if (this.pending === s) return; this.pending = s; this.lesson = 0; Sfx.play('pop'); UI.reward('Réussi !', '#ffd166');
     if (s === 'a2') Talk.say([['Iruka', 'Bien. Maintenant, esquive.']], () => { this.set('a2'); Game.hint('dodge'); });
     if (s === 'a4') Talk.say([['Iruka', 'Tu es prêt pour l’examen.'], [this.team.rival.name, 'Prêt ? Contre moi ? On verra ça.']], () => { this.set('a4'); World.foes_ = World.foes_.filter((f) => f.tag !== 'yard'); this.spawnRival(2250, 830, 1); });
-    if (s === 'a3') Talk.say([['Iruka', 'Dernière leçon : ta technique ' + SK[Game.skills[0]].n + ', puis le Kage Bunshin. Sur un mannequin.']], () => { this.set('a3'); Game.hint('s1'); }); },
+    if (s === 'a3') Talk.say([['Iruka', 'Dernière leçon : ta technique ' + SK[Game.skills[0]].n + ', ou un Kage Bunshin. Sur un mannequin.']], () => { this.set('a3'); Game.hint('s1'); }); },
   spawnRival(x, y, lvl) { const R = this.team.rival; const r = spawnFoe('rival', x, y, { tag: 'rival', look: R.look, n: R.name, el: R.el, hpMul: lvl, leash: [x, y, 420] }); r.aggro = true; return r; },
   formTeam(missing1) { const T = this.team; Game.allies = []; Game.addAlly(Object.assign({ id: 't0', slot: 0 }, T.t0)); if (!missing1) Game.addAlly(Object.assign({ id: 't1', slot: 1 }, T.t1)); if (this.withSensei()) Game.addAlly(Object.assign({ id: 'sensei', slot: 2 }, T.sensei, { n: T.sensei.name + '-sensei' })); },
   withSensei() { return ['x3', 'j1', 'j2', 'w1', 'w2', 'w3'].includes(this.step) || (this.mis && 'BA'.includes(this.mis.r)); },
@@ -1256,7 +1257,7 @@ const UI = {
   tab: 'carte',
   open(tab) { if (tab) this.tab = tab; Game.paused = true; $('#sheet').style.display = 'flex'; this.render(); },
   close() { $('#sheet').style.display = 'none'; Game.paused = false; Input.rebind = null; },
-  render() { const tabs = Game.mode === 'voie' && Voie.me ? { carte: 'Carte', quetes: 'Missions', equipe: 'Équipe', ninjutsu: 'Ninjutsu', reglages: 'Réglages', acces: 'Accessibilité', touches: 'Touches' } : { carte: 'Carte', quetes: 'Quêtes', ninjutsu: 'Ninjutsu', reglages: 'Réglages', acces: 'Accessibilité', touches: 'Touches' }; if (!tabs[this.tab]) this.tab = 'carte';
+  render() { const tabs = Game.mode === 'voie' && Voie.me ? { carte: 'Carte', quetes: 'Missions', journal: 'Journal', equipe: 'Équipe', ninjutsu: 'Ninjutsu', reglages: 'Réglages', acces: 'Accessibilité', touches: 'Touches' } : { carte: 'Carte', quetes: 'Quêtes', ninjutsu: 'Ninjutsu', reglages: 'Réglages', acces: 'Accessibilité', touches: 'Touches' }; if (!tabs[this.tab]) this.tab = 'carte';
     $('#sheet nav').innerHTML = Object.entries(tabs).map(([k, n]) => `<button data-t="${k}" class="${k === this.tab ? 'on' : ''}">${n}</button>`).join('');
     $('#sheet nav').querySelectorAll('button').forEach((b) => (b.onclick = () => { this.tab = b.dataset.t; Sfx.play('ui'); this.render(); })); const B = $('#sheet .body'); B.innerHTML = this['t_' + this.tab](); if (this['b_' + this.tab]) this['b_' + this.tab](B); },
   t_carte() { return `<canvas id="map" width="640" height="600" style="max-width:100%;height:auto;border-radius:12px;background:#0e1630"></canvas><p style="color:var(--dim)">Jour ${World.day} · ${String(Math.floor(World.time)).padStart(2, '0')}h${String(Math.floor((World.time % 1) * 60)).padStart(2, '0')} · Niv. ${Game.lvl}</p>`; },
@@ -1460,5 +1461,59 @@ const Roam = { t: 60, beast: null,
   const sv = Game.save.bind(Game); Game.save = function () { sv(); this.savedT = 1.2; };
   const rd = Game.render.bind(Game); Game.render = function () { rd(); if (!(this.savedT > 0) || !this.running) return; this.savedT -= 1 / 60; const vw = innerWidth, vh = innerHeight; const dpr = Math.min(Save.set.low ? 1 : 2, devicePixelRatio || 1); g.setTransform(dpr, 0, 0, dpr, 0, 0); const a = Math.min(1, this.savedT * 2);
     g.save(); g.globalAlpha = a; g.translate(vw - 30, vh - 30); g.rotate(this.t * 5); g.strokeStyle = '#8fd3ff'; g.lineWidth = 3; g.beginPath(); g.arc(0, 0, 9, 0, 4.4); g.stroke(); g.restore(); }; })();
+
+// Vague 5 (v0.6) : boutique plein écran façon gacha, journal des choix, marqueurs de carte.
+const SHOP_ITEMS = [
+  { id: 'pill', k: '丸', n: 'Pilule de soldat', d: 'PV et chakra au maximum.', p: 120, r: 'Rare', c: '#3aa0ff', use: () => { const h = Game.hero; h.hp = h.maxHp; h.ch = h.maxCh || 100; } },
+  { id: 'scroll', k: '巻', n: 'Parchemin d’ultime', d: 'Jauge d’ultime pleine.', p: 300, r: 'Épique', c: '#b04aff', use: () => { Game.ultV = 100; } },
+  { id: 'kunai', k: '苦', n: 'Kunai à sceau', d: '+10 % de dégâts jusqu’au soir.', p: 220, r: 'Rare', c: '#3aa0ff', use: () => { Game.buffT = 600; } },
+  ...[['#c0362a', 'Tenue écarlate'], ['#2a2a3a', 'Tenue ANBU'], ['#e0b13a', 'Tenue dorée'], ['#3a8a6a', 'Tenue de la Feuille'], ['#7a4a9a', 'Tenue violette'], ['#eef3ff', 'Tenue blanche']].map(([c, n], i) => ({ id: 'top' + i, k: '衣', n, d: 'Change la couleur de ta tenue.', p: 400, r: i > 3 ? 'Légendaire' : 'Épique', c: i > 3 ? '#ffb000' : '#b04aff', top: c })) ];
+const Shop = { open_: false, sel: 0, data: (() => { try { return JSON.parse(localStorage.getItem('tbv_shop')) || {}; } catch (e) { return {}; } })(),
+  save() { localStorage.setItem('tbv_shop', JSON.stringify(this.data)); },
+  npc: { id: 'shop', n: 'Tenten', x: 1040, y: 1105, r: 12, face: 1, vx: 0, vy: 0, anim: 0, isNpc: true, look: null, onTalk: () => Shop.open() },
+  apply() { const t = this.data[Game.mode === 'voie' ? 'topV' : 'topH']; if (t && Game.hero) { Game.hero.look = Object.assign({}, lookOf(Game.hero), { top: t }); Game.heroLook = Game.hero.look; } },
+  open() { if (this.open_) return; this.open_ = true; this.sel = 0; this.t0 = performance.now(); Game.paused = true; Sfx.play('pop'); const el = this.el || (this.el = document.createElement('div')); el.id = 'shop'; document.body.appendChild(el); el.style.display = 'flex'; this.render(); this.loop(); },
+  close() { this.open_ = false; this.el.style.display = 'none'; Game.paused = false; Input.end && Input.end(); },
+  buy() { const it = SHOP_ITEMS[this.sel]; if (it.top && this.data.owned && this.data.owned[it.id]) { this.data[Game.mode === 'voie' ? 'topV' : 'topH'] = it.top; this.save(); this.apply(); Sfx.play('pop'); return this.render(); }
+    if (Game.ryo < it.p) { Sfx.play('hurt'); this.el.querySelector('.buy').classList.add('no'); return; } Game.ryo -= it.p; Sfx.play('lvl');
+    if (it.top) { this.data.owned = this.data.owned || {}; this.data.owned[it.id] = 1; this.data[Game.mode === 'voie' ? 'topV' : 'topH'] = it.top; this.save(); this.apply(); } else it.use(); Game.save(); this.burst = 1; this.render(); },
+  render() { const it = SHOP_ITEMS[this.sel], own = it.top && this.data.owned && this.data.owned[it.id];
+    this.el.innerHTML = `<div class="sh-top"><b>武 Armurerie de Tenten</b><span>${Game.ryo} 両</span><button class="sh-x">Sortir (Échap)</button></div><div class="sh-main"><div class="sh-grid">${SHOP_ITEMS.map((x, i) => `<div class="sh-c${i === this.sel ? ' on' : ''}" data-i="${i}" style="--c:${x.c}"><i style="${x.top ? 'color:' + x.top : ''}">${x.k}</i><b>${x.n}</b><small>${x.r}</small><em>${x.top && this.data.owned && this.data.owned[x.id] ? 'Possédé' : x.p + ' 両'}</em></div>`).join('')}</div>
+      <div class="sh-prev"><canvas width="420" height="300"></canvas><h3>${it.n}</h3><p>${it.d}</p><button class="buy">${own ? 'Porter' : 'Acheter · ' + it.p + ' 両'}</button></div></div>`;
+    this.el.querySelectorAll('.sh-c').forEach((c) => (c.onclick = () => { this.sel = +c.dataset.i; Sfx.play('ui'); this.render(); })); this.el.querySelector('.buy').onclick = () => this.buy(); this.el.querySelector('.sh-x').onclick = () => this.close(); },
+  loop() { if (!this.open_) return; const I = Input; const n = SHOP_ITEMS.length; if (performance.now() - this.t0 < 250) { I.end && I.end(); return requestAnimationFrame(() => this.loop()); }
+    if (I.hit.has('Escape') || I.pressed('menu')) return this.close(); let mv = 0; if (I.pressed('right') || I.pressed('down')) mv = 1; if (I.pressed('left') || I.pressed('up')) mv = -1; if (mv) { this.sel = (this.sel + mv + n) % n; Sfx.play('ui'); this.render(); }
+    if (I.pressed('use') || I.hit.has('Enter')) this.buy(); I.end && I.end();
+    const cv = this.el.querySelector('canvas'); if (cv) { const g = cv.getContext('2d'), it = SHOP_ITEMS[this.sel], t = performance.now() / 1000; g.clearRect(0, 0, 420, 300); const gr = g.createRadialGradient(210, 170, 10, 210, 170, 200); gr.addColorStop(0, it.c); gr.addColorStop(1, 'rgba(11,16,32,0)'); g.globalAlpha = 0.5; g.fillStyle = gr; g.fillRect(0, 0, 420, 300); g.globalAlpha = 1;
+      g.strokeStyle = 'rgba(255,255,255,.15)'; for (let i = 0; i < 16; i++) { const a = i / 16 * TAU + t * 0.3; g.beginPath(); g.moveTo(210, 170); g.lineTo(210 + Math.cos(a) * 300, 170 + Math.sin(a) * 300); g.stroke(); }
+      const h = Game.hero, L = Object.assign({}, lookOf(h), it.top ? { top: it.top } : {}); const u = Object.assign({}, h, { x: 0, y: 0, look: L, face: 1, anim: t * 3, act: null, hurtT: 0, flash: 0, sq: Math.sin(t * 4) * 0.04, vx: 0, vy: 0 }); u.P = null; g.save(); g.translate(210, 270); g.scale(1.5, 1.5); try { drawRig(g, u); } catch (e) { } g.restore();
+      if (!it.top) { g.font = "400 64px 'Lilita One',serif"; g.textAlign = 'center'; g.fillStyle = '#fff'; g.strokeStyle = INK; g.lineWidth = 6; const y = 90 + Math.sin(t * 3) * 6; g.strokeText(it.k, 330, y); g.fillText(it.k, 330, y); } }
+    requestAnimationFrame(() => this.loop()); } };
+(() => { const st = document.createElement('style'); st.textContent = `#shop{position:fixed;inset:0;z-index:40;display:none;flex-direction:column;background:radial-gradient(circle at 70% 40%,#3a1f5a,#0b1020 70%);font-family:'TBV Ext','Lilita One',sans-serif;color:#eef3ff}
+.sh-top{display:flex;align-items:center;gap:16px;padding:14px 22px;background:linear-gradient(90deg,#7a2a2a,#3a1f5a);font-size:22px}.sh-top span{margin-left:auto;color:#ffd166}.sh-x{font:inherit;font-size:15px;background:#0b1020;color:#eef3ff;border:2px solid #ffd166;border-radius:10px;padding:6px 12px}
+.sh-main{display:flex;gap:20px;padding:20px;flex:1;min-height:0;flex-wrap:wrap}.sh-grid{flex:1;display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:12px;align-content:start}
+.sh-c{background:rgba(11,16,32,.75);border:2px solid var(--c);border-radius:14px;padding:10px;text-align:center;cursor:pointer;transition:transform .12s}.sh-c.on{transform:scale(1.07);box-shadow:0 0 18px var(--c)}.sh-c i{display:block;font-style:normal;font-size:34px;color:var(--c)}.sh-c b{display:block;font-size:14px}.sh-c small{color:var(--c)}.sh-c em{display:block;font-style:normal;color:#ffd166}
+.sh-prev{width:440px;max-width:100%;background:rgba(11,16,32,.8);border-radius:16px;padding:12px}.sh-prev canvas{width:100%;border-radius:12px;background:#121a36}.sh-prev h3{margin:8px 0 2px;font-size:22px}.sh-prev p{margin:0 0 10px;color:#93a3c6}
+.buy{font:inherit;font-size:18px;padding:10px 18px;border:0;border-radius:12px;background:linear-gradient(#ffd166,#f0a020);color:#2a1a00;cursor:pointer}.buy.no{animation:shk .3s}@keyframes shk{25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}`; document.head.appendChild(st); })();
+(() => { const pp = Game.people.bind(Game); Game.people = function () { const L = pp(); if (this.running && !this.titleMode) L.push(Shop.npc); return L; };
+  if (!Shop.npc.look) Shop.npc.look = makeLook(808, { hair: '#3a2a1e', hs: 'buns', top: '#e86a8a', band: 1 });
+  for (const k of ['start', 'startVoie']) { const o = Game[k].bind(Game); Game[k] = function (...a) { const r = o(...a); Shop.apply(); return r; }; }
+  // marqueurs de carte : mission, bijū errant
+  const bc = UI.b_carte.bind(UI); UI.b_carte = function () { bc(); const c = $('#map'); if (!c) return; const g = c.getContext('2d'), s = 640 / W; const pin = (x, y, col, k) => { g.fillStyle = col; g.strokeStyle = INK; g.lineWidth = 2; g.beginPath(); g.moveTo(x * s, y * s); g.arc(x * s, y * s - 16, 9, 2.4, 0.74, false); g.closePath(); g.fill(); g.stroke(); g.fillStyle = '#fff'; g.font = "400 11px 'Lilita One',serif"; g.textAlign = 'center'; g.fillText(k, x * s, y * s - 12); };
+    pin(Shop.npc.x, Shop.npc.y, '#e86a8a', '武'); if (Game.mode === 'voie') { const m = Voie.mis; if (m && m.tx != null) pin(m.tx, m.ty, '#ffd166', m.r); if (Roam.beast) pin(Roam.beast.x, Roam.beast.y, '#ff9a2e', '尾'); pin(1640, 700, '#3aa0ff', '任'); } };
+  UI.t_journal = function () { const F = Voie.flags || {}, T = Voie.team || {}; const row = (k, v) => `<div class="row"><label>${k}</label><b>${v}</b></div>`;
+    return `<h3 style="font-family:var(--f-title)">Journal</h3>` + row('Rang', RANKS[Voie.rank] || Voie.rank) + row('Missions réussies', Voie.done || 0) + row('Rival', F.rival === 'left' ? 'Parti seul' : F.rival === 'stay' ? 'Resté au village' : '—') + row('Examen Chūnin', F.exam === 'chase' ? 'Poursuite' : F.exam === 'protect' ? 'Protection' : '—') + row('Shukaku', F.shuk === 'talk' ? 'Apaisé par la parole' : F.shuk === 'seal' ? 'Scellé' : '—') + row('Bijū apaisés', F.calmed || 0) + row('Équipe', T.t0 ? T.t0.name + ', ' + T.t1.name + ' · ' + T.sensei.name : '—'); };
+  const gd = hurt; hurt = function (t, dmg, src, o) { if (src && src.isHero && Game.buffT > 0) dmg *= 1.1; return gd(t, dmg, src, o); };
+  const up = Game.update.bind(Game); Game.update = function (dt) { if (this.buffT > 0) this.buffT -= dt; return up(dt); }; })();
+// Arc Kara (après la fin de Ta voie) : Delta, puis Kashin Kōji, avec ton équipe.
+(() => { const V = Voie; const ob = V.obj.bind(V), tg = V.target.bind(V), upd = V.update.bind(V);
+  V.obj = function () { const s = this.step; if (s === 'kara1') return ['Arc Kara', 'Un Interne a été vu au nord-est. Trouve-le.']; if (s === 'kara2') return ['Arc Kara', 'Delta.']; if (s === 'kara3') return ['Arc Kara', 'Kashin Kōji t’attend au camp sud-ouest.']; if (s === 'kara4') return ['Arc Kara', 'Kashin Kōji.']; if (s === 'karafin') return ['Arc Kara terminé', 'Kara recule. Pour l’instant.']; return ob(); };
+  V.target = function () { const s = this.step; if (s === 'kara1') return [2850, 560]; if (s === 'kara3') return [420, 2700]; return tg(); };
+  V.update = function (dt) { upd(dt); const s = this.step, h = Game.hero; if (Talk.on || Cine.on) return;
+    if (s === 'fin' && !Voie.mis) { this.karaT = (this.karaT || 0) + dt; if (this.karaT > 20) { this.karaT = 0; Talk.say([[this.team.sensei.name, 'Mauvaise nouvelle. Une organisation nommée Kara.'], [this.team.sensei.name, 'Un de leurs Internes rôde au nord-est. On y va, tous ensemble.']], () => { this.set('kara1'); this.formTeam && this.formTeam(); }); } }
+    if (s === 'kara1' && Math.hypot(h.x - 2850, h.y - 560) < 260) { const d = spawnFoe('leader', 2850, 520, { tag: 'delta', leash: [2850, 560, 420] }); d.n = 'Delta'; d.look = makeLook(41, { hair: '#e8e0f0', hs: 'long', top: '#2a2a3a', cloak: '#3a2a4a' }); d.el = 'fire'; Talk.say([['Delta', 'Encore un ninja de la Feuille. Que c’est ennuyeux.']], () => { d.aggro = true; this.set('kara2'); }); }
+    if (s === 'kara2') { const d = World.foes_.find((f) => f.tag === 'delta' && !f.gone); if (d && d.hp < d.maxHp * 0.25 && !d.passive) { d.passive = true; Game.impact(d.x, d.y, 0.2); Talk.say([['Delta', 'Tch. Kashin Kōji s’occupera de vous.'], ['', 'Elle disparaît dans un éclat de lumière.']], () => { FX.smoke(d.x, d.y, 24); d.gone = true; Game.gainXp(900 * 5); this.set('kara3'); }); } }
+    if (s === 'kara3' && Math.hypot(h.x - 420, h.y - 2700) < 280) { World.time = Math.max(World.time, 20); const k = spawnFoe('leader', 440, 2660, { tag: 'kashin', leash: [420, 2700, 420] }); k.n = 'Kashin Kōji'; k.look = makeLook(404, { hair: '#d8d8d8', hs: 'long', cloak: '#2a2a3a' }); k.hp *= 1.6; k.maxHp = k.hp; Talk.say([['Kashin Kōji', 'Le ninja qui a calmé les bijū. Montre-moi.']], () => { k.aggro = true; this.set('kara4'); }); }
+    if (s === 'kara4') { const k = World.foes_.find((f) => f.tag === 'kashin' && !f.gone); if (k && k.hp < k.maxHp * 0.2 && !k.passive) { k.passive = true; Game.impact(k.x, k.y, 0.26); Talk.say([['Kashin Kōji', 'Intéressant. Nous nous reverrons.'], [this.team.t0.name, 'On l’a fait reculer… ensemble.']], () => { FX.smoke(k.x, k.y, 30); k.gone = true; Game.gainXp(1500 * 5); Game.ryo += 3000; UI.reward('Arc Kara terminé', '#ffd166'); this.set('karafin'); }); } } }; })();
 
 </script></body></html>

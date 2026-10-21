@@ -45,7 +45,7 @@ const UI = {
   tab: 'carte',
   open(tab) { if (tab) this.tab = tab; Game.paused = true; $('#sheet').style.display = 'flex'; this.render(); },
   close() { $('#sheet').style.display = 'none'; Game.paused = false; Input.rebind = null; },
-  render() { const tabs = Game.mode === 'voie' && Voie.me ? { carte: 'Carte', quetes: 'Missions', equipe: 'Équipe', ninjutsu: 'Ninjutsu', reglages: 'Réglages', acces: 'Accessibilité', touches: 'Touches' } : { carte: 'Carte', quetes: 'Quêtes', ninjutsu: 'Ninjutsu', reglages: 'Réglages', acces: 'Accessibilité', touches: 'Touches' }; if (!tabs[this.tab]) this.tab = 'carte';
+  render() { const tabs = Game.mode === 'voie' && Voie.me ? { carte: 'Carte', quetes: 'Missions', journal: 'Journal', equipe: 'Équipe', ninjutsu: 'Ninjutsu', reglages: 'Réglages', acces: 'Accessibilité', touches: 'Touches' } : { carte: 'Carte', quetes: 'Quêtes', ninjutsu: 'Ninjutsu', reglages: 'Réglages', acces: 'Accessibilité', touches: 'Touches' }; if (!tabs[this.tab]) this.tab = 'carte';
     $('#sheet nav').innerHTML = Object.entries(tabs).map(([k, n]) => `<button data-t="${k}" class="${k === this.tab ? 'on' : ''}">${n}</button>`).join('');
     $('#sheet nav').querySelectorAll('button').forEach((b) => (b.onclick = () => { this.tab = b.dataset.t; Sfx.play('ui'); this.render(); })); const B = $('#sheet .body'); B.innerHTML = this['t_' + this.tab](); if (this['b_' + this.tab]) this['b_' + this.tab](B); },
   t_carte() { return `<canvas id="map" width="640" height="600" style="max-width:100%;height:auto;border-radius:12px;background:#0e1630"></canvas><p style="color:var(--dim)">Jour ${World.day} · ${String(Math.floor(World.time)).padStart(2, '0')}h${String(Math.floor((World.time % 1) * 60)).padStart(2, '0')} · Niv. ${Game.lvl}</p>`; },

@@ -1,5 +1,13 @@
 # Two Blue Vortex — Notes de version
 
+## v0.6 — « Boutique & Kara » (21/10/2026)
+- Boutique de Tenten (près de l'Armurerie, touche E) : écran plein façon gacha, cartes par rareté, aperçu animé de ton personnage avec la tenue. Pilule, parchemin d'ultime, kunai à sceau, 6 tenues à porter (gardées entre les parties).
+- Arc Kara (après la fin de Ta voie) : Delta au nord-est, puis Kashin Kōji la nuit au camp sud-ouest, avec ton équipe.
+- Onglet Journal : tes choix (rival, examen, Shukaku), missions, bijū apaisés, équipe.
+- Carte : épingles pour la mission en cours, le bureau, la boutique et le bijū errant.
+- Gyūki a ses cornes.
+- Académie, leçon 3 plus simple : la technique OU un clone sur un mannequin suffit.
+
 ## v0.5 — « Vague 3 » (21/10/2026)
 - Bijū errants (Ta voie, à partir de Chūnin) : Matatabi, Son Gokū et Gyūki rôdent hors des murs. Calme-les sous 35 % de PV pour gagner beaucoup d'XP et de ryō.
 - Embuscades : des ninjas errants surgissent pendant que tu te promènes sans mission.

@@ -28,7 +28,7 @@ function genNinja(seed, clan, el, o = {}) { const R = mulb(seed), P = (a) => a[(
   return { name, clan, el, look, n: name + ' ' + C.n, skill: R() < 0.5 ? C.sk : ELEM_SK[el][0] }; }
 const Voie = { mode: 'voie',
   step: 'birth', q: {}, items: [], flags: {}, rank: 'eleve', done: 0, mis: null, bond: {}, me: null, team: null, lesson: 0,
-  obj() { const s = this.step, m = this.mis; const T = { birth: ['Naissance', '…'], a1: ['Académie — Leçon 1', 'Frappe les mannequins de la cour (' + Math.min(9, this.lesson) + '/9).'], a2: ['Académie — Leçon 2', 'Esquive les shurikens d’Iruka (' + Math.min(4, this.lesson) + '/4).'], a3: ['Académie — Leçon 3', 'Utilise ta technique et le Kage Bunshin sur un mannequin.'],
+  obj() { const s = this.step, m = this.mis; const T = { birth: ['Naissance', '…'], a1: ['Académie — Leçon 1', 'Frappe les mannequins de la cour (' + Math.min(9, this.lesson) + '/9).'], a2: ['Académie — Leçon 2', 'Esquive les shurikens d’Iruka (' + Math.min(4, this.lesson) + '/4).'], a3: ['Académie — Leçon 3', 'Touche un mannequin avec ta technique ou un clone.'],
       a4: ['Examen de sortie', 'Ton rival. Le premier à flancher perd.'], a5: ['Genin', 'Iruka t’attend devant l’Académie : ton équipe.'], a6: ['Test des clochettes', 'Touche ton sensei 3 fois (' + this.lesson + '/3).'],
       free: ['Rang ' + RANKS[this.rank], m ? `${m.r} — ${m.n}` + (m.need ? ` (${m.got || 0}/${m.need})` : '') : 'Prends une mission au bureau (tour du Hokage).'],
       r1: ['Arc I — L’Ombre', 'Ton rival t’attend à la grande porte. Ce soir.'], r2: ['Arc I — L’Ombre', 'Ton rival.'],
@@ -70,11 +70,11 @@ const Voie = { mode: 'voie',
   onHit(t, src) { if (t.tag === 'yard' && src && src.isHero) { if (this.step === 'a1' && src.act && src.act.k === 'm1') { this.lesson++; UI.objective(); if (this.lesson >= 9) this.next('a2'); }
       if (this.step === 'a3') { if (src.act && src.act.k === 'm1') return; this.flags.l3t = 1; this.checkL3(); } }
     if (t.tag === 'yard' && src && src.isClone && this.step === 'a3') { this.flags.l3c = 1; this.checkL3(); } },
-  checkL3() { if (this.flags.l3t && this.flags.l3c && this.step === 'a3') this.next('a4'); },
+  checkL3() { if ((this.flags.l3t || this.flags.l3c) && this.step === 'a3') this.next('a4'); },
   next(s) { if (this.pending === s) return; this.pending = s; this.lesson = 0; Sfx.play('pop'); UI.reward('Réussi !', '#ffd166');
     if (s === 'a2') Talk.say([['Iruka', 'Bien. Maintenant, esquive.']], () => { this.set('a2'); Game.hint('dodge'); });
     if (s === 'a4') Talk.say([['Iruka', 'Tu es prêt pour l’examen.'], [this.team.rival.name, 'Prêt ? Contre moi ? On verra ça.']], () => { this.set('a4'); World.foes_ = World.foes_.filter((f) => f.tag !== 'yard'); this.spawnRival(2250, 830, 1); });
-    if (s === 'a3') Talk.say([['Iruka', 'Dernière leçon : ta technique ' + SK[Game.skills[0]].n + ', puis le Kage Bunshin. Sur un mannequin.']], () => { this.set('a3'); Game.hint('s1'); }); },
+    if (s === 'a3') Talk.say([['Iruka', 'Dernière leçon : ta technique ' + SK[Game.skills[0]].n + ', ou un Kage Bunshin. Sur un mannequin.']], () => { this.set('a3'); Game.hint('s1'); }); },
   spawnRival(x, y, lvl) { const R = this.team.rival; const r = spawnFoe('rival', x, y, { tag: 'rival', look: R.look, n: R.name, el: R.el, hpMul: lvl, leash: [x, y, 420] }); r.aggro = true; return r; },
   formTeam(missing1) { const T = this.team; Game.allies = []; Game.addAlly(Object.assign({ id: 't0', slot: 0 }, T.t0)); if (!missing1) Game.addAlly(Object.assign({ id: 't1', slot: 1 }, T.t1)); if (this.withSensei()) Game.addAlly(Object.assign({ id: 'sensei', slot: 2 }, T.sensei, { n: T.sensei.name + '-sensei' })); },
   withSensei() { return ['x3', 'j1', 'j2', 'w1', 'w2', 'w3'].includes(this.step) || (this.mis && 'BA'.includes(this.mis.r)); },
