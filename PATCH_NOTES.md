@@ -1,3 +1,16 @@
+# v0.10.0 — 17 nouvelles techniques canon
+Chaque technique a sa propre pose d’incantation en images clés, ses couches VFX, ses prérequis dans la constellation et ses variantes.
+- **Katon** : Zukokku, Bakufū Ranbu
+- **Fūton** : Shinkū Renpa, Atsugai
+- **Suiton** : Suikōdan, Bakusui Shōha
+- **Raiton** : Chidori Eisō, Chidori Senbon
+- **Doton** : Doroku Gaeshi, Retsudo Tenshō
+- **Taijutsu** : Konoha Gōriki Senpū, Shishi Rendan
+- **Ninjutsu** : Fūma Shuriken
+- **Dōjutsu** : Hakke Kūshō (Hyūga), Shinra Tensei, Kamui (Uchiha), Amaterasu (Uchiha)
+
+Les techniques élémentaires n’apparaissent que pour ton élément, les dōjutsu que pour ton clan.
+
 # v0.9.9 — Fluidité
 - **Poses** : mélange des poses par lissage exponentiel en temps réel, indépendant des FPS. Plus de saut entre repos, course, coup, réaction, dash et technique, pour le héros, les ennemis, les alliés et les PNJ.
 - **Caméra et interface** : tremblement de caméra lissé (bruit continu), transitions douces des barres et panneaux.
