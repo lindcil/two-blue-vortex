@@ -1,3 +1,7 @@
+## v0.10.7
+- Orientation 8 directions pour tous (héros, alliés, ennemis, PNJ) : rotation du corps, vue de dos en montant, tête et bras orientés.
+- Attaques, techniques et esquives visent le vrai cap (souris, déplacement ou cible).
+
 ## v0.10.6
 - Ta voie : le héros n’apparaît plus à l’autre bout de la carte (ancien recalage d’avant l’agrandissement). Les mannequins de la leçon 1 sont à côté de toi.
 - Suivi de quête : flèche + distance, repère au sol sur l’objectif ; les leçons pointent les mannequins et le sensei.
