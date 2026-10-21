@@ -1,3 +1,12 @@
+# v0.9.4 — Entraînement et quêtes du jour
+- **8 activités au terrain d'entraînement** (E près d'une station). Chacune donne de l'XP de branche, et 100 XP valent un point de constellation.
+  - **Méditation d'ermite** : reste immobile dans le cercle pendant que l'énergie naturelle afflue. Des feuilles tourbillonnent, le crapaud Fukasaku veille et des ennemis viennent interrompre. Elle débloque le **Mode Ermite** (Z, 3 paliers).
+  - **Casse-rochers**, **contrôle du chakra** (grimper à l'arbre ou marcher sur l'eau, C pour doser), **stand de shuriken**.
+  - **Dōjutsu** : trouve le vrai parmi les clones. **Affinité élémentaire** : feuilles à couper.
+  - **Parcours de vitesse**, **clones** à suivre dans l'ordre.
+- **Quêtes du jour** : 3 par jour, qui changent chaque jour (par exemple « Casser 10 rochers »). Petit panneau MISSION en haut à droite. Récompenses, avec un point de constellation si les 3 sont faites.
+- **Bonus quotidien** avec une série de jours.
+
 # v0.9.3 — Éditeur de techniques
 - **Créatif → ✎ Éditeur** :
   - curseurs pour le temps, les dégâts, le nombre, la vitesse, la taille et les effets ;
