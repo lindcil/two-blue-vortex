@@ -1,21 +1,23 @@
 'use strict';
 /* ============ Noyau : réglages, sauvegarde, entrées, audio ============ */
-const VERSION = '0.6.2';
+const VERSION = '0.7';
 const $ = (s) => document.querySelector(s);
 const TAU = Math.PI * 2, clamp = (v, a, b) => (v < a ? a : v > b ? b : v), lerp = (a, b, t) => a + (b - a) * t;
 const rnd = (a, b) => a + Math.random() * (b - a), pick = (a) => a[(Math.random() * a.length) | 0];
 const dist = (a, b) => Math.hypot(a.x - b.x, a.y - b.y);
 const ease = { out: (t) => 1 - Math.pow(1 - t, 3), back: (t) => 1 + 2.7 * Math.pow(t - 1, 3) + 1.7 * Math.pow(t - 1, 2), inout: (t) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2) };
 
-const ACTIONS = { up: 'Haut', down: 'Bas', left: 'Gauche', right: 'Droite', atk: 'Frappe (M1)', dodge: 'Esquive', s1: 'Technique 1', s2: 'Technique 2', s3: 'Technique 3', s4: 'Technique 4', ult: 'Ultime', use: 'Parler / interagir', menu: 'Menu', map: 'Carte' };
-const DEFAULT_KEYS = { up: ['KeyW', 'ArrowUp'], down: ['KeyS', 'ArrowDown'], left: ['KeyA', 'ArrowLeft'], right: ['KeyD', 'ArrowRight'], atk: ['KeyJ', 'Mouse0'], dodge: ['ShiftLeft', 'KeyK'], s1: ['Digit1', 'KeyU'], s2: ['Digit2', 'KeyI'], s3: ['Digit3', 'KeyO'], s4: ['Digit4', 'KeyP'], ult: ['KeyR', 'KeyL'], use: ['KeyE', 'Enter'], menu: ['Escape', 'Tab'], map: ['KeyM'] };
-// codes physiques : sur AZERTY, KeyW = Z, KeyA = Q → ZQSD par défaut
+const ACTIONS = { up: 'Haut', down: 'Bas', left: 'Gauche', right: 'Droite', atk: 'Frappe (M1)', dodge: 'Dash / esquive', mode: 'Charge de mode (bête)', charge: 'Charge de chakra (puis dōjutsu)', s1: 'Technique 1', s2: 'Technique 2', s3: 'Technique 3', s4: 'Technique 4', ult: 'Ultime', use: 'Parler / interagir', menu: 'Menu', map: 'Carte' };
+const DEFAULT_KEYS = { up: ['ArrowUp'], down: ['ArrowDown'], left: ['ArrowLeft'], right: ['ArrowRight'], atk: ['Mouse0', 'KeyJ'], dodge: ['KeyQ', 'Mouse2'], mode: ['KeyW'], charge: ['KeyC'], s1: ['Digit1', 'KeyU'], s2: ['Digit2', 'KeyI'], s3: ['Digit3', 'KeyO'], s4: ['Digit4', 'KeyP'], ult: ['KeyR', 'KeyL'], use: ['KeyE', 'Enter'], menu: ['Escape', 'Tab'], map: ['KeyM'] };
+// codes physiques : sur AZERTY, KeyQ = A (dash), KeyW = Z (charge de mode), KeyC = C (chakra). Déplacement : flèches par défaut, préréglage ZQSD au choix (charge de mode → F).
+const KEY_PRESETS = { fleches: DEFAULT_KEYS_F(), zqsd: Object.assign(DEFAULT_KEYS_F(), { up: ['KeyW', 'ArrowUp'], down: ['KeyS', 'ArrowDown'], left: ['KeyA', 'ArrowLeft'], right: ['KeyD', 'ArrowRight'], mode: ['KeyF'] }) };
+function DEFAULT_KEYS_F() { return JSON.parse(JSON.stringify(DEFAULT_KEYS)); }
 const PAD = { atk: 2, dodge: 1, s1: 4, s2: 5, s3: 6, s4: 7, ult: 3, use: 0, menu: 9, map: 8 };
 const DEF_SET = { diff: 1, cb: 'none', ts: 1, speed: 1, shake: 1, rf: true, low: false, vol: 0.7, mus: 0.4, hc: false, keys: null, cine: 'first' };
 const Save = {
   K: 'tbv_save_v1', S: 'tbv_set_v1',
   set: Object.assign({}, DEF_SET),
-  load() { try { const s = JSON.parse(localStorage.getItem(this.S) || 'null'); if (s) this.set = Object.assign({}, DEF_SET, s); } catch (e) {} if (!this.set.keys) this.set.keys = JSON.parse(JSON.stringify(DEFAULT_KEYS)); for (const k in DEFAULT_KEYS) if (!this.set.keys[k]) this.set.keys[k] = DEFAULT_KEYS[k].slice(); this.apply(); },
+  load() { try { const s = JSON.parse(localStorage.getItem(this.S) || 'null'); if (s) this.set = Object.assign({}, DEF_SET, s); } catch (e) {} if (!this.set.keys || this.set.kv !== 7) { this.set.keys = JSON.parse(JSON.stringify(DEFAULT_KEYS)); this.set.kv = 7; this.set.layoutAsk = 1; } for (const k in DEFAULT_KEYS) if (!this.set.keys[k]) this.set.keys[k] = DEFAULT_KEYS[k].slice(); this.apply(); },
   saveSet() { try { localStorage.setItem(this.S, JSON.stringify(this.set)); } catch (e) {} this.apply(); },
   apply() { document.documentElement.style.setProperty('--ts', this.set.ts); document.body.classList.toggle('hc', !!this.set.hc); },
   game() { try { return JSON.parse(localStorage.getItem(this.K) || 'null'); } catch (e) { return null; } },
@@ -25,7 +27,7 @@ const Save = {
   writeV(d) { try { localStorage.setItem('tbv_voie_v1', JSON.stringify(d)); } catch (e) {} },
   wipeV() { try { localStorage.removeItem('tbv_voie_v1'); } catch (e) {} },
 };
-const keyName = (c) => { if (!c) return '—'; if (c === 'Mouse0') return 'Clic'; if (c.startsWith('Key')) { const l = c.slice(3); const az = { W: 'Z', A: 'Q', Q: 'A', Z: 'W', M: ',' }; return Input.azerty && az[l] ? az[l] : l; } if (c.startsWith('Digit')) return c.slice(5); const m = { ArrowUp: '↑', ArrowDown: '↓', ArrowLeft: '←', ArrowRight: '→', ShiftLeft: 'Maj', ShiftRight: 'Maj', Space: 'Espace', Enter: 'Entrée', Escape: 'Échap', Tab: 'Tab' }; return m[c] || c; };
+const keyName = (c) => { if (!c) return '—'; if (c === 'Mouse0') return 'Clic'; if (c === 'Mouse2') return 'Clic droit'; if (c.startsWith('Key')) { const l = c.slice(3); const az = { W: 'Z', A: 'Q', Q: 'A', Z: 'W', M: ',' }; return Input.azerty && az[l] ? az[l] : l; } if (c.startsWith('Digit')) return c.slice(5); const m = { ArrowUp: '↑', ArrowDown: '↓', ArrowLeft: '←', ArrowRight: '→', ShiftLeft: 'Maj', ShiftRight: 'Maj', Space: 'Espace', Enter: 'Entrée', Escape: 'Échap', Tab: 'Tab' }; return m[c] || c; };
 const Input = {
   down: new Set(), hit: new Set(), azerty: true, mx: 0, my: 0, mdown: false, touch: false, stick: { x: 0, y: 0 }, pad: null, padPrev: {}, rebind: null, lastDev: 'kb',
   init() {
@@ -33,8 +35,8 @@ const Input = {
     addEventListener('keydown', (e) => { if (this.rebind) { e.preventDefault(); this.rebind(e.code); return; } if (['Tab', 'Space', 'ArrowUp', 'ArrowDown'].includes(e.code)) e.preventDefault(); if (!e.repeat) this.hit.add(e.code); this.down.add(e.code); this.lastDev = 'kb'; });
     addEventListener('keyup', (e) => this.down.delete(e.code));
     addEventListener('blur', () => this.down.clear());
-    const cv = $('#cv'); cv.addEventListener('mousedown', (e) => { if (e.button === 0) { this.hit.add('Mouse0'); this.down.add('Mouse0'); this.lastDev = 'kb'; } });
-    addEventListener('mouseup', () => this.down.delete('Mouse0')); addEventListener('mousemove', (e) => { this.mx = e.clientX; this.my = e.clientY; });
+    const cv = $('#cv'); cv.addEventListener('mousedown', (e) => { if (e.button === 0 || e.button === 2) { const k = 'Mouse' + e.button; this.hit.add(k); this.down.add(k); this.lastDev = 'kb'; } }); cv.addEventListener('contextmenu', (e) => e.preventDefault());
+    addEventListener('mouseup', (e) => this.down.delete('Mouse' + (e.button === 2 ? 2 : 0))); addEventListener('mousemove', (e) => { this.mx = e.clientX; this.my = e.clientY; });
     addEventListener('touchstart', () => { if (!this.touch) { this.touch = true; Touch.show(); } this.lastDev = 'touch'; }, { passive: true });
   },
   is(a) { if (this.virt && this.virt[a]) return true; const ks = Save.set.keys[a] || []; for (const k of ks) if (this.down.has(k)) return true; return this.padIs(a); },

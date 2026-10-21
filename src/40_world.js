@@ -1,5 +1,5 @@
 /* ============ Monde : Konoha vivante ============ */
-const W = 3200, H = 3000, WALL_Y = 2300;
+const W = 4800, H = 4400, WALL_Y = 2300;
 const World = {
   time: 8, day: 1, props: [], solids: [], npcs: [], foes_: [], hazards: [], pois: [], ground: null, lights: [],
   foes() { return this.foes_.filter((f) => f.hp > 0 && !f.gone); },
@@ -29,7 +29,7 @@ const World = {
     poi('field', 2850, 1250, 'Terrain d’entraînement', '練'); poi('shinju1', 330, 1250, 'Racines du Shinju', '樹'); poi('shinju2', 380, 1900, 'Racines du Shinju', '樹'); poi('camp', 1600, 2720, 'Camp de déserteurs', '賊');
     poi('scroll1', 640, 700, 'Parchemin : l’Omnipotence', '巻'); poi('scroll2', 2980, 820, 'Parchemin : les Marques de Griffe', '巻'); poi('chest1', 2500, 2000, 'Coffre', '箱'); poi('chest2', 900, 2150, 'Coffre', '箱');
     this.prerender(); },
-  prerender() { const sc = Save.set.low ? 0.5 : 1; const c = document.createElement('canvas'); c.width = W * sc; c.height = H * sc; const g = c.getContext('2d'); g.scale(sc, sc); const R = mulberry(3);
+  prerender() { const sc = Save.set.low ? 0.4 : 0.7; const c = document.createElement('canvas'); c.width = W * sc; c.height = H * sc; const g = c.getContext('2d'); g.scale(sc, sc); const R = mulberry(3);
     g.fillStyle = '#5d8a4e'; g.fillRect(0, 0, W, H); for (let i = 0; i < 2600; i++) { g.fillStyle = R() < 0.5 ? 'rgba(40,80,40,.18)' : 'rgba(130,170,90,.14)'; g.beginPath(); g.ellipse(R() * W, R() * H, 6 + R() * 26, 3 + R() * 10, 0, 0, TAU); g.fill(); }
     g.fillStyle = '#3d5f39'; g.fillRect(0, 0, 480, H); g.fillStyle = 'rgba(30,45,25,.35)'; g.fillRect(0, WALL_Y, W, H - WALL_Y);
     // routes

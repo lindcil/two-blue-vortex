@@ -57,3 +57,20 @@
   - boutons qui rebondissent au survol et à l'appui, toasts de récompense avec dépassement (overshoot) ;
   - anneau de vie **vert**, rouge réservé aux dégâts et aux télégraphes ;
   - silhouettes lisibles : contour encré épais, grosse tête, une seule couleur dominante par personnage.
+
+## v0.7 — Vendre la vitesse (course ninja)
+Sources : notes de mise en scène des jeux et analyses vidéo (Naruto Storm 4/Connections, Demon Slayer Hinokami Chronicles, Dragon Ball Sparking! Zero, Genshin Impact sprint). Ce qu'ils utilisent :
+- **Champ de vision / dézoom** : Storm et Sparking Zero élargissent le FOV de 5 à 10 % en sprint, puis le resserrent à l'arrêt. → Implémenté : dézoom de 8 %, avec lissage.
+- **Lignes de vitesse en bord d'écran** (manga, Hinokami, Sparking Zero) : traits radiaux en périphérie, jamais au centre. → Implémenté : overlay léger, atténué avec « réduire les flashs ».
+- **Traînées de vent / streaks** derrière le personnage (Genshin, Storm). → Implémenté : traits courts orientés selon la vitesse.
+- **Bouffées de poussière aux appuis** (Genshin, Hinokami). → Implémenté : toutes les 0,16 s.
+- **Images rémanentes / motion blur** (Storm, Hinokami). → Implémenté : fantômes bleutés espacés (plus espacés avec réduire les flashs).
+- **Caméra en avance / retard** (lead) : la caméra anticipe la direction. → Déjà présent (suivi avec avance selon la vitesse), conservé.
+- **Souffle du vent** (Genshin, Sparking Zero) : bruit filtré dont le volume suit la vitesse. → Implémenté (WebAudio, bruit passe-bande).
+- **Légère inclinaison de l'écran dans les virages** (Storm, Sparking Zero). → Implémenté : 0,05 rad, amorti.
+- **Dérapage à l'arrêt** (Storm, Hinokami) : écrasement, poussière, gravillons. → Implémenté.
+- Non retenu : flou de mouvement plein écran (coûteux en 2D, risque d'inconfort), flash blanc d'accélération (contraire à « réduire les flashs »).
+Pose : après ~1,6 s de course continue, le héros passe en sprint ninja (bras balayés vers l'arrière, buste penché à 0,85 rad, cadence d'animation ×1,5, 440 px/s au lieu de 260).
+
+## v0.7 — Vignettes entre missions (référence : Demon Slayer Hinokami Chronicles)
+Hinokami place entre les chapitres des « mémoires » et des mini-jeux courts (entraînement avec Shinobu, repas, exercices de souffle) : un décor dédié, deux ou trois répliques, une interaction simple (appui au bon moment, martèlement), une récompense. On garde cette structure : 22 vignettes de 20 à 40 s, toutes passables (Échap ou « Passer »), jouables au clavier, à la souris et au tactile.

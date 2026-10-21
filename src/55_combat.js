@@ -43,10 +43,10 @@ function heroUpdate(u, dt) {
     else if (b.k === 'ult' && !u.act) { castUlt(u); used = true; }
     if (used || b.t <= 0) u.buf = null; }
   const m = Input.move(); const busy = u.act && u.act.k !== 'cast';
-  if (!busy) { const sp = (u.ninjaRun ? 300 : 260) * (u.st.slow > 0 ? 0.6 : 1); u.vx = lerp(u.vx, m.x * sp, 1 - Math.pow(0.0005, dt)); u.vy = lerp(u.vy, m.y * sp, 1 - Math.pow(0.0005, dt)); if (Math.abs(m.x) > 0.1) u.face = m.x < 0 ? -1 : 1; }
-  const moving = Math.hypot(m.x, m.y) > 0.2; u.runT = moving && !u.combat ? (u.runT || 0) + dt : 0; u.ninjaRun = u.runT > 0.9;
+  if (!busy) { const sp = (u.ninjaRun ? 440 : 260) * (u.st.slow > 0 ? 0.6 : 1); u.vx = lerp(u.vx, m.x * sp, 1 - Math.pow(0.0005, dt)); u.vy = lerp(u.vy, m.y * sp, 1 - Math.pow(0.0005, dt)); if (Math.abs(m.x) > 0.1) u.face = m.x < 0 ? -1 : 1; }
+  const moving = Math.hypot(m.x, m.y) > 0.2; u.runT = moving && !u.combat ? (u.runT || 0) + dt : 0; u.ninjaRun = u.runT > 1.6;
   const near = nearestFoe(u, 240); u.aimFoe = near && !busy && !moving ? near : null;
-  const px = u.x; u.x += u.vx * dt; u.y += u.vy * dt; World.collide(u); u.anim += dt * (Math.hypot(u.vx, u.vy) > 25 ? (u.ninjaRun ? 14 : 12) : 3); u.sq = lerp(u.sq, 0, 1 - Math.pow(0.0001, dt));
+  const px = u.x; u.x += u.vx * dt; u.y += u.vy * dt; World.collide(u); u.anim += dt * (Math.hypot(u.vx, u.vy) > 25 ? (u.ninjaRun ? 18 : 12) : 3); u.sq = lerp(u.sq, 0, 1 - Math.pow(0.0001, dt));
   if (moving && Math.sin(u.anim) * Math.sin(u.anim - dt * 12) < 0 && Math.random() < 0.5) FX.dust(u.x, u.y, 2);
   if (u.act && (u.act.k === 'dash' || u.act.k === 'rasen' || u.act.k === 'chidori' || u.act.k === 'fang')) { u.ghT = (u.ghT || 0) - dt; if (u.ghT <= 0) { u.ghT = 0.035; FX.ghost(u, u.act.k === 'chidori' ? '#9fb8ff' : u.act.k === 'fang' ? '#d8c8a0' : '#8fd3ff'); } } }
 function nearestFoe(u, r) { let b = null, bd = r; for (const f of World.foes()) { if (f.type === 'dummy' && !(Game.inField(u) || f.tag === 'yard')) continue; if (f.passive) continue; const d = dist(f, u) - (f.kind === 'bijuu' ? 60 : 0); if (d < bd) { bd = d; b = f; } } return b; }

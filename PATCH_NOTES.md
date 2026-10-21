@@ -1,3 +1,34 @@
+# v0.7 — 21 octobre 2026 — Scènes, techniques et commandes
+- **Scènes mises en scène** : plus de carte générique pour les moments clés de Ta voie. Chacun a son décor animé :
+  - salle de classe de l'Académie ;
+  - cérémonie de remise des bandeaux ;
+  - rencontre d'équipe sur un toit : le sensei et les deux coéquipiers se présentent un par un, puis tu choisis le nom de l'équipe (nom proposé, généré ou personnalisé), affiché sur un carton titre puis dans le journal et l'onglet Équipe ;
+  - terrain des clochettes ;
+  - bureau du Hokage pour le choix des missions ;
+  - épreuve écrite de l'examen Chūnin : salle remplie de candidats qui écrivent (crayons animés), surveillant qui fait sa ronde, ton rival assis à côté, quiz chronométré de 3 questions ;
+  - arène de l'examen avec ses spectateurs ;
+  - camp de guerre de nuit.
+- **Ellipses** : transitions au pinceau d'encre avec carton (« Le lendemain », « Quelques heures plus tard »…) et mini-montage de 2 à 3 cases. Elles t'amènent directement au bon endroit. Exemple : après l'écrit, direction Ichiraku avec Iruka pour un QTE de ramen (le bol se vide pendant que tu martèles), puis l'arène. En Histoire, des transitions marquent aussi le passage d'un chapitre à l'autre.
+- **22 vignettes entre les missions**, façon Hinokami : repas d'équipe, entraînement avec le sensei, duel avec le rival, méditation sous la cascade, tir de shurikens, grimper aux arbres, marcher sur l'eau, pêche aux poissons rouges au festival, pêche avec un coéquipier, course pour le Hokage, chat Tora, visite à l'hôpital, discussion nocturne sur le toit, bains publics, autographes pour les élèves, leçon de l'ancien du clan, shōgi avec Shikamaru, concours de cuisine, étoiles filantes, combat d'entraînement, course de fond, parchemin du clan.
+  - Chacune a son décor, un QTE léger (martèlement, timing, maintien, suite de touches, quiz) et une récompense : Endurance, Chakra, Force, lien, ryō ou technique.
+  - Elles sont choisies selon le contexte (nuit, PV bas, celles pas encore vues) et toutes passables avec Échap ou « Passer ».
+- **Techniques refondues** :
+  - 15 techniques élémentaires : Hōsenka, Karyū Endan, Haisekishō, Daitoppa, Kamaitachi (boomerang), Shinkūgyoku, Suijinheki, Suirō, Teppōdama, Raikyū (en chaîne), Nagashi, Raijū Tsuiga, Doryūheki (bloque les projectiles), Doryūdan, Yomi Numa ;
+  - 8 techniques de clan avancées : Sōshūha, Kaiten, Kubishibari, Nikudan Sensha, Shinranshin, Mushi Bunshin, Garōga, Jukai Kōtan ;
+  - chacune a son animation et ses VFX propres.
+- **Clan et techniques tirés au sort** en Ta voie : le clan est tiré à la naissance et la première technique dans ton élément. D'autres techniques se débloquent ensuite : au diplôme, à la 3e et à la 7e mission, et la technique de clan avancée en devenant Chūnin. On les équipe dans Menu › Ninjutsu. Le choix libre du clan et des techniques est réservé au nouveau mode **Créatif** (écran titre, aucune sauvegarde).
+- **Commandes** (AZERTY par défaut, toutes modifiables) :
+  - 1 2 3 4 : techniques ;
+  - A ou clic droit : dash ;
+  - Z (maintenu) : charge du manteau de chakra ;
+  - C (maintenu) : charge de chakra. Au-delà du maximum, continuer à maintenir charge ton dōjutsu ou ton mode de clan (Sharingan, Byakugan…, Jōgan en Histoire).
+  - Déplacement : flèches par défaut, ou préréglage ZQSD (la charge de mode passe alors sur F), choisi au premier lancement.
+  - Rappels de touches, astuces et boutons tactiles (Z, C) mis à jour.
+- **Course ninja** : après ~1,6 s de course, sprint bras en arrière. Lignes de vitesse, dézoom, traînées, poussière, images rémanentes, souffle du vent, légère inclinaison dans les virages et dérapage à l'arrêt. « Réduire les flashs » est respecté.
+- **Carte agrandie** : elle passe de 3200×3000 à 4800×4400, avec Forêt de l'Est, Sanctuaire du renard, Avant-poste, Cascade, Lac du Miroir, Rizières, Ruines du Sud et Plateau des Pierres, plus des ponts et des chemins.
+- Menu : bouton « Retour à la sélection des jeux » (sauvegarde, avec confirmation en plein combat).
+- Inclut le correctif 0.6.2 : plus de pose « touché » figée pendant les scènes.
+
 # v0.6.2 — 21 octobre 2026 (correctif)
 - Ton personnage ne reste plus figé en pose « touché » (penché en arrière) pendant les scènes de chapitre. La pose de coup reçu du héros ne se terminait jamais et les alliés se figeaient pendant les cinématiques. Désormais, chaque début et fin de dialogue ou de scène remet tout le monde en pose de repos et te rend la main, dans les deux modes.
 
