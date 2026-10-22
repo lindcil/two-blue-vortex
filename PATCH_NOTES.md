@@ -1,3 +1,6 @@
+## v0.10.54 — Sensei can't drift out of reach
+Three-hits test: the game only lists enemies in your current district, and the sensei teleports after each hit, so he could land across a district edge and become untouchable. He is now pulled back next to you; invalid HP is also repaired.
+
 ## v0.10.53 — Sensei bell test can no longer softlock
 Academy three-hits test: if the sensei ever vanishes from the field before the third hit, he is put back (progress kept), so the test cannot get stuck.
 
