@@ -104,7 +104,7 @@ button.b.p{background:var(--gold);color:var(--ink)}button.b.p2{background:var(--
 <script>
 'use strict';
 /* ============ Noyau : réglages, sauvegarde, entrées, audio ============ */
-const VERSION = '0.10.25';
+const VERSION = '0.10.26';
 const K10 = Math.sqrt(10); // v0.9.7 : échelle des cartes extérieures (surface ×10)
 const $ = (s) => document.querySelector(s);
 const TAU = Math.PI * 2, clamp = (v, a, b) => (v < a ? a : v > b ? b : v), lerp = (a, b, t) => a + (b - a) * t;
@@ -1718,6 +1718,39 @@ const Shop = { open_: false, sel: 0, data: (() => { try { return JSON.parse(loca
       case 'tent': { g.fillStyle = 'rgba(0,0,0,.25)'; g.beginPath(); g.ellipse(p.x, p.y, 50, 12, 0, 0, TAU); g.fill(); g.fillStyle = '#c9b48a'; g.strokeStyle = INK; g.lineWidth = 3; g.beginPath(); g.moveTo(p.x - 48, p.y); g.lineTo(p.x, p.y - 70); g.lineTo(p.x + 48, p.y); g.closePath(); g.fill(); g.stroke(); g.fillStyle = '#5a4a32'; g.beginPath(); g.moveTo(p.x - 12, p.y); g.lineTo(p.x, p.y - 40); g.lineTo(p.x + 12, p.y); g.fill(); return; }
       case 'bridge': { g.fillStyle = '#8a6a44'; g.strokeStyle = INK; g.lineWidth = 3; g.fillRect(p.x - 70, p.y - 30, 140, 46); g.strokeRect(p.x - 70, p.y - 30, 140, 46); g.strokeStyle = 'rgba(11,16,32,.4)'; for (let k = -60; k < 70; k += 16) { g.beginPath(); g.moveTo(p.x + k, p.y - 30); g.lineTo(p.x + k, p.y + 16); g.stroke(); } return; }
     } return dp(g, p); };
+})();
+
+// v0.10.26 — Konoha restructuré : îlots de maisons à taille humaine le long de vraies rues, rue marchande avec étals, quartier résidentiel dense.
+// (avant : 26 maisons géantes posées au hasard dans un village agrandi ×3,16)
+(() => {
+  const ROADS_X = [900, 1600, 2200], ROADS_Y = [960, 1270, 1580, 1900];
+  const onRoad = (x, y, w, h) => ROADS_X.some((r) => Math.abs(x - r) < (r === 1600 ? 95 : 40) + w / 2) || ROADS_Y.some((r) => y > r - (r === 1580 ? 120 : 40) && y - h < r + (r === 1580 ? 110 : 30));
+  const ROOFS = ['#b8563a', '#a8483a', '#6c8ea3', '#7a5a3a', '#3f6f5f', '#8e6b4a', '#5b6f8a'];
+  const bd = World.build.bind(World);
+  World.build = function () { const r = bd(); if (Game.titleMode) return r; const R = mulberry(4242);
+    // 1) retire les maisons anonymes du village et leurs collisions
+    const old = this.props.filter((p) => p.kind === 'house' && !p.label && p.y < WALL_Y);
+    for (const p of old) { const i = this.solids.findIndex((s) => Math.abs(s.x - (p.x - p.w / 2)) < 0.5 && Math.abs(s.y - (p.y - p.h)) < 0.5); if (i >= 0) this.solids.splice(i, 1); }
+    this.props = this.props.filter((p) => !old.includes(p));
+    const keep = this.props.filter((p) => p.kind === 'house' && p.label).map((p) => [p.x - p.w / 2 - 50, p.y - p.h - 40, p.x + p.w / 2 + 50, p.y + 60]);
+    keep.push([2550, 1050, 3200, 1500]); // terrain d'entraînement
+    const blocked = (x, y, w, h) => keep.some((k) => x + w / 2 > k[0] && x - w / 2 < k[2] && y > k[1] && y - h < k[3]) || this.pois.some((q) => Math.hypot(q.x - x, q.y - y) < 70);
+    const house = (x, y, w, h, roof) => { this.solids.push({ x: x - w / 2, y: y - h, w, h: h * 0.75 }); this.props.push({ kind: 'house', x, y, w, h, roof, small10: 1 }); };
+    // 2) îlots résidentiels : maisons ~1,5× la hauteur d'un ninja, alignées sur les rues
+    let n = 0; for (let y = 760; y < 2240; y += 92) for (let x = 520; x < 3250; x += 104) { const w = 78 + R() * 18, h = 58 + R() * 12, jx = x + R() * 10, yy = y + R() * 6;
+      if (onRoad(jx, yy, w, h)) continue; if (blocked(jx, yy, w, h)) continue; if (yy < 1000 && jx > 1250 && jx < 2500) continue; if (R() < 0.08) continue; house(jx, yy, w, h, ROOFS[(R() * ROOFS.length) | 0]); n++; }
+    // 3) rue marchande (y = 1580) : étals des deux côtés
+    for (let x = 1000; x < 2400; x += 130) { if (Math.abs(x - 1600) < 140) continue; for (const y of [1530, 1650]) { if (blocked(x, y, 70, 40)) continue; this.props.push({ kind: 'stall10', x, y, c: ROOFS[(R() * ROOFS.length) | 0] }); this.solids.push({ x: x - 34, y: y - 26, w: 68, h: 20 }); } }
+    this.houses10 = n; return r; };
+  // dessin des étals (coordonnées logiques, l'échelle K est appliquée par 8b)
+  const dp = World.drawProp.bind(World);
+  World.drawProp = function (g, p) { if (p.kind !== 'stall10') return dp(g, p); const { x, y } = p;
+    g.fillStyle = 'rgba(0,0,0,.22)'; g.beginPath(); g.ellipse(x, y + 2, 40, 9, 0, 0, TAU); g.fill();
+    g.fillStyle = '#7a5a3a'; g.strokeStyle = INK; g.lineWidth = 2; g.fillRect(x - 34, y - 22, 68, 22); g.strokeRect(x - 34, y - 22, 68, 22);
+    g.fillStyle = '#5a4028'; g.fillRect(x - 32, y - 56, 4, 34); g.fillRect(x + 28, y - 56, 4, 34);
+    g.fillStyle = p.c; g.beginPath(); g.moveTo(x - 40, y - 52); g.lineTo(x + 40, y - 52); g.lineTo(x + 34, y - 64); g.lineTo(x - 34, y - 64); g.closePath(); g.fill(); g.stroke();
+    g.fillStyle = 'rgba(255,255,255,.55)'; for (let i = -30; i < 34; i += 16) g.fillRect(x + i, y - 52, 8, 4);
+    g.fillStyle = '#e8c86a'; g.beginPath(); g.arc(x - 12, y - 25, 5, 0, TAU); g.arc(x + 4, y - 25, 5, 0, TAU); g.fill(); g.fillStyle = '#c0503a'; g.beginPath(); g.arc(x + 18, y - 25, 4, 0, TAU); g.fill(); };
 })();
 
 // v0.9.7 — Cartes extérieures ×10 en surface (échelle linéaire K10 = √10) : décor, collisions, lumières, sections et PNJ agrandis.
@@ -4337,6 +4370,18 @@ let FT10 = null, FB10 = null;
   window.AIM10 = { on, mw, get mouse() { return mouse; } };
 })();
 
+// v0.10.26 — Voyage rapide depuis la carte (hors combat, dans le village et ses abords).
+(() => { const T10 = (s) => (window.LANG10 && LANG10.t ? LANG10.t(s) : s);
+  const homeXY = () => { const H = World.props.filter((p) => p.kind === 'house' && !p.label && p.y < K10 * (WALL_Y - 100) && p.x < K10 * 1500).sort((a, b) => Math.hypot(a.x - K10 * 800, a.y - K10 * 1250) - Math.hypot(b.x - K10 * 800, b.y - K10 * 1250))[0]; return H ? [H.x / K10, H.y / K10 + 50] : [800, 1300]; };
+  const DEST = [['Bureau du Hokage', () => [1600, 760]], ['Académie', () => [2250, 790]], ['Ichiraku', () => [1290, 920]], ['Rue marchande', () => [1500, 1590]], ['Terrain d’entraînement', () => [2850, 1330]], ['Maison', homeXY], ['Porte du village', () => [1600, WALL_Y - 140]]];
+  const ok = () => Game.mode === 'voie' && Game.hero && !Game.creative && !(window.ZONE8 && ZONE8.room) && !Game.cine;
+  const go = (i) => { if (!ok()) return; if (Game.inCombat()) { UI.toast && UI.toast(T10('Impossible en combat')); return; } let [x, y] = DEST[i][1](); UI.close(); const f = () => { x *= K10; y *= K10; const hh = Game.hero; hh.x = x; hh.y = y; hh.vx = hh.vy = 0; for (const a of Game.allies) { a.x = x + rnd(-60, 60); a.y = y + rnd(20, 60); } Cam.x = x; Cam.y = y; if (window.ZONE8) ZONE8.sec = ZONE8.secAt(Game.hero.x, Game.hero.y); }; window.ZONE8 ? ZONE8.wipe(f, T10(DEST[i][0])) : f(); };
+  window.TRAVEL10 = { DEST, go };
+  const tc = UI.t_carte.bind(UI);
+  UI.t_carte = function () { const s0 = tc(); if (!ok()) return s0; let s = ''; const dis = Game.inCombat();
+    s += `<div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px"><b style="width:100%;color:var(--dim)">${T10('Voyage rapide')}${dis ? ' — ' + T10('Impossible en combat') : ''}</b>` + DEST.map((d, i) => `<button class="keybtn" ${dis ? 'disabled' : ''} onclick="TRAVEL10.go(${i})">${T10(d[0])}</button>`).join('') + '</div>'; return s + s0; };
+})();
+
 // v0.10.5 — Langues : dialogues, objectifs et messages passent par LANG10.t (clé = texte source FR). Données : lang/*.tsv → python3 lang/gen.py
 (() => {
   const DATA = {
@@ -5161,7 +5206,12 @@ let FT10 = null, FB10 = null;
 "Plaine": "Plains",
 "Collines": "Hills",
 "Hauteurs Est": "Eastern Heights",
-"Aide à la visée (curseur / ennemi proche)": "Aim assist (cursor / nearest enemy)"
+"Aide à la visée (curseur / ennemi proche)": "Aim assist (cursor / nearest enemy)",
+"Bureau du Hokage": "Hokage Office",
+"Rue marchande": "Market Street",
+"Voyage rapide": "Quick travel",
+"Porte du village": "Village Gate",
+"Impossible en combat": "Not during combat"
 }
 };
   const L = window.LANG10 = { DATA, miss: new Set(), get lang() { return (Save.set && Save.set.lang) || 'en'; }, set lang(v) { Save.set.lang = v; try { Save.saveSet && Save.saveSet(); } catch (e) {} },

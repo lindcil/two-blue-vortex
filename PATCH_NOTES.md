@@ -1,3 +1,6 @@
+## v0.10.26 — v0.10.26: denser restructured Konoha + market street + quick travel
+Village restructuré : ~140 maisons à taille humaine en îlots le long de rues (au lieu de 26 maisons géantes au hasard), rue marchande avec étals. Voyage rapide depuis la carte (Bureau, Académie, Ichiraku, Rue marchande, Terrain, Maison, Porte), désactivé en combat. Ura Renge : vérifié, pas de bug de portée.
+
 ## v0.10.25 — Aide à la visée
 - M1 et techniques visent le curseur, aimantés vers l’ennemi le plus proche du curseur (150 px / 17°).
 - Sans souris (tactile, manette) : ennemi le plus proche.

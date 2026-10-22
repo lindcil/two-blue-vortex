@@ -1,0 +1,8 @@
+const {chromium}=require('playwright-core');
+(async()=>{const b=await chromium.launch({executablePath:'/usr/bin/google-chrome',args:['--no-sandbox']});const errs=[];const p=await b.newPage({viewport:{width:1280,height:720}});p.on('pageerror',e=>errs.push(e.message));p.on('console',m=>m.type()==='error'&&errs.push(m.text()));
+await p.goto('file:///workspace/two-blue-vortex/index.html');await p.waitForTimeout(900);if(await p.$('#lay07'))await p.click('#lay1');
+await p.evaluate(()=>{Game.startVoie({name:'Aoi',clan:'uchiha',look:makeLook(9)});setInterval(()=>{if(Talk.on&&Talk.t>0.3){if(Talk.showing)Talk.pick(0);else Talk.next()}},200)});
+const t0=Date.now();while(Date.now()-t0<30000){if(await p.evaluate(()=>Voie.step==='a1'&&!Scene.on&&!Talk.on))break;await p.waitForTimeout(200)}
+await p.evaluate(()=>{ZONE8.exit({instant:true});Game.inCombat=()=>false});await p.waitForTimeout(300);await p.evaluate(()=>UI.open('carte'));console.log(await p.evaluate(()=>[Game.mode,!!Game.hero,Game.creative,ZONE8.room&&ZONE8.room.n,Game.cine]));await p.waitForTimeout(500);await p.screenshot({path:'/workspace/two-blue-vortex/screens/v10/map/voyage-rapide.png'});
+for(let i=0;i<7;i++){await p.evaluate(i=>{UI.open('carte');TRAVEL10.go(i)},i);await p.waitForTimeout(1500);const r=await p.evaluate(()=>{const h=Game.hero;const s=World.solids.some(o=>h.x>o.x&&h.x<o.x+o.w&&h.y>o.y&&h.y<o.y+o.h);return [Math.round(h.x/K10),Math.round(h.y/K10),s]});console.log(i,r,await p.evaluate(()=>[Game.inCombat(),document.querySelector('#sheet').innerHTML.includes('TRAVEL10')]))}
+console.log('errs',errs);await b.close()})();

@@ -822,7 +822,12 @@
 "Plaine": "Plains",
 "Collines": "Hills",
 "Hauteurs Est": "Eastern Heights",
-"Aide à la visée (curseur / ennemi proche)": "Aim assist (cursor / nearest enemy)"
+"Aide à la visée (curseur / ennemi proche)": "Aim assist (cursor / nearest enemy)",
+"Bureau du Hokage": "Hokage Office",
+"Rue marchande": "Market Street",
+"Voyage rapide": "Quick travel",
+"Porte du village": "Village Gate",
+"Impossible en combat": "Not during combat"
 }
 };
   const L = window.LANG10 = { DATA, miss: new Set(), get lang() { return (Save.set && Save.set.lang) || 'en'; }, set lang(v) { Save.set.lang = v; try { Save.saveSet && Save.saveSet(); } catch (e) {} },
