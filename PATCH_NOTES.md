@@ -1,3 +1,7 @@
+## v0.10.46 — Onboarding: compass to enemies, clearer Code objective
+- The objective compass now points to the nearest active enemy when the objective has no fixed place (e.g. 'Drive back the Claw Grimes'). New players no longer wander looking for the fight.
+- Prologue objective 'Code.' now reads 'Code bursts out of a Claw Mark. Defeat him.'
+
 ## v0.10.45 — Touch: portrait button layout, tap detection
 - Portrait phones: action buttons arranged in an arc around M1 at the bottom right; Z and C sit above the stick. No button covers the stick or goes off-screen any more.
 - Taps no longer count as mouse clicks, so prompts stay in touch form ('tap ▸').

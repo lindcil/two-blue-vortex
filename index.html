@@ -104,7 +104,7 @@ button.b.p{background:var(--gold);color:var(--ink)}button.b.p2{background:var(--
 <script>
 'use strict';
 /* ============ Noyau : réglages, sauvegarde, entrées, audio ============ */
-const VERSION = '0.10.45';
+const VERSION = '0.10.46';
 const K10 = Math.sqrt(10); // v0.9.7 : échelle des cartes extérieures (surface ×10)
 const $ = (s) => document.querySelector(s);
 const TAU = Math.PI * 2, clamp = (v, a, b) => (v < a ? a : v > b ? b : v), lerp = (a, b, t) => a + (b - a) * t;
@@ -1017,7 +1017,7 @@ const QUESTS = {
 };
 const Histoire = { mode: 'histoire',
   step: 'p0', q: {}, items: [], flags: {},
-  obj() { const s = this.step; return { p0: ['Prologue — Retour', 'Rejoins la place : Sarada est encerclée.'], p1: ['Prologue — Retour', 'Repousse les Claw Grimes.'], p2: ['Prologue — Retour', 'Les Grimes près des flammes portent Katon. Attise-les au Rasengan.'], p3: ['Prologue — Retour', 'Code.'],
+  obj() { const s = this.step; return { p0: ['Prologue — Retour', 'Rejoins la place : Sarada est encerclée.'], p1: ['Prologue — Retour', 'Repousse les Claw Grimes.'], p2: ['Prologue — Retour', 'Les Grimes près des flammes portent Katon. Attise-les au Rasengan.'], p3: ['Prologue — Retour', 'Code surgit d’une marque de griffe. Bats-le.'],
     c0: ['Chapitre 1 — Fugitif', 'Retrouve Sarada au belvédère du rocher.'], c1: ['Chapitre 1 — Fugitif', 'Nettoie les racines du Shinju à l’ouest (' + this.zonesLeft() + ' zone' + (this.zonesLeft() > 1 ? 's' : '') + ').'], c2: ['Chapitre 1 — Fugitif', 'Quelqu’un attend à la lisière ouest.'], c3: ['Chapitre 1 — Fugitif', 'Jura.'], k0: ['Chapitre 2 — Kurama', 'La nuit tombe. Rejoins la tour du Hokage.'], k1: ['Chapitre 2 — Kurama', 'Kawaki.'], k2: ['Chapitre 2 — Kurama', 'Le chakra de Himawari s’emballe au terrain d’entraînement.'], k3: ['Chapitre 2 — Kurama', 'Calme Kurama. Esquive la Bijūdama.'], end: ['Chapitres 1 et 2 terminés', 'Konoha est à toi. Quêtes, camp, terrain d’entraînement…'] }[s] || ['', '']; },
   target() { return { p0: [K10 * 1600, K10 * 960], p1: null, p2: [K10 * 1450, K10 * 1010], p3: null, c0: [K10 * 1600, K10 * 380], c1: this.zonesLeft() === 2 ? [K10 * 330, K10 * 1250] : [K10 * 380, K10 * 1900], c2: [K10 * 250, K10 * 1560], k0: [K10 * 1600, K10 * 720], k2: [K10 * 2850, K10 * 1250] }[this.step] || null; },
   zonesLeft() { return ['z1', 'z2'].filter((z) => !this.flags[z]).length; },
@@ -5607,7 +5607,8 @@ let FT10 = null, FB10 = null;
 "J / E : passer": "J / E: skip",
 "toucher ▸": "tap ▸",
 "Bouton C : chakra, puis éveil": "C button: chakra, then awaken",
-"Bouton Z : mode": "Z button: mode"
+"Bouton Z : mode": "Z button: mode",
+"Code surgit d’une marque de griffe. Bats-le.": "Code bursts out of a Claw Mark. Defeat him."
 }
 };
   const L = window.LANG10 = { DATA, miss: new Set(), get lang() { return (Save.set && Save.set.lang) || 'en'; }, set lang(v) { Save.set.lang = v; try { Save.saveSet && Save.saveSet(); } catch (e) {} },
@@ -5914,6 +5915,13 @@ let FT10 = null, FB10 = null;
   addEventListener('resize', lay); addEventListener('orientationchange', lay);
   const mo = new MutationObserver(() => { clearTimeout(mo.t); mo.t = setTimeout(lay, 50); }); addEventListener('load', () => { const t = document.getElementById('touch'); if (t) mo.observe(t, { childList: true, attributes: true, attributeFilter: ['style'] }); setTimeout(lay, 300); });
   window.TOUCH10 = { lay };
+})();
+
+// v0.10.46 — Guidage : quand l’objectif n’a pas de lieu (ex. « Repousse les Claw Grimes ») mais qu’il reste des ennemis actifs, la boussole pointe vers le plus proche.
+(() => {
+  const near = () => { const h = Game.hero; if (!h) return null; let b = null, bd = 1e9; for (const f of World.foes()) { if (f.hp <= 0 || f.passive || f.dummy) continue; const d = Math.hypot(f.x - h.x, f.y - h.y); if (d < bd && d < 6000) { bd = d; b = f; } } return b ? [b.x, b.y] : null; };
+  for (const S of [window.Histoire || (typeof Histoire !== 'undefined' ? Histoire : null), typeof Voie !== 'undefined' ? Voie : null]) { if (!S || !S.target) continue; const t0 = S.target.bind(S);
+    S.target = function () { const t = t0(); if (t) return t; if ((window.BG10 && BG10.on) || Game.creative) return null; return near(); }; }
 })();
 
 </script></body></html>

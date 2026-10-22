@@ -1045,7 +1045,8 @@
 "J / E : passer": "J / E: skip",
 "toucher ▸": "tap ▸",
 "Bouton C : chakra, puis éveil": "C button: chakra, then awaken",
-"Bouton Z : mode": "Z button: mode"
+"Bouton Z : mode": "Z button: mode",
+"Code surgit d’une marque de griffe. Bats-le.": "Code bursts out of a Claw Mark. Defeat him."
 }
 };
   const L = window.LANG10 = { DATA, miss: new Set(), get lang() { return (Save.set && Save.set.lang) || 'en'; }, set lang(v) { Save.set.lang = v; try { Save.saveSet && Save.saveSet(); } catch (e) {} },
