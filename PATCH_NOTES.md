@@ -1,3 +1,6 @@
+## v0.10.27 — v0.10.27: herb mission spots walkable in new layout
+Mission Herbes : les 3 touffes sont posées sur des rues dégagées près du bureau (avant : tirage aléatoire pouvant tomber dans une maison du nouveau quartier → mission bloquée). Toutes les missions du village < 2,6 k px à pied.
+
 ## v0.10.26 — v0.10.26: denser restructured Konoha + market street + quick travel
 Village restructuré : ~140 maisons à taille humaine en îlots le long de rues (au lieu de 26 maisons géantes au hasard), rue marchande avec étals. Voyage rapide depuis la carte (Bureau, Académie, Ichiraku, Rue marchande, Terrain, Maison, Porte), désactivé en combat. Ura Renge : vérifié, pas de bug de portée.
 
