@@ -1,3 +1,7 @@
+## v0.10.41 — Battleground: Zabuza and Kakashi tuning
+- Zabuza: Water Clones hit harder (26).
+- Kakashi: Fanged Pursuit ninja dogs hold the target 1.5 s.
+
 ## v0.10.40 — Battleground: Naruto (Sage) HP fix, Zabuza Water Prison
 - Fixed: Naruto (Sage Mode) as the player had reduced HP after the opponent rebalance.
 - Zabuza: Water Prison holds 2 s and deals 5 ticks (canon: Kakashi was trapped long enough for the whole team to act).
