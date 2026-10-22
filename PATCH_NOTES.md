@@ -1,3 +1,8 @@
+## v0.10.44 — Konoha-style houses
+- Houses redrawn in Konoha style: rounded tiled roofs with eaves, cream/peach walls with wooden posts, framed windows with mullions (lit at random at night), sliding doors, noren curtains on named shops.
+- Water tanks and antennas on many roofs; colours vary per house.
+- Cost: about 0.01 ms per house.
+
 ## v0.10.43 — Mobile onboarding fixes; paper lanterns
 - Phones and tablets skip the keyboard-layout question and show touch controls from the start.
 - Fixed French text on touch devices: dialogue 'tap ▸', cinematic 'Tap: skip' and the touch hints for the C and Z buttons.

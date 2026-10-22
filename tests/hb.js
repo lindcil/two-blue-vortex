@@ -1,0 +1,3 @@
+const {chromium}=require('playwright-core');
+(async()=>{const b=await chromium.launch({executablePath:'/usr/bin/google-chrome',args:['--no-sandbox']});for(const f of ['/workspace/two-blue-vortex/index.html','/tmp/old/index.html']){const p=await b.newPage();await p.goto('file://'+f);await p.waitForTimeout(1200);
+console.log(f,await p.evaluate(()=>{const c=document.createElement('canvas');c.width=800;c.height=600;const g=c.getContext('2d');const H=World.props.filter(p=>p.kind==='house');const t=performance.now();for(let k=0;k<20;k++)for(const h of H)World.drawProp(g,h);return [H.length,((performance.now()-t)/20).toFixed(2)+'ms per all-houses pass']}));await p.close()}await b.close()})();
