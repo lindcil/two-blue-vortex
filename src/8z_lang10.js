@@ -815,7 +815,13 @@
 "foudroie": "strikes",
 "Épuisette !": "Net!",
 "▼ Sortie": "▼ Exit",
-"Clique une étoile qui pulse pour dépenser un point": "Click a pulsing star to spend a point"
+"Clique une étoile qui pulse pour dépenser un point": "Click a pulsing star to spend a point",
+"Hors des murs": "Outside the walls",
+"Grand-rue": "Main Street",
+"Porte & route": "Gate & Road",
+"Plaine": "Plains",
+"Collines": "Hills",
+"Hauteurs Est": "Eastern Heights"
 }
 };
   const L = window.LANG10 = { DATA, miss: new Set(), get lang() { return (Save.set && Save.set.lang) || 'en'; }, set lang(v) { Save.set.lang = v; try { Save.saveSet && Save.saveSet(); } catch (e) {} },

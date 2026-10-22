@@ -2,9 +2,15 @@
 // Franchir une bordure = transition encre rapide, seule la section courante est active. Intérieurs/arènes = salles séparées
 // (maison, porte de Konoha pour les missions, arène du rival, terrain d’entraînement, carte du mode Créatif).
 (() => {
-  const COLS = [0, 1600, 3200, 4800], ROWS_IN = [330, 1320, 2300], ROWS_OUT = [2300, 3350, 4400];
-  const NAMES = [['Quartier des Hokage', 'Académie', 'Hauteurs Est'], ['Grand-rue', 'Place du marché', 'Quartier des clans'], ['Porte & route', 'Plaine', 'Bois de l’Est'], ['Forêt Ouest', 'Rivière', 'Collines']];
-  const SECS = []; for (let r = 0; r < 4; r++) for (let c = 0; c < 3; c++) { const y0 = r < 2 ? ROWS_IN[r] : ROWS_OUT[r - 2], y1 = r < 2 ? ROWS_IN[r + 1] : ROWS_OUT[r - 1]; SECS.push({ id: r * 3 + c, n: NAMES[r][c], x: COLS[c], y: r === 0 ? 0 : y0, w: COLS[c + 1] - COLS[c], h: y1 - (r === 0 ? 0 : y0) }); }
+  // v0.10.24 — zonage par lieux réels : le village entier (à l'intérieur du mur) est UNE zone, l'extérieur (au-delà du mur et de la grande porte) une autre.
+  // Les quartiers ne sont plus des frontières : leur nom s'affiche discrètement quand on y entre.
+  const SECS = [{ id: 0, n: 'Konoha', x: 0, y: 0, w: 4800, h: 2300 }, { id: 1, n: 'Hors des murs', x: 0, y: 2300, w: 4800, h: 2100 }];
+  const DISTRICTS = [['Quartier des Hokage', 0, 0, 2300, 1100], ['Académie', 2300, 0, 3300, 1100], ['Bois de l’Est', 3300, 0, 4800, 2300], ['Grand-rue', 0, 1100, 1300, 2300], ['Place du marché', 1300, 1100, 2400, 2300], ['Quartier des clans', 2400, 1100, 3300, 2300],
+    ['Porte & route', 1100, 2300, 2200, 3200], ['Forêt Ouest', 0, 2300, 1100, 4400], ['Plaine', 2200, 2300, 3500, 3300], ['Bois de l’Est', 3500, 2300, 4800, 3300], ['Rivière', 1100, 3200, 3200, 4400], ['Collines', 3200, 3300, 4800, 4400]];
+  // nom du quartier : petit bandeau discret (pas de fondu, pas de frontière)
+  const dEl = document.createElement('div'); dEl.id = 'dist10'; dEl.style.cssText = 'position:fixed;left:50%;top:64px;transform:translateX(-50%);z-index:20;pointer-events:none;color:#eaf0ff;font:400 22px var(--f-title,serif);letter-spacing:.08em;text-shadow:0 2px 8px #000a;opacity:0;transition:opacity .5s'; document.body.appendChild(dEl);
+  let dCur = null, dT = 0; setInterval(() => { const h = Game.hero; if (!h || Game.titleMode || ZONE8.room || h.x > 19000) { dCur = null; return; } const k = window.K10 || 1, x = h.x / k, y = h.y / k; const d = DISTRICTS.find((q) => x >= q[1] && x < q[3] && y >= q[2] && y < q[4]); const n = d ? d[0] : null;
+    if (n && n !== dCur) { if (dCur) { dEl.textContent = n; dEl.style.opacity = '1'; clearTimeout(dT); dT = setTimeout(() => (dEl.style.opacity = '0'), 1800); } dCur = n; } }, 250);
   const secAt = (x, y) => SECS.find((s) => x >= s.x && x < s.x + s.w && y >= s.y && y < s.y + s.h) || SECS[0];
   // ---------- transition encre ----------
   const ink = document.createElement('canvas'); ink.id = 'ink8'; ink.style.cssText = 'position:fixed;inset:0;width:100%;height:100%;z-index:30;pointer-events:none;display:none'; document.body.appendChild(ink);
@@ -23,7 +29,7 @@
     entrainement: { n: 'Terrain d’entraînement', x: RX + 3200, y: 1900, w: 1700, h: 1200, spawn: [RX + 3200 + 500, 2600] },
     creatif: { n: 'Dōjō des techniques', x: RX + 5300, y: 400, w: 2200, h: 1500, spawn: [RX + 5300 + 700, 1300] } };
   for (const k in ROOMS) ROOMS[k].id = k;
-  const Z = window.ZONE8 = { SECS, ROOMS, sec: null, room: null, ret: null, wipe, secAt,
+  const Z = window.ZONE8 = { SECS, DISTRICTS, ROOMS, sec: null, room: null, ret: null, wipe, secAt,
     bounds() { const r = this.room || this.sec; return r ? [r.x, r.y, r.x + r.w, r.y + r.h] : [0, 0, W * K10, H * K10]; },
     inside(u) { const [x0, y0, x1, y1] = this.bounds(); return u.x >= x0 - 40 && u.x <= x1 + 40 && u.y >= y0 - 40 && u.y <= y1 + 40; },
     enter(id, o = {}) { const R = ROOMS[id], h = Game.hero; if (!R || !h) return; const go = () => { if (!this.room) this.ret = { x: h.x, y: h.y }; this.room = R; const dx = R.spawn[0] - h.x, dy = R.spawn[1] - h.y; h.x = R.spawn[0]; h.y = R.spawn[1];

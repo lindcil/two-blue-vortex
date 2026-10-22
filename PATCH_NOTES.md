@@ -1,3 +1,9 @@
+## v0.10.24 — Zonage par lieux réels
+- Le village entier est une seule zone (plus de frontière au milieu de Konoha, plus de changement de côté au bureau des missions).
+- L’extérieur est une seconde zone : on change de zone uniquement en passant la grande porte.
+- Le nom du quartier s’affiche discrètement quand on y entre.
+- Test tests/zone10.js : traversée complète du village = 0 changement de zone.
+
 ## v0.10.23 — Performance
 - Nombres de dégâts rendus une fois en sprite (texte −85 % CPU).
 - Couleurs ombrées mises en cache ; au plus 24 textes flottants.
