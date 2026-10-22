@@ -1,6 +1,6 @@
 'use strict';
 /* ============ Noyau : réglages, sauvegarde, entrées, audio ============ */
-const VERSION = '0.10.44';
+const VERSION = '0.10.45';
 const K10 = Math.sqrt(10); // v0.9.7 : échelle des cartes extérieures (surface ×10)
 const $ = (s) => document.querySelector(s);
 const TAU = Math.PI * 2, clamp = (v, a, b) => (v < a ? a : v > b ? b : v), lerp = (a, b, t) => a + (b - a) * t;
@@ -36,9 +36,9 @@ const Input = {
     addEventListener('keydown', (e) => { if (this.rebind) { e.preventDefault(); this.rebind(e.code); return; } if (['Tab', 'Space', 'ArrowUp', 'ArrowDown'].includes(e.code)) e.preventDefault(); if (!e.repeat) this.hit.add(e.code); this.down.add(e.code); this.lastDev = 'kb'; });
     addEventListener('keyup', (e) => this.down.delete(e.code));
     addEventListener('blur', () => this.down.clear());
-    const cv = $('#cv'); cv.addEventListener('mousedown', (e) => { if (e.button === 0 || e.button === 2) { const k = 'Mouse' + e.button; this.hit.add(k); this.down.add(k); this.lastDev = 'kb'; } }); cv.addEventListener('contextmenu', (e) => e.preventDefault());
+    const cv = $('#cv'); cv.addEventListener('mousedown', (e) => { if (e.button === 0 || e.button === 2) { const k = 'Mouse' + e.button; this.hit.add(k); this.down.add(k); if (performance.now() - (this.tT || 0) > 900) this.lastDev = 'kb'; } }); cv.addEventListener('contextmenu', (e) => e.preventDefault());
     addEventListener('mouseup', (e) => this.down.delete('Mouse' + (e.button === 2 ? 2 : 0))); addEventListener('mousemove', (e) => { this.mx = e.clientX; this.my = e.clientY; });
-    addEventListener('touchstart', () => { if (!this.touch) { this.touch = true; Touch.show(); } this.lastDev = 'touch'; }, { passive: true });
+    addEventListener('touchstart', () => { this.tT = performance.now(); if (!this.touch) { this.touch = true; Touch.show(); } this.lastDev = 'touch'; }, { passive: true });
   },
   is(a) { if (this.virt && this.virt[a]) return true; const ks = Save.set.keys[a] || []; for (const k of ks) if (this.down.has(k)) return true; return this.padIs(a); },
   pressed(a) { if (this.vhit && this.vhit.has(a)) return true; const ks = Save.set.keys[a] || []; for (const k of ks) if (this.hit.has(k)) return true; return this.padHit(a); },

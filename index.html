@@ -104,7 +104,7 @@ button.b.p{background:var(--gold);color:var(--ink)}button.b.p2{background:var(--
 <script>
 'use strict';
 /* ============ Noyau : réglages, sauvegarde, entrées, audio ============ */
-const VERSION = '0.10.44';
+const VERSION = '0.10.45';
 const K10 = Math.sqrt(10); // v0.9.7 : échelle des cartes extérieures (surface ×10)
 const $ = (s) => document.querySelector(s);
 const TAU = Math.PI * 2, clamp = (v, a, b) => (v < a ? a : v > b ? b : v), lerp = (a, b, t) => a + (b - a) * t;
@@ -140,9 +140,9 @@ const Input = {
     addEventListener('keydown', (e) => { if (this.rebind) { e.preventDefault(); this.rebind(e.code); return; } if (['Tab', 'Space', 'ArrowUp', 'ArrowDown'].includes(e.code)) e.preventDefault(); if (!e.repeat) this.hit.add(e.code); this.down.add(e.code); this.lastDev = 'kb'; });
     addEventListener('keyup', (e) => this.down.delete(e.code));
     addEventListener('blur', () => this.down.clear());
-    const cv = $('#cv'); cv.addEventListener('mousedown', (e) => { if (e.button === 0 || e.button === 2) { const k = 'Mouse' + e.button; this.hit.add(k); this.down.add(k); this.lastDev = 'kb'; } }); cv.addEventListener('contextmenu', (e) => e.preventDefault());
+    const cv = $('#cv'); cv.addEventListener('mousedown', (e) => { if (e.button === 0 || e.button === 2) { const k = 'Mouse' + e.button; this.hit.add(k); this.down.add(k); if (performance.now() - (this.tT || 0) > 900) this.lastDev = 'kb'; } }); cv.addEventListener('contextmenu', (e) => e.preventDefault());
     addEventListener('mouseup', (e) => this.down.delete('Mouse' + (e.button === 2 ? 2 : 0))); addEventListener('mousemove', (e) => { this.mx = e.clientX; this.my = e.clientY; });
-    addEventListener('touchstart', () => { if (!this.touch) { this.touch = true; Touch.show(); } this.lastDev = 'touch'; }, { passive: true });
+    addEventListener('touchstart', () => { this.tT = performance.now(); if (!this.touch) { this.touch = true; Touch.show(); } this.lastDev = 'touch'; }, { passive: true });
   },
   is(a) { if (this.virt && this.virt[a]) return true; const ks = Save.set.keys[a] || []; for (const k of ks) if (this.down.has(k)) return true; return this.padIs(a); },
   pressed(a) { if (this.vhit && this.vhit.has(a)) return true; const ks = Save.set.keys[a] || []; for (const k of ks) if (this.hit.has(k)) return true; return this.padHit(a); },
@@ -5897,6 +5897,23 @@ let FT10 = null, FB10 = null;
   const tx = (s) => { if (typeof s !== 'string' || L.lang === 'fr' || !/[a-zA-Zà-ÿ]{2}/.test(s)) return s; if (lg !== L.lang) { C.clear(); lg = L.lang; } let v = C.get(s); if (v !== undefined) return v;
     const had = L.miss.has(s); v = L.t(s); if (!had && L.miss.has(s)) { L.miss.delete(s); L.cmiss.add(s); } if (C.size > 4000) C.clear(); C.set(s, v); return v; };
   for (const k of ['fillText', 'strokeText', 'measureText']) { const f = P[k]; P[k] = function (s, ...a) { return f.call(this, tx(s), ...a); }; }
+})();
+
+// v0.10.45 — Contrôles tactiles en portrait : boutons en arc autour de M1 (en bas à droite), Z/C au-dessus du stick ; plus aucun bouton sur le stick ni hors écran.
+(() => {
+  const P = { dodge: [105, 180, 64], s1: [105, 148, 58], s2: [108, 121, 58], s3: [108, 88, 58], s4: [182, 90, 58], ult: [182, 114, 72], use: [182, 138, 50] };
+  const lay = () => { const t = document.getElementById('touch'); if (!t || t.style.display !== 'block') return; const narrow = innerWidth < 560 && innerHeight > innerWidth;
+    for (const d of t.querySelectorAll('.tb')) { if (!d.dataset.o10) d.dataset.o10 = d.style.cssText; if (!narrow) { d.style.cssText = d.dataset.o10; continue; }
+      const a = d.dataset.a, txt = d.textContent.trim(); let r, b, s;
+      if (a === 'atk') { s = 84; r = 62 - s / 2; b = 72 - s / 2; }
+      else if (P[a]) { const [R, deg, S] = P[a], th = deg * Math.PI / 180; s = S; r = 62 - R * Math.cos(th) - s / 2; b = 72 + R * Math.sin(th) - s / 2; }
+      else if (txt === 'Z') { d.style.right = 'auto'; d.style.left = '24px'; d.style.bottom = '196px'; continue; }
+      else if (txt === 'C') { d.style.right = 'auto'; d.style.left = '96px'; d.style.bottom = '196px'; continue; }
+      else continue;
+      Object.assign(d.style, { right: Math.round(r) + 'px', bottom: Math.round(b) + 'px', width: s + 'px', height: s + 'px', left: 'auto', top: 'auto' }); } };
+  addEventListener('resize', lay); addEventListener('orientationchange', lay);
+  const mo = new MutationObserver(() => { clearTimeout(mo.t); mo.t = setTimeout(lay, 50); }); addEventListener('load', () => { const t = document.getElementById('touch'); if (t) mo.observe(t, { childList: true, attributes: true, attributeFilter: ['style'] }); setTimeout(lay, 300); });
+  window.TOUCH10 = { lay };
 })();
 
 </script></body></html>

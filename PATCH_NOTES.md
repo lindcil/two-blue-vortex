@@ -1,3 +1,7 @@
+## v0.10.45 — Touch: portrait button layout, tap detection
+- Portrait phones: action buttons arranged in an arc around M1 at the bottom right; Z and C sit above the stick. No button covers the stick or goes off-screen any more.
+- Taps no longer count as mouse clicks, so prompts stay in touch form ('tap ▸').
+
 ## v0.10.44 — Konoha-style houses
 - Houses redrawn in Konoha style: rounded tiled roofs with eaves, cream/peach walls with wooden posts, framed windows with mullions (lit at random at night), sliding doors, noren curtains on named shops.
 - Water tanks and antennas on many roofs; colours vary per house.
