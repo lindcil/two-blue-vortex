@@ -1,3 +1,6 @@
+## v0.10.34 — v0.10.34: translate all mode/stage names + Shukaku line
+Traduction : tous les noms de modes et paliers (Susanoo, Tenseigan, Jōgan, Kāma, Manteau, clans, Ermite) et une réplique d'histoire manquaient en anglais (affichés dans le sélecteur de modes du Créatif).
+
 ## v0.10.33 — v0.10.33: Creative - free mode/stage picker, auto shape+element classes, never-used first
 Créatif : choix libre de n'importe quel mode et palier (Sharingan, Byakugan, Jōgan, Kāma, Manteau, clans, Ermite). Techniques classées automatiquement par forme (Projectile, Rayon, Zone, Corps à corps, Contrôle, Soutien, Invocation, Ultime) ; les techniques perso sans élément le reçoivent d'après leur couleur. Listes : jamais utilisées d'abord (pastille verte), puis les moins utilisées.
 
