@@ -104,7 +104,7 @@ button.b.p{background:var(--gold);color:var(--ink)}button.b.p2{background:var(--
 <script>
 'use strict';
 /* ============ Noyau : réglages, sauvegarde, entrées, audio ============ */
-const VERSION = '0.10.37';
+const VERSION = '0.10.38';
 const K10 = Math.sqrt(10); // v0.9.7 : échelle des cartes extérieures (surface ×10)
 const $ = (s) => document.querySelector(s);
 const TAU = Math.PI * 2, clamp = (v, a, b) => (v < a ? a : v > b ? b : v), lerp = (a, b, t) => a + (b - a) * t;
@@ -5566,9 +5566,9 @@ let FT10 = null, FB10 = null;
     pain: { n: 'Pain (Tendō)', look: { hs: 'spiky', hair: '#e8752a', top: '#1a1a26', bot: '#1a1a26', cloak: '#1a1a26', org: 1, skin: '#f0d8c0', eye: '#b08ad8' }, hp: 0.9, sk: ['shinra', 'bansho10', 'rods10', 'shuriken8'], ult: 'set_chibaku', mode: null, me: 1.2,
       ai: [['Shinra Tensei', '神', 'yang', 'zone', 24, 6], ['Tige noire', '杭', 'yin', 'proj', 15, 3.5], ['Bansho Ten’in', '引', 'yang', 'dash', 16, 6], ['Tige noire', '杭', 'yin', 'fan', 10, 4]], aiU: ['Chibaku Tensei', 'earth', 70] },
     boruto: { n: 'Boruto (Kāma)', look: { hs: 'boruto', hair: '#f0d060', top: '#2a2a3a', bot: '#2a2a3a', skin: '#f0c49c', karma: 1 }, hp: 0.8, sk: ['rasen', 'm8_jogan_0_1', 'm8_karma_0_0', 'bunshin'], ult: 'uzuhiko', mode: ['karma', 2],
-      ai: [['Rasengan', '螺', 'wind', 'dash', 24, 4], ['Rasengan invisible', '螺', 'wind', 'proj', 26, 5], ['Kage Bunshin', '影', 'yang', 'fan', 9, 5], ['Coup de Kāma', '撃', 'yin', 'dash', 22, 4]], aiU: ['Rasengan Uzuhiko', 'wind', 65] },
+      ai: [['Rasengan', '螺', 'wind', 'dash', 20, 4], ['Rasengan invisible', '螺', 'wind', 'proj', 22, 5], ['Kage Bunshin', '影', 'yang', 'fan', 9, 5], ['Coup de Kāma', '撃', 'yin', 'dash', 22, 4]], aiU: ['Rasengan Uzuhiko', 'wind', 65] },
     kawaki: { n: 'Kawaki (Kāma)', look: { hs: 'kawaki', hair: '#1a1a22', top: '#3a3a44', bot: '#2a2a30', skin: '#e8c8a8', karma: 1 }, hp: 0.95, sk: ['kawarm10', 'm8_karma_1_1', 'rods10', 'm8_karma_0_0'], ult: 'm8u_karma_2', mode: ['karma', 3], me: 1.1,
-      ai: [['Tige noire', '杭', 'yin', 'proj', 20, 3], ['Sukunahikona', '小', 'yin', 'beam', 24, 6], ['Coup de Kāma', '撃', 'yin', 'dash', 22, 4], ['Tiges en éventail', '杭', 'yin', 'fan', 10, 4]], aiU: ['Daikokuten', 'yin', 70] } };
+      ai: [['Tige noire', '杭', 'yin', 'proj', 18, 4], ['Sukunahikona', '小', 'yin', 'beam', 20, 6], ['Coup de Kāma', '撃', 'yin', 'dash', 22, 4], ['Tiges en éventail', '杭', 'yin', 'fan', 9, 5]], aiU: ['Daikokuten', 'yin', 70] } };
   const MU = [['sasuke', 'itachi', 'Les frères Uchiha'], ['naruto', 'sasuke', 'Vallée de la Fin'], ['naruto_s', 'pain', 'Invasion de Pain'], ['boruto', 'kawaki', 'Réceptacles du Kāma']];
   // techniques canon ajoutées pour les kits joueur : Banshō Ten'in (Pain), Tiges de chakra (Pain/Kawaki), Bras-lame du Kāma (Kawaki)
   Object.assign(SK, { bansho10: { n: 'Bansho Ten’in', el: 'yang', k: '引', cd: 6, ch: 18, sign: 'tora' }, rods10: { n: 'Tiges de chakra', el: 'yin', k: '杭', cd: 3.5, ch: 14, sign: 'mi' }, kawarm10: { n: 'Bras-lame du Kāma', el: 'yin', k: '刃', cd: 2.5, ch: 16, sign: 'ne' } });

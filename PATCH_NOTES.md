@@ -1,3 +1,7 @@
+## v0.10.38 — Battleground: Boruto vs Kawaki mirror tuned
+- Kāma Vessels duel retuned: Kawaki's rods fire slower (cooldown 4 s), Sukunahikona and both Rasengans hit a little softer.
+- Both sides now reliably reward good play (8/8 wins in tests) while button-mashing still loses.
+
 ## v0.10.37 — Shinobi life: time-of-day NPC dialogue, Ichiraku, home, training, shops, NPC routines
 - NPCs speak short, time-of-day lines (morning, day, evening, night) in English by default.
 - Ichiraku: eat a bowl (30 ryō) for full HP and chakra.
