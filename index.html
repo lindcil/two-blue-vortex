@@ -104,7 +104,7 @@ button.b.p{background:var(--gold);color:var(--ink)}button.b.p2{background:var(--
 <script>
 'use strict';
 /* ============ Noyau : réglages, sauvegarde, entrées, audio ============ */
-const VERSION = '0.10.20';
+const VERSION = '0.10.21';
 const K10 = Math.sqrt(10); // v0.9.7 : échelle des cartes extérieures (surface ×10)
 const $ = (s) => document.querySelector(s);
 const TAU = Math.PI * 2, clamp = (v, a, b) => (v < a ? a : v > b ? b : v), lerp = (a, b, t) => a + (b - a) * t;
@@ -4626,7 +4626,7 @@ addEventListener('touchstart',()=>document.body.classList.add('touch07'),{passiv
 "Arc III terminé": "Arc III complete",
 "Genin !": "Genin!",
 "L’équipe se retrouve à la grande porte.": "The team regroups at the great gate.",
-"Ura Renge": "Ura Renge (Hidden Lotus)",
+"Ura Renge": "Ura Renge",
 "Histoire": "Story",
 ": Boruto rentre à Konoha.": ": Boruto returns to Konoha.",
 ": crée ton ninja, de l’Académie à la guerre.": ": create your ninja, from the Academy to the war.",
@@ -4966,7 +4966,63 @@ addEventListener('touchstart',()=>document.body.classList.add('touch07'),{passiv
 "Force +{}": "Strength +{}",
 "Chakra +{}": "Chakra +{}",
 "Parle à tes coéquipiers (une fois par jour) et réussis des missions ensemble pour renforcer vos liens. Un lien fort rend la Formation d’équipe plus puissante et ouvre certains choix.": "Talk to your teammates (once a day) and clear missions together to strengthen your bonds. A strong bond makes Team Formation stronger and opens some choices.",
-"Clique sur une touche puis appuie sur la nouvelle. Deux touches par action. Par défaut (AZERTY) : flèches pour bouger, 1 2 3 4 techniques, A ou clic droit dash, Z charge de mode, C charge de chakra (maintiens au-delà du max pour le dōjutsu). Manette : A parler · X frappe · B dash · LB/RB/LT/RT techniques · Y ultime.": "Click a key, then press the new one. Two keys per action. Default (AZERTY): arrows to move, 1 2 3 4 jutsu, A or right click to dash, Z mode charge, C chakra charge (hold past max for dōjutsu). Gamepad: A talk · X strike · B dash · LB/RB/LT/RT jutsu · Y ultimate."
+"Clique sur une touche puis appuie sur la nouvelle. Deux touches par action. Par défaut (AZERTY) : flèches pour bouger, 1 2 3 4 techniques, A ou clic droit dash, Z charge de mode, C charge de chakra (maintiens au-delà du max pour le dōjutsu). Manette : A parler · X frappe · B dash · LB/RB/LT/RT techniques · Y ultime.": "Click a key, then press the new one. Two keys per action. Default (AZERTY): arrows to move, 1 2 3 4 jutsu, A or right click to dash, Z mode charge, C chakra charge (hold past max for dōjutsu). Gamepad: A talk · X strike · B dash · LB/RB/LT/RT jutsu · Y ultimate.",
+"Niveau {}": "Level {}",
+"Nouvelle technique : {}": "New jutsu: {}",
+"Mission {} réussie": "Mission {} complete",
+"Point de constellation +{} — {}": "Constellation point +{} — {}",
+"Point de constellation +{}": "Constellation point +{}",
+"Réaction découverte : {} — {}": "Reaction discovered: {} — {}",
+"Réussi !": "Success!",
+"Tes touches": "Your keys",
+"Nouveau :": "New:",
+"charge ton mode,": "charge your mode,",
+"ou clic droit pour le dash,": "or right click to dash,",
+"charge le chakra,": "charge chakra,",
+"Comment veux-tu te déplacer ?": "How do you want to move?",
+"Flèches (recommandé)": "Arrows (recommended)",
+"ZQSD (charge de mode sur F)": "ZQSD (mode charge on F)",
+"Modifiable à tout moment dans Réglages › Touches.": "Change anytime in Settings › Keys.",
+"frapper ×3": "strike ×3",
+"ou clic droit : dash": "or right click: dash",
+"Ultime prêt — {}": "Ultimate ready — {}",
+"Quelques heures plus tard": "A few hours later",
+"CHAPITRE 1 — FUGITIF": "CHAPTER 1 — FUGITIVE",
+"Le lendemain": "The next day",
+"CHAPITRE 2 — KURAMA": "CHAPTER 2 — KURAMA",
+"ACADÉMIE DE KONOHA": "KONOHA ACADEMY",
+"technique de clan": "clan jutsu",
+"Techniques : menu › Ninjutsu pour changer d’emplacement": "Jutsu: menu › Ninjutsu to change slots",
+"Parler à {}": "Talk to {}",
+"formation d’équipe": "team formation",
+"Ce soir-là": "That night",
+"LA GRANDE PORTE": "THE GREAT GATE",
+"Le marché": "The deal",
+"MARCHER SUR L’EAU": "WATER WALKING",
+"+{} Chakra": "+{} Chakra",
+"Lien {} +{}": "Bond {} +{}",
+"LE RETOUR": "THE RETURN",
+"Quête du jour : {}": "Daily quest: {}",
+"Sous la cascade": "Under the waterfall",
+"LE SERMENT": "THE OATH",
+"FORÊT DE L’OUEST": "WESTERN FOREST",
+"Dans la forêt": "In the forest",
+"LA PLANQUE": "THE HIDEOUT",
+"Entre deux": "In between",
+"BRISER UN GENJUTSU": "BREAKING A GENJUTSU",
+"Vague {} repoussée": "Wave {} repelled",
+"Au fond de la forêt": "Deep in the forest",
+"L’ÉCHO DE KURAMA": "KURAMA'S ECHO",
+"✦ Constellation ({})": "✦ Constellation ({})",
+"Écran titre": "Title screen",
+"Choix des jeux": "Game selection",
+"Une semaine plus tard": "A week later",
+"EXAMEN CHŪNIN — ÉPREUVE ÉCRITE": "CHŪNIN EXAM — WRITTEN TEST",
+"Repas d’Iruka : +10 % de dégâts": "Iruka's meal: +10% damage",
+"Le jour de la finale": "Finals day",
+"ARÈNE DE L’EXAMEN": "EXAM ARENA",
+"LE ROCHER DES HOKAGE": "HOKAGE ROCK",
+"✦ Constellation": "✦ Constellation"
 }
 };
   const L = window.LANG10 = { DATA, miss: new Set(), get lang() { return (Save.set && Save.set.lang) || 'en'; }, set lang(v) { Save.set.lang = v; try { Save.saveSet && Save.saveSet(); } catch (e) {} },
@@ -4989,8 +5045,11 @@ addEventListener('touchstart',()=>document.body.classList.add('touch07'),{passiv
 
 // v0.10.20 — Interface en anglais par défaut : menus HTML (observateur DOM) + noms de techniques / modes / ultimes (FR via l'option de langue)
 (() => { if (!window.LANG10) return; const L = LANG10;
+  // idempotent : un texte déjà traduit n'est jamais retraduit ni signalé manquant
+  const VALS = {}; for (const lg in L.DATA) VALS[lg] = new Set(Object.values(L.DATA[lg])); const t0 = L.t.bind(L);
+  L.t = function (s) { if (typeof s === 'string' && this.lang !== 'fr' && VALS[this.lang] && VALS[this.lang].has(s) && !(s in L.DATA[this.lang])) return s; if (typeof s === 'string' && this.lang !== 'fr' && !(s in (L.DATA[this.lang] || {}))) { let m = s.match(/^([\u3000-\u9fff]+) (.+)$/); if (m) return m[1] + ' ' + this.t(m[2]); m = s.match(/^(.+) \((\d+)\)$/); if (m) return this.t(m[1]) + ' (' + m[2] + ')'; if (/^[A-ZŌŪ][a-zōū]+ [A-ZŌŪ][a-zōū]+$/.test(s)) return s; } return t0(s); };
   const tr = (s) => { if (L.lang === 'fr') return s; const D = L.DATA[L.lang] || {}; return D[s] != null ? D[s] : s; };
-  const trUI = (s) => { if (L.lang === 'fr') return s; const D = L.DATA[L.lang] || {}; if (D[s] != null) return D[s]; const m = s.match(/^([\u3000-\u9fff]+) (.+)$/); if (m) return m[1] + ' ' + trUI(m[2]); const v = L.t(s); if (v !== s || !s.includes(' · ')) return v; return s.split(' · ').map((x) => L.t(x)).join(' · '); };
+  const trUI = (s) => { if (L.lang === 'fr') return s; const D = L.DATA[L.lang] || {}; if (D[s] != null) return D[s]; const m = s.match(/^([\u3000-\u9fff]+) (.+)$/); if (m) return m[1] + ' ' + trUI(m[2]); const had = new Set(L.miss); const q = (x) => { const r = L.t(x); if (!had.has(x)) L.miss.delete(x); return r; }; const v = q(s); if (v !== s || !s.includes(' · ')) return v; return s.split(' · ').map(q).join(' · '); };
   // noms de techniques (dessinés sur le canvas) : on garde le FR d'origine dans n_fr
   const names = () => { for (const k in SK) { const S = SK[k]; if (!S || typeof S.n !== 'string') continue; if (S.n_fr == null) S.n_fr = S.n; S.n = tr(S.n_fr); }
     if (window.ULT_NAME) for (const k in ULT_NAME) { ULT_NAME.__fr = ULT_NAME.__fr || {}; if (ULT_NAME.__fr[k] == null) ULT_NAME.__fr[k] = ULT_NAME[k]; ULT_NAME[k] = tr(ULT_NAME.__fr[k]); }

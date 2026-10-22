@@ -1,3 +1,8 @@
+## v0.10.21 — Traduction complète
+- Plus aucun texte manquant en anglais sur toute l’Histoire, Ta voie et les missions (test MISS vide).
+- Titres de scènes, toasts de niveau/technique/réaction, menu touches traduits.
+- Traductions idempotentes (corrige « Ura Renge (Hidden Lotus) (Hidden Lotus) »).
+
 ## v0.10.20 — Menus et techniques en anglais
 - Menus, réglages, journal, dōjō, éditeur et réactions en anglais par défaut ; le français revient via l’option de langue.
 - Noms de techniques : styles traduits (Fire Style, Wind Style…), noms japonais canon gardés, noms français traduits.
