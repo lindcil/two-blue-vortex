@@ -1,3 +1,6 @@
+## v0.10.55 — Engaged enemies stay active across the wall; stale room state self-heals
+An enemy fighting you (aggro, quest foe, or within reach) stays active if it is knocked, teleports or chases across the village wall. If you are moved out of an interior by a scene, the game no longer thinks you are still inside (which hid every enemy).
+
 ## v0.10.54 — Sensei can't drift out of reach
 Three-hits test: the game only lists enemies in your current district, and the sensei teleports after each hit, so he could land across a district edge and become untouchable. He is now pulled back next to you; invalid HP is also repaired.
 
