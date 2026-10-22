@@ -1,3 +1,7 @@
+## v0.10.23 — Performance
+- Nombres de dégâts rendus une fois en sprite (texte −85 % CPU).
+- Couleurs ombrées mises en cache ; au plus 24 textes flottants.
+
 ## v0.10.22 — Texte canvas, constellation, Susanoo
 - Tout le texte dessiné sur le canvas passe par la langue (lieux, aides de mini-jeux, popups) ; audit : 0 manquant.
 - Constellation : étoiles et tracés plus lisibles, libellés rapprochés, points plus gros, aide « Click a pulsing star… ».

@@ -127,7 +127,8 @@ function drawHead(g, u, L, C, ink, tint, kid, vel, wav, P) { const R = kid ? 12.
   g.fill(); if (!tint) g.stroke();
   if (L.band && !tint) { g.fillStyle = L.band === 2 ? '#555' : '#2a3a6a'; g.beginPath(); g.moveTo(-11, hy - 7); g.lineTo(11, hy - 6); g.lineTo(11, hy - 2.5); g.lineTo(-11, hy - 3.5); g.closePath(); g.fill(); g.fillStyle = '#b8c4d8'; g.fillRect(2.5, hy - 7, 7, 4); g.strokeStyle = INK; g.lineWidth = 1; g.strokeRect(2.5, hy - 7, 7, 4); if (L.band === 2) { g.beginPath(); g.moveTo(3, hy - 5); g.lineTo(9, hy - 5); g.stroke(); } }
   if (u.hood && !tint) { g.fillStyle = L.cloak || '#30364f'; g.strokeStyle = INK; g.lineWidth = 2.4; g.beginPath(); g.arc(-1, hy - 1, R + 2.5, Math.PI * 0.82, Math.PI * 2.08); g.lineTo(-13, hy + 12); g.closePath(); g.fill(); g.stroke(); } }
-function shade(c) { return String(c).replace(/^#(..)(..)(..)$/, (m, r, gg, b) => '#' + [r, gg, b].map((h) => Math.round(parseInt(h, 16) * 0.72).toString(16).padStart(2, '0')).join('')); }
+const SHADE_C = new Map(); function shade(c) { let v = SHADE_C.get(c); if (v !== undefined) return v; v = shade0(c); if (SHADE_C.size > 5000) SHADE_C.clear(); SHADE_C.set(c, v); return v; }
+function shade0(c) { return String(c).replace(/^#(..)(..)(..)$/, (m, r, gg, b) => '#' + [r, gg, b].map((h) => Math.round(parseInt(h, 16) * 0.72).toString(16).padStart(2, '0')).join('')); }
 /* ---------- Bêtes à queues : vraies créatures (queues qui ondulent, mâchoire, rugissement) ---------- */
 const BIJUU = {
   kurama: { n: 'Kurama', tails: 9, body: '#f07a1e', belly: '#ffc070', mark: '#7a1e08', eye: '#ffe14a', pupil: '#c01010', ears: 'fox', snout: 1.15 },

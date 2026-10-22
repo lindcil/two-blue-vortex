@@ -5,7 +5,7 @@
 (() => {
   const prev = drawHead;
   const dk = (c, n = 2) => { let x = c; for (let i = 0; i < n; i++) x = shade(x); return x; };
-  const lt = (c, k = 0.35) => String(c).replace(/^#(..)(..)(..)$/, (m, r, g, b) => '#' + [r, g, b].map((h) => { const v = parseInt(h, 16); return Math.round(v + (255 - v) * k).toString(16).padStart(2, '0'); }).join(''));
+  const LTC = new Map(); const lt = (c, k = 0.35) => { const key = c + '|' + k; let v = LTC.get(key); if (v === undefined) { v = lt0(c, k); LTC.set(key, v); } return v; }; const lt0 = (c, k = 0.35) => String(c).replace(/^#(..)(..)(..)$/, (m, r, g, b) => '#' + [r, g, b].map((h) => { const v = parseInt(h, 16); return Math.round(v + (255 - v) * k).toString(16).padStart(2, '0'); }).join(''));
   const r = 10, c = -12; // crâne
   // ---------- silhouette du visage (profil, regard vers +x) ----------
   const facePath = (g) => { g.beginPath(); g.moveTo(-r * 0.2, c - r); g.bezierCurveTo(r * 0.55, c - r, r * 0.95, c - r * 0.6, r * 0.98, c - 1); // front

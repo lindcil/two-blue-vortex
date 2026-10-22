@@ -16,3 +16,14 @@
   try { if (u && u.isHero) { const S = SK[id] || {}, c = elc(S.el || 'wind'); Game.impact(u.x, u.y - 40, 0.14); Cam.shake(0.45); Cam.z *= 1.05;
     FX.shock(u.x, u.y - 30, c, 190, 0.45, 12); Game.later(0.08, () => FX.shock(u.x, u.y - 30, '#ffffff', 280, 0.55, 5)); FX.dust && FX.dust(u.x, u.y, 14); u.sq = -0.38; Game.later(0.12, () => { u.sq = 0.22; }); } } catch (e) {}
   return r; }; })();
+// v0.10.23 — perf : au plus 24 nombres/textes flottants à la fois (les plus anciens non-« big » partent d'abord)
+(() => { const tx = FX.text.bind(FX); FX.text = function (...a) { const T = this.T; if (T.length >= 24) { const i = T.findIndex((t) => !t.big); T.splice(i < 0 ? 0 : i, 1); } return tx(...a); }; })();
+// v0.10.23 — perf : nombres/textes flottants rendus une fois en sprite (contour + remplissage), puis simplement redimensionnés
+(() => { const C = new Map(), SC = 2;
+  const spr = (t) => { const k = t.s + '|' + t.c + '|' + t.size + '|' + (t.dmgN ? 1 : 0); let e = C.get(k); if (e) return e; const font = `${t.size * SC}px ${t.dmgN ? "'TBV Ext', 'Luckiest Guy'" : "'TBV Ext', 'Lilita One'"}, Impact, 'Arial Black', system-ui, sans-serif`;
+    const c = document.createElement('canvas'), g = c.getContext('2d'); g.font = font; const w = Math.ceil(g.measureText(t.s).width) + 12 * SC, h = Math.ceil(t.size * SC * 1.5) + 8 * SC; c.width = w; c.height = h;
+    g.font = font; g.textAlign = 'center'; g.textBaseline = 'alphabetic'; g.lineJoin = 'round'; g.lineWidth = 5 * SC; g.strokeStyle = INK; const by = Math.round(t.size * SC * 1.15) + 2 * SC; g.strokeText(t.s, w / 2, by); g.fillStyle = t.c; g.fillText(t.s, w / 2, by);
+    e = { c, w: w / SC, h: h / SC, by: by / SC }; if (C.size > 400) C.clear(); C.set(k, e); return e; };
+  FX.drawText = function (g) { for (const t of this.T) { const q = t.t / t.life; let s = 1; if (t.pop) s = t.t < 0.08 ? lerp(0.4, 1.6, t.t / 0.08) : t.t < 0.22 ? lerp(1.6, 1, ease.back((t.t - 0.08) / 0.14)) : 1; else if (t.big) s = 1 + Math.max(0, 0.4 - t.t * 2);
+      const e = spr(t); g.globalAlpha = Math.min(1, (1 - q) * 3); g.drawImage(e.c, t.x - e.w * s / 2, t.y - e.by * s, e.w * s, e.h * s); } g.globalAlpha = 1; };
+})();
