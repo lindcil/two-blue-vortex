@@ -104,7 +104,7 @@ button.b.p{background:var(--gold);color:var(--ink)}button.b.p2{background:var(--
 <script>
 'use strict';
 /* ============ Noyau : réglages, sauvegarde, entrées, audio ============ */
-const VERSION = '0.10.47';
+const VERSION = '0.10.48';
 const K10 = Math.sqrt(10); // v0.9.7 : échelle des cartes extérieures (surface ×10)
 const $ = (s) => document.querySelector(s);
 const TAU = Math.PI * 2, clamp = (v, a, b) => (v < a ? a : v > b ? b : v), lerp = (a, b, t) => a + (b - a) * t;
@@ -1329,11 +1329,11 @@ const Create = { st: null, raf: 0,
   render() { const S = this.st, L = S.look; $('#cName').value = S.name;
     const chips = (id, items, cur, on) => { const el = $(id); el.innerHTML = items.map(([k, n, sw]) => `<button class="chip${sw ? ' sw' : ''}${String(k) === String(cur) ? ' on' : ''}" data-k="${k}" ${sw ? `style="background:${k}" aria-label="${n}"` : ''}>${sw ? '' : n}</button>`).join(''); el.querySelectorAll('button').forEach((b) => (b.onclick = () => { on(b.dataset.k); Sfx.init(); Sfx.play('pop'); this.render(); })); };
     chips('#cClan', [...Object.entries(CLANS).map(([k, c]) => [k, c.n]), ['?', '🎲 Au hasard']], S.clan, (k) => { if (k === '?') k = pick(Object.keys(CLANS)); S.clan = k; Object.assign(L, CLANS[k].look); });
-    chips('#cHair', HAIRSTYLES.map((h) => [h, { spiky: 'Pointes', bob: 'Carré', long: 'Longs', pony: 'Queue', buns: 'Chignons', pineapple: 'Ananas', buzz: 'Ras', messy: 'Ébouriffés', slick: 'Plaqués', bald: 'Chauve' }[h]]), L.hs, (k) => (L.hs = k));
+    chips('#cHair', HAIRSTYLES.map((h) => [h, { spiky: 'Pointes', bob: 'Carré', long: 'Longs', pony: 'Queue', buns: 'Chignons', pineapple: 'Ananas', buzz: 'Ras', messy: 'Ébouriffés', slick: 'Plaqués', bald: 'Chauve' }[h]].map((x, i) => (i ? LANG10.t(x) : x))), L.hs, (k) => (L.hs = k));
     chips('#cHc', PAL.hair.map((c) => [c, c, 1]), L.hair, (k) => (L.hair = k)); chips('#cSkin', PAL.skin.map((c) => [c, c, 1]), L.skin, (k) => (L.skin = k)); chips('#cTop', PAL.top.map((c) => [c, c, 1]), L.top, (k) => (L.top = k)); },
   loop() { cancelAnimationFrame(this.raf); const c = $('#cPrev'), x = c.getContext('2d'); const u = makeUnit({ look: this.st.look, x: 0, y: 0, face: 1 }); let t = 0, k = 0;
     const tick = () => { if ($('#create').style.display === 'none') return; t += 0.016; u.anim = t * 3; u.look = this.st.look; k = (t % 6) | 0; u.act = null; u.combat = k % 2 === 1; if (k === 3) { u.act = { k: 'm1', n: ((t * 2.2) | 0) % 3, t: (t * 2.2 % 1) * 0.4, dur: 0.4 }; } if (k === 5) { u.vx = 200; } else u.vx = 0;
-      animPose(u, 0.016); x.setTransform(1, 0, 0, 1, 0, 0); x.clearRect(0, 0, 320, 320); x.fillStyle = 'rgba(0,0,0,.2)'; x.beginPath(); x.ellipse(160, 270, 70, 14, 0, 0, TAU); x.fill(); x.setTransform(3, 0, 0, 3, 160, 270); drawRig(x, u); this.raf = requestAnimationFrame(tick); }; tick(); },
+      animPose(u, 0.016); x.setTransform(1, 0, 0, 1, 0, 0); x.clearRect(0, 0, 320, 320); x.fillStyle = 'rgba(0,0,0,.2)'; x.beginPath(); x.ellipse(160, 285, 60, 12, 0, 0, TAU); x.fill(); x.setTransform(2.3, 0, 0, 2.3, 160, 285); drawRig(x, u); this.raf = requestAnimationFrame(tick); }; tick(); },
 };
 $('#cName').addEventListener('input', (e) => (Create.st.name = e.target.value.slice(0, 14)));
 $('#cName').addEventListener('keydown', (e) => e.stopPropagation());
@@ -2209,7 +2209,7 @@ addEventListener('touchstart',()=>document.body.classList.add('touch07'),{passiv
   const te = UI.t_equipe.bind(UI); UI.t_equipe = function () { return `<h3 style="font-family:var(--f-title);letter-spacing:.06em">${Voie.teamName()}</h3>` + te(); };
   /* ---------- création : clan au hasard (sauf Créatif) ---------- */
   const co = Create.open.bind(Create); Create.open = function (creative) { co(); this.creative = !!creative; const cl = $('#cClan'), lab = cl && cl.previousElementSibling; if (cl) cl.style.display = creative ? '' : 'none'; if (lab) lab.style.display = creative ? '' : 'none';
-    let n = $('#cRoll'); if (!n && cl) { n = document.createElement('p'); n.id = 'cRoll'; n.className = 'el'; cl.parentNode.insertBefore(n, cl); } if (n) n.textContent = creative ? '' : 'Clan et techniques : tirés au sort à la naissance. (Choix libre en mode Créatif.)';
+    let n = $('#cRoll'); if (!n && cl) { n = document.createElement('p'); n.id = 'cRoll'; n.className = 'el'; cl.parentNode.insertBefore(n, cl); } if (n) n.textContent = creative ? '' : LANG10.t('Clan et techniques : tirés au sort à la naissance. (Choix libre en mode Créatif.)');
     let t = $('#cTech'); if (creative) { if (!t) { t = document.createElement('div'); t.id = 'cTech'; cl.parentNode.insertBefore(t, $('#cGo').parentNode); } const all = Object.keys(SK).filter((k) => !SK[k].ult); const def = ['rasen', 'gokakyu', 'chidori', 'kaiten'];
       t.innerHTML = '<label>Élément</label><select id="cEl">' + ELS5.map((e) => `<option value="${e}">${ELS[e].n}</option>`).join('') + '</select><label>Techniques (1 à 4)</label>' + [0, 1, 2, 3].map((i) => `<select data-ts="${i}">${all.map((k) => `<option value="${k}"${k === def[i] ? ' selected' : ''}>${SK[k].n}</option>`).join('')}</select>`).join(' '); t.style.display = ''; } else if (t) t.style.display = 'none';
     $('#create h2').textContent = creative ? 'Créatif — ton ninja sur mesure' : 'Ta voie'; };
@@ -5608,7 +5608,18 @@ let FT10 = null, FB10 = null;
 "toucher ▸": "tap ▸",
 "Bouton C : chakra, puis éveil": "C button: chakra, then awaken",
 "Bouton Z : mode": "Z button: mode",
-"Code surgit d’une marque de griffe. Bats-le.": "Code bursts out of a Claw Mark. Defeat him."
+"Code surgit d’une marque de griffe. Bats-le.": "Code bursts out of a Claw Mark. Defeat him.",
+"Clan et techniques : tirés au sort à la naissance. (Choix libre en mode Créatif.)": "Clan and techniques are rolled at birth. (Free choice in Creative mode.)",
+"Pointes": "Spiky",
+"Carré": "Bob",
+"Longs": "Long",
+"Queue": "Ponytail",
+"Chignons": "Buns",
+"Ananas": "Pineapple",
+"Ras": "Buzz cut",
+"Ébouriffés": "Messy",
+"Plaqués": "Slicked",
+"Chauve": "Bald"
 }
 };
   const L = window.LANG10 = { DATA, miss: new Set(), get lang() { return (Save.set && Save.set.lang) || 'en'; }, set lang(v) { Save.set.lang = v; try { Save.saveSet && Save.saveSet(); } catch (e) {} },

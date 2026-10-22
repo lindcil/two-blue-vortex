@@ -1,3 +1,7 @@
+## v0.10.48 — Your Way creation screen fixes
+- Character preview no longer cuts off the head.
+- Creation screen fully in English: clan/technique note, hairstyle names (Spiky, Bob, Long, Ponytail, Buns, Pineapple, Buzz cut, Messy, Slicked, Bald), Random.
+
 ## v0.10.47 — Minimalist boss HP bar
 - New boss bar: letter-spaced name, thin bar with a white damage trail, notches at 25/50/75 %, discreet percentage, gentle pulse below 25 %, slide-in on appear.
 - Fixed: bosses defined only by their type (e.g. Code in the prologue) showed no bar at all.

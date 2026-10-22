@@ -1,0 +1,4 @@
+const {chromium}=require('playwright-core');
+(async()=>{const b=await chromium.launch({executablePath:'/usr/bin/google-chrome',args:['--no-sandbox']});const errs=[];const p=await b.newPage({viewport:{width:1280,height:720}});p.on('pageerror',e=>errs.push(e.message));
+await p.goto('file:///workspace/two-blue-vortex/index.html');await p.waitForTimeout(900);if(await p.$('#lay07'))await p.click('#lay1');await p.click('#bNewV');await p.waitForTimeout(1500);await p.screenshot({path:'/workspace/two-blue-vortex/screens/v10/np/voie-creation.png'});
+const btn=await p.evaluate(()=>[...document.querySelectorAll('button')].filter(b=>b.offsetParent).map(b=>b.id+':'+b.textContent).join(' | '));console.log(btn);console.log('miss',await p.evaluate(()=>[...LANG10.miss]));console.log('errs',errs);await b.close()})();

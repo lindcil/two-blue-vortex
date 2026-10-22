@@ -1046,7 +1046,18 @@
 "toucher ▸": "tap ▸",
 "Bouton C : chakra, puis éveil": "C button: chakra, then awaken",
 "Bouton Z : mode": "Z button: mode",
-"Code surgit d’une marque de griffe. Bats-le.": "Code bursts out of a Claw Mark. Defeat him."
+"Code surgit d’une marque de griffe. Bats-le.": "Code bursts out of a Claw Mark. Defeat him.",
+"Clan et techniques : tirés au sort à la naissance. (Choix libre en mode Créatif.)": "Clan and techniques are rolled at birth. (Free choice in Creative mode.)",
+"Pointes": "Spiky",
+"Carré": "Bob",
+"Longs": "Long",
+"Queue": "Ponytail",
+"Chignons": "Buns",
+"Ananas": "Pineapple",
+"Ras": "Buzz cut",
+"Ébouriffés": "Messy",
+"Plaqués": "Slicked",
+"Chauve": "Bald"
 }
 };
   const L = window.LANG10 = { DATA, miss: new Set(), get lang() { return (Save.set && Save.set.lang) || 'en'; }, set lang(v) { Save.set.lang = v; try { Save.saveSet && Save.saveSet(); } catch (e) {} },
