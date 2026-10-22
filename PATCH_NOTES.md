@@ -1,3 +1,8 @@
+## v0.10.39 — Battleground: Kakashi vs Zabuza and Gaara vs Rock Lee duels
+- New duel: The Great Naruto Bridge — Kakashi (Chidori, Water Dragon, Fanged Pursuit summon, Raikiri) vs Zabuza (Kubikiribōchō, Water Dragon, Water Prison, Water Clone, Hidden Mist: Silent Killing).
+- New duel: Chūnin Exams — Gaara (Sand Coffin, Sand Shuriken, Sand Shield, Sand Rain, Sand Burial; automatic sand shield) vs Rock Lee (Leaf Whirlwind, Leaf Gale, Front Lotus, Eight Gates boost, Hidden Lotus; his speed pierces the sand shield).
+- New faces: Kakashi's mask and slanted headband, Zabuza's bandages, Gaara's 'love' kanji, dark rings and gourd, Lee's eyebrows.
+
 ## v0.10.38 — Battleground: Boruto vs Kawaki mirror tuned
 - Kāma Vessels duel retuned: Kawaki's rods fire slower (cooldown 4 s), Sukunahikona and both Rasengans hit a little softer.
 - Both sides now reliably reward good play (8/8 wins in tests) while button-mashing still loses.
