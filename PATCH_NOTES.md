@@ -1,3 +1,8 @@
+## v0.10.20 — Menus et techniques en anglais
+- Menus, réglages, journal, dōjō, éditeur et réactions en anglais par défaut ; le français revient via l’option de langue.
+- Noms de techniques : styles traduits (Fire Style, Wind Style…), noms japonais canon gardés, noms français traduits.
+- Captures : screens/v10/ui/en-* et fr-*.
+
 ## v0.10.19 — Détente d’ultime, sceaux, Susanoo de dos
 - Détente de l’ultime : image d’impact sombre (pas de flash), secousse, double onde de choc, poussière, écrasement/étirement.
 - Sceaux à hauteur de poitrine, à l’échelle du héros.
