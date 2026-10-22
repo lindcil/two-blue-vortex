@@ -24,3 +24,9 @@
 })();
 // v0.10.56 — Boussole « Prends une mission » : visait 126 unités à côté du bureau (hors portée de E). Elle vise maintenant le bureau lui-même.
 (() => { const t0 = Voie.target.bind(Voie); Voie.target = function () { if (this.step === 'free' && !this.mis && this.desk && Game.mode === 'voie') return [this.desk.x, this.desk.y + 30]; return t0(); }; })();
+// v0.10.57 — Boussole : si l’objectif est de l’autre côté du mur d’enceinte, elle mène d’abord à la grande porte (le mur n’est franchissable que là).
+(() => {
+  const via = (t) => { const h = Game.hero; if (!t || !h || (window.ZONE8 && ZONE8.room) || Game.creative || (window.BG10 && BG10.on)) return t; const wy = WALL_Y * K10, gx = 1600 * K10;
+    const hIn = h.y < wy, tIn = t[1] < wy; if (hIn === tIn) return t; if (Math.abs(h.x - gx) < 110 && Math.abs(h.y - wy) < 220) return t; return [gx, hIn ? wy - 120 : wy + 160]; };
+  for (const S of [typeof Voie !== 'undefined' ? Voie : null, window.Histoire || (typeof Histoire !== 'undefined' ? Histoire : null)]) { if (!S || !S.target) continue; const t0 = S.target.bind(S); S.target = function () { return via(t0()); }; }
+})();

@@ -104,7 +104,7 @@ button.b.p{background:var(--gold);color:var(--ink)}button.b.p2{background:var(--
 <script>
 'use strict';
 /* ============ Noyau : réglages, sauvegarde, entrées, audio ============ */
-const VERSION = '0.10.56';
+const VERSION = '0.10.57';
 const K10 = Math.sqrt(10); // v0.9.7 : échelle des cartes extérieures (surface ×10)
 const $ = (s) => document.querySelector(s);
 const TAU = Math.PI * 2, clamp = (v, a, b) => (v < a ? a : v > b ? b : v), lerp = (a, b, t) => a + (b - a) * t;
@@ -1157,7 +1157,7 @@ const Voie = { mode: 'voie',
   /* ---------- missions ---------- */
   board() { if (this.step !== 'free') return Talk.say([['Bureau', this.rank === 'eleve' ? 'Les élèves n’ont pas de missions.' : 'Une affaire urgente passe avant tout.']]); if (this.mis) return Talk.say([['Bureau', 'Termine d’abord : ' + this.mis.n + '.']]);
     const ok = RANK_MIS[this.rank]; const L = Object.entries(MISSIONS).filter(([, m]) => ok.includes(m.r)); const pick3 = L.sort(() => Math.random() - 0.5).slice(0, 3);
-    Talk.choose([['Bureau', 'Rang ' + RANKS[this.rank] + '. Missions disponibles :']], pick3.map(([id, m]) => `${m.r} · ${m.n}`).concat(['Plus tard']), (i) => { if (i >= pick3.length) return; const [id, m] = pick3[i]; this.mis = Object.assign({ id }, m); this.setupMission(this.mis); if (m.r !== 'D' && id !== 'kara' && window.V7 && V7.tp) { V7.tp(1600, WALL_Y - 140); UI.toast && UI.toast('L’équipe se retrouve à la grande porte.'); } Talk.say([['Bureau', m.d]]); UI.objective(); Game.save(); }); },
+    Talk.choose([['Bureau', 'Rang ' + RANKS[this.rank] + '. Missions disponibles :']], pick3.map(([id, m]) => `${m.r} · ${m.n}`).concat(['Plus tard']), (i) => { if (i >= pick3.length) return; const [id, m] = pick3[i]; this.mis = Object.assign({ id }, m); this.setupMission(this.mis); if (m.r !== 'D' && id !== 'kara' && window.V07 && V07.tp) { V07.tp(1600, WALL_Y - 140); UI.toast && UI.toast('L’équipe se retrouve à la grande porte.'); } Talk.say([['Bureau', m.d]]); UI.objective(); Game.save(); }); },
   setupMission(m, reload) { const h = Game.hero; m.got = m.got || 0; m.tx = null;
     if (m.id === 'chat') { this.cat = { id: 'cat', n: 'Tora', look: null, cat: 1, x: K10 * 1850 + rnd(-200, 200), y: K10 * 1050 + rnd(-120, 120), r: 10, face: 1, vx: 0, vy: 0, anim: 0, isNpc: true, onTalk: () => { this.catCaught(); } }; Game.extras.push(this.cat); m.need = 0; }
     if (m.id === 'herbes') { m.need = 3; for (let i = m.got; i < 3; i++) { const P = [[1150, 965], [900, 1110], [1200, 1270]][i]; this.items.push({ id: 'herb' + i, x: K10 * (P[0] + rnd(-15, 15)), y: K10 * (P[1] + rnd(-15, 15)), n: 'Herbe' }); } }
@@ -6021,5 +6021,11 @@ let FT10 = null, FB10 = null;
 })();
 // v0.10.56 — Boussole « Prends une mission » : visait 126 unités à côté du bureau (hors portée de E). Elle vise maintenant le bureau lui-même.
 (() => { const t0 = Voie.target.bind(Voie); Voie.target = function () { if (this.step === 'free' && !this.mis && this.desk && Game.mode === 'voie') return [this.desk.x, this.desk.y + 30]; return t0(); }; })();
+// v0.10.57 — Boussole : si l’objectif est de l’autre côté du mur d’enceinte, elle mène d’abord à la grande porte (le mur n’est franchissable que là).
+(() => {
+  const via = (t) => { const h = Game.hero; if (!t || !h || (window.ZONE8 && ZONE8.room) || Game.creative || (window.BG10 && BG10.on)) return t; const wy = WALL_Y * K10, gx = 1600 * K10;
+    const hIn = h.y < wy, tIn = t[1] < wy; if (hIn === tIn) return t; if (Math.abs(h.x - gx) < 110 && Math.abs(h.y - wy) < 220) return t; return [gx, hIn ? wy - 120 : wy + 160]; };
+  for (const S of [typeof Voie !== 'undefined' ? Voie : null, window.Histoire || (typeof Histoire !== 'undefined' ? Histoire : null)]) { if (!S || !S.target) continue; const t0 = S.target.bind(S); S.target = function () { return via(t0()); }; }
+})();
 
 </script></body></html>

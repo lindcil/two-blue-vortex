@@ -1,3 +1,6 @@
+## v0.10.57 — Outside missions start at the great gate again; compass routes via the gate
+Accepting an outside mission now moves the team inside the great gate as intended since v0.10.16 (a wrong global name had silently disabled it). When the objective is across the village wall, the compass first leads to the great gate.
+
 ## v0.10.56 — Compass leads onto the mission desk; translation template fix; enemy position guard
 The 'grab a mission' compass pointed beside the Hokage-tower desk, out of talk range; it now points at the desk. English prompt said 'Talk to Bureau des missions' (two text templates competed); now 'Talk to Mission desk'. Any enemy whose position becomes invalid is put back at its last valid spot.
 

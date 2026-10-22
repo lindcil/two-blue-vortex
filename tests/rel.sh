@@ -3,7 +3,7 @@
 set -e; cd /workspace/two-blue-vortex; bash build.sh >/dev/null
 # garde-fou : aucune chaîne non traduite (MISS/CMISS) sinon échec
 M=$(cd /tmp/pw && node play10.js 2>&1 | grep -E '^C?MISS'); echo "$M"; if ! echo "$M" | grep -q '^MISS \[\]' || ! echo "$M" | grep -q '^CMISS \[\]'; then echo 'RELEASE ABORTED: missing translations'; exit 3; fi
-F=$(cd /tmp/pw && node fpsab.js 2>&1); echo "$F"; if ! echo "$F" | grep -q "FPS CHECK OK"; then echo "RELEASE ABORTED: fps"; exit 4; fi
+F=$(cd /tmp/pw && node fpsab.js 2>&1) || true; echo "$F"; if ! echo "$F" | grep -q "FPS CHECK OK"; then echo "RELEASE ABORTED: fps"; exit 4; fi
  cp /tmp/pw/*.js tests/ 2>/dev/null || true
 OLD=$(grep -o "VERSION = '[0-9.]*'" src/10_core.js | cut -d"'" -f2); sed -i "s/VERSION = '$OLD'/VERSION = '$1'/" src/10_core.js
 printf '## v%s — %s\n%s\n\n' "$1" "$2" "$3" | cat - PATCH_NOTES.md > /tmp/pn && mv /tmp/pn PATCH_NOTES.md; bash build.sh >/dev/null
