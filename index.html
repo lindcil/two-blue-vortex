@@ -104,7 +104,7 @@ button.b.p{background:var(--gold);color:var(--ink)}button.b.p2{background:var(--
 <script>
 'use strict';
 /* ============ Noyau : réglages, sauvegarde, entrées, audio ============ */
-const VERSION = '0.10.57';
+const VERSION = '0.10.58';
 const K10 = Math.sqrt(10); // v0.9.7 : échelle des cartes extérieures (surface ×10)
 const $ = (s) => document.querySelector(s);
 const TAU = Math.PI * 2, clamp = (v, a, b) => (v < a ? a : v > b ? b : v), lerp = (a, b, t) => a + (b - a) * t;
@@ -2779,7 +2779,7 @@ addEventListener('touchstart',()=>document.body.classList.add('touch07'),{passiv
     ['Porte & route', 1100, 2300, 2200, 3200], ['Forêt Ouest', 0, 2300, 1100, 4400], ['Plaine', 2200, 2300, 3500, 3300], ['Bois de l’Est', 3500, 2300, 4800, 3300], ['Rivière', 1100, 3200, 3200, 4400], ['Collines', 3200, 3300, 4800, 4400]];
   // nom du quartier : petit bandeau discret (pas de fondu, pas de frontière)
   const dEl = document.createElement('div'); dEl.id = 'dist10'; dEl.style.cssText = 'position:fixed;left:50%;top:64px;transform:translateX(-50%);z-index:20;pointer-events:none;color:#eaf0ff;font:400 22px var(--f-title,serif);letter-spacing:.08em;text-shadow:0 2px 8px #000a;opacity:0;transition:opacity .5s'; document.body.appendChild(dEl);
-  let dCur = null, dT = 0; setInterval(() => { const h = Game.hero; if (!h || Game.titleMode || ZONE8.room || h.x > 19000) { dCur = null; return; } const k = window.K10 || 1, x = h.x / k, y = h.y / k; const d = DISTRICTS.find((q) => x >= q[1] && x < q[3] && y >= q[2] && y < q[4]); const n = d ? d[0] : null;
+  let dCur = null, dT = 0; setInterval(() => { const h = Game.hero; if (!h || Game.titleMode || ZONE8.room || h.x > 19000) { dCur = null; return; } const k = K10, x = h.x / k, y = h.y / k; const d = DISTRICTS.find((q) => x >= q[1] && x < q[3] && y >= q[2] && y < q[4]); const n = d ? d[0] : null;
     if (n && n !== dCur) { if (dCur) { dEl.textContent = n; dEl.style.opacity = '1'; clearTimeout(dT); dT = setTimeout(() => (dEl.style.opacity = '0'), 1800); } dCur = n; } }, 250);
   const secAt = (x, y) => SECS.find((s) => x >= s.x && x < s.x + s.w && y >= s.y && y < s.y + s.h) || SECS[0];
   // ---------- transition encre ----------
@@ -3654,7 +3654,7 @@ addEventListener('touchstart',()=>document.body.classList.add('touch07'),{passiv
       for (let i = 0; i < 6; i++) { const an = t * 1.2 + i * TAU / 6; g.save(); g.translate(Math.cos(an) * 170, -170 + Math.sin(an) * 50); g.rotate(an); g.fillStyle = lt; g.fillRect(-12, -1.5, 24, 3); g.restore(); } }
     else if (w === 'kakashi') { blade(g, 150, -70, 0.35 + sw * 1.8, 220, c, lt); g.save(); g.translate(-150, -120); g.rotate(t * 5 + sw * 9); g.fillStyle = VFX9.ca(lt, 0.8); for (let i = 0; i < 3; i++) { g.rotate(TAU / 3); g.beginPath(); g.moveTo(0, 0); g.quadraticCurveTo(50, -10, 62, 18); g.quadraticCurveTo(30, 6, 0, 10); g.fill(); } g.fillStyle = '#000a'; g.beginPath(); g.arc(0, 0, 9, 0, TAU); g.fill(); g.restore(); }
     g.globalCompositeOperation = 'source-over'; }
-  MODE08.drawSusanoo = function (g, x, y, lvl, c, o = {}) { o = o || {}; const t = o.t || 0, b = o.build == null ? 1 : o.build, sw = o.sw || 0, face = o.face || 1, tier = window.Q9 ? Q9.tier : 2, rf = window.Save && Save.set && Save.set.rf !== false;
+  MODE08.drawSusanoo = function (g, x, y, lvl, c, o = {}) { o = o || {}; const t = o.t || 0, b = o.build == null ? 1 : o.build, sw = o.sw || 0, face = o.face || 1, tier = window.Q9 ? Q9.tier : 2, rf = typeof Save !== 'undefined' && Save.set && Save.set.rf !== false;
     const w = userOf(c), lt = VFX9.mixW(c, 0.55), K = lvl >= 5 ? 1.5 : 1 + (lvl - 1) * 0.05, S = SIL[Math.max(1, Math.min(5, lvl))];
     // squash/stretch : ramassé pendant l'élan, étiré pendant le coup, rebond à la fin de la formation
     const pop = b < 1 ? 0 : 0, form = b > 0.85 && b < 1 ? Math.sin((b - 0.85) / 0.15 * Math.PI) * 0.08 : 0, ph = sw > 0 ? Math.sin(sw * Math.PI * 2) : 0;
@@ -3969,7 +3969,7 @@ addEventListener('touchstart',()=>document.body.classList.add('touch07'),{passiv
 // v0.9.6 — Animations de base, décrites en données (ANIM10) pour les régler facilement : combo M1, dash, Kawarimi (bûche), réactions aux coups, garde, course de Naruto.
 // Ne touche ni aux dégâts ni aux timings de gameplay : seulement poses, VFX et hit-stop cosmétique (plafonné).
 (() => {
-  const TAU = Math.PI * 2, cl = (v) => Math.max(0, Math.min(1, v)), RF = () => !(window.Save && Save.set && Save.set.rf === false);
+  const TAU = Math.PI * 2, cl = (v) => Math.max(0, Math.min(1, v)), RF = () => !(typeof Save !== 'undefined' && Save.set && Save.set.rf === false);
   const ANIM10 = window.ANIM10 = {
     m1: [ // une pose distincte par coup : anticipation → frappe (smear) → prolongement → retour
       { ph: [0.24, 0.36, 0.7], follow: { aF: 1.9, eF: 0.1, lean: 0.55, sx: 1.08, sy: 0.94, hF: 0.8, kF: -0.2, hB: -0.7 }, stretch: 0.22, smear: [[-1.3, 1.1, 54], [-1.0, 1.3, 40]], sparks: { n: 6, sp: 380, spread: 0.5 }, hs: 0.04, shake: 0.06 },
@@ -5632,7 +5632,7 @@ let FT10 = null, FB10 = null;
 }
 };
   const L = window.LANG10 = { DATA, miss: new Set(), get lang() { return (Save.set && Save.set.lang) || 'en'; }, set lang(v) { Save.set.lang = v; try { Save.saveSet && Save.saveSet(); } catch (e) {} },
-    tpl: {}, t(s) { if (typeof s !== 'string' || this.lang === 'fr') return s; const D = DATA[this.lang]; if (!D) return s; if (D[s] != null) return D[s];
+    tpl: {}, out: new Set(), t(s) { if (typeof s !== 'string' || this.lang === 'fr') return s; if (this.out.has(s)) return s; const r = this.t0(s); if (r !== s && typeof r === 'string') { if (this.out.size > 4000) this.out.clear(); this.out.add(r); } return r; }, /* v0.10.58 : un texte déjà traduit n’est ni retraduit ni compté manquant */ t0(s) { const D = DATA[this.lang]; if (!D) return s; if (D[s] != null) return D[s];
       let P = this.tpl[this.lang]; if (!P) { P = this.tpl[this.lang] = []; for (const k in D) if (k.includes('{}')) P.push([new RegExp('^' + k.split('{}').map((x) => x.replace(/[.*+?^$()|[\]\\]/g, '\\$&')).join('([\\s\\S]*?)') + '$'), D[k]]); }
       let first = null; for (const [re, v] of P) { const m = s.match(re); if (!m) continue; const ms = this.miss, tmp = new Set(); this.miss = tmp; let i = 1; const out = v.replace(/\{\}/g, () => this.t(m[i++] || '')); this.miss = ms; if (!tmp.size) return out; if (!first) first = [out, tmp]; } if (first) { for (const x of first[1]) this.miss.add(x); return first[0]; }
       if (/\s/.test(s) && /[a-zàâçéèêëîïôûùüÿœ’]{3}/i.test(s)) this.miss.add(s); return s; } };
@@ -5642,7 +5642,7 @@ let FT10 = null, FB10 = null;
   Talk.say = (lines, cb) => say(tl(lines), cb);
   Talk.choose = (lines, opts, cb) => cho(tl(lines), opts.map(T), cb);
   for (const S of [typeof Histoire !== 'undefined' && Histoire, typeof Voie !== 'undefined' && Voie]) if (S && S.obj) { const o = S.obj; S.obj = function () { const r = o.apply(this, arguments); return Array.isArray(r) ? r.map(T) : r; }; }
-  if (window.UI) for (const k of ['toast', 'reward']) if (UI[k]) { const f = UI[k]; UI[k] = function (s, ...a) { return f.call(this, T(s), ...a); }; }
+  if (typeof UI !== 'undefined') for (const k of ['toast', 'reward']) if (UI[k]) { const f = UI[k]; UI[k] = function (s, ...a) { const L = window.LANG10, had = L && typeof s === 'string' && L.miss.has(s); const r = T(s); if (L && r === s && !had) L.miss.delete(s); return f.call(this, r, ...a); }; /* v0.10.58 : le texte peut être déjà traduit — pas de faux « manquant » */ }
   // option de langue (menu pause)
   const add = () => { const m = document.getElementById('m10'); if (!m || document.getElementById('lang10')) return; const b = document.createElement('button'); b.id = 'lang10'; b.className = m.querySelector('button') ? m.querySelector('button').className : ''; const lab = () => (b.textContent = L.lang === 'fr' ? 'Langue : FR' : 'Language: EN'); lab();
     b.onclick = () => { L.lang = L.lang === 'fr' ? 'en' : 'fr'; lab(); try { UI.objective(); } catch (e) {} }; m.appendChild(b); };
@@ -5902,7 +5902,7 @@ let FT10 = null, FB10 = null;
   const trUI = (s) => { if (L.lang === 'fr') return s; const D = L.DATA[L.lang] || {}; if (D[s] != null) return D[s]; const m = s.match(/^([\u3000-\u9fff]+) (.+)$/); if (m) return m[1] + ' ' + trUI(m[2]); const had = new Set(L.miss); const q = (x) => { const r = L.t(x); if (!had.has(x)) L.miss.delete(x); return r; }; const v = q(s); if (v !== s || !s.includes(' · ')) return v; return s.split(' · ').map(q).join(' · '); };
   // noms de techniques (dessinés sur le canvas) : on garde le FR d'origine dans n_fr
   const names = () => { for (const k in SK) { const S = SK[k]; if (!S || typeof S.n !== 'string') continue; if (S.n_fr == null) S.n_fr = S.n; S.n = tr(S.n_fr); }
-    if (window.ULT_NAME) for (const k in ULT_NAME) { ULT_NAME.__fr = ULT_NAME.__fr || {}; if (ULT_NAME.__fr[k] == null) ULT_NAME.__fr[k] = ULT_NAME[k]; ULT_NAME[k] = tr(ULT_NAME.__fr[k]); }
+    if (typeof ULT_NAME !== 'undefined') for (const k in ULT_NAME) { ULT_NAME.__fr = ULT_NAME.__fr || {}; if (ULT_NAME.__fr[k] == null) ULT_NAME.__fr[k] = ULT_NAME[k]; ULT_NAME[k] = tr(ULT_NAME.__fr[k]); }
     if (window.MODE08 && MODE08.F) for (const f in MODE08.F) for (const st of MODE08.F[f].st || []) { if (st.n_fr == null) st.n_fr = st.n; if (typeof st.n_fr === 'string') st.n = tr(st.n_fr); } };
   // textes HTML : chaque nœud texte garde sa version FR
   const node = (n) => { const raw = n.__fr != null ? n.__fr : n.textContent, t = raw.trim(); if (!t) return; const v = trUI(t); if (v === t && n.__fr == null) return; if (n.__fr == null) n.__fr = raw; const out = raw.replace(t, v); if (n.textContent !== out) n.textContent = out; };

@@ -1,3 +1,6 @@
+## v0.10.58 — Guard audit: 5 silently-dead features revived
+Audit of guarded globals found 5 features that never ran because they checked window.X for a top-level constant: district names (wrong coordinates), English ultimate names, toast/reward translation, Susanoo reduce-flash, and the reduce-flash opt-out for attack animations. All fixed; already-translated text is no longer re-translated.
+
 ## v0.10.57 — Outside missions start at the great gate again; compass routes via the gate
 Accepting an outside mission now moves the team inside the great gate as intended since v0.10.16 (a wrong global name had silently disabled it). When the objective is across the village wall, the compass first leads to the great gate.
 

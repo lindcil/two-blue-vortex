@@ -23,7 +23,7 @@
       for (let i = 0; i < 6; i++) { const an = t * 1.2 + i * TAU / 6; g.save(); g.translate(Math.cos(an) * 170, -170 + Math.sin(an) * 50); g.rotate(an); g.fillStyle = lt; g.fillRect(-12, -1.5, 24, 3); g.restore(); } }
     else if (w === 'kakashi') { blade(g, 150, -70, 0.35 + sw * 1.8, 220, c, lt); g.save(); g.translate(-150, -120); g.rotate(t * 5 + sw * 9); g.fillStyle = VFX9.ca(lt, 0.8); for (let i = 0; i < 3; i++) { g.rotate(TAU / 3); g.beginPath(); g.moveTo(0, 0); g.quadraticCurveTo(50, -10, 62, 18); g.quadraticCurveTo(30, 6, 0, 10); g.fill(); } g.fillStyle = '#000a'; g.beginPath(); g.arc(0, 0, 9, 0, TAU); g.fill(); g.restore(); }
     g.globalCompositeOperation = 'source-over'; }
-  MODE08.drawSusanoo = function (g, x, y, lvl, c, o = {}) { o = o || {}; const t = o.t || 0, b = o.build == null ? 1 : o.build, sw = o.sw || 0, face = o.face || 1, tier = window.Q9 ? Q9.tier : 2, rf = window.Save && Save.set && Save.set.rf !== false;
+  MODE08.drawSusanoo = function (g, x, y, lvl, c, o = {}) { o = o || {}; const t = o.t || 0, b = o.build == null ? 1 : o.build, sw = o.sw || 0, face = o.face || 1, tier = window.Q9 ? Q9.tier : 2, rf = typeof Save !== 'undefined' && Save.set && Save.set.rf !== false;
     const w = userOf(c), lt = VFX9.mixW(c, 0.55), K = lvl >= 5 ? 1.5 : 1 + (lvl - 1) * 0.05, S = SIL[Math.max(1, Math.min(5, lvl))];
     // squash/stretch : ramassé pendant l'élan, étiré pendant le coup, rebond à la fin de la formation
     const pop = b < 1 ? 0 : 0, form = b > 0.85 && b < 1 ? Math.sin((b - 0.85) / 0.15 * Math.PI) * 0.08 : 0, ph = sw > 0 ? Math.sin(sw * Math.PI * 2) : 0;

@@ -10,7 +10,7 @@ js='''// v0.10.5 — Langues : dialogues, objectifs et messages passent par LANG
 (() => {
   const DATA = %s;
   const L = window.LANG10 = { DATA, miss: new Set(), get lang() { return (Save.set && Save.set.lang) || 'en'; }, set lang(v) { Save.set.lang = v; try { Save.saveSet && Save.saveSet(); } catch (e) {} },
-    tpl: {}, t(s) { if (typeof s !== 'string' || this.lang === 'fr') return s; const D = DATA[this.lang]; if (!D) return s; if (D[s] != null) return D[s];
+    tpl: {}, out: new Set(), t(s) { if (typeof s !== 'string' || this.lang === 'fr') return s; if (this.out.has(s)) return s; const r = this.t0(s); if (r !== s && typeof r === 'string') { if (this.out.size > 4000) this.out.clear(); this.out.add(r); } return r; }, /* v0.10.58 : un texte déjà traduit n’est ni retraduit ni compté manquant */ t0(s) { const D = DATA[this.lang]; if (!D) return s; if (D[s] != null) return D[s];
       let P = this.tpl[this.lang]; if (!P) { P = this.tpl[this.lang] = []; for (const k in D) if (k.includes('{}')) P.push([new RegExp('^' + k.split('{}').map((x) => x.replace(/[.*+?^$()|[\\]\\\\]/g, '\\\\$&')).join('([\\\\s\\\\S]*?)') + '$'), D[k]]); }
       let first = null; for (const [re, v] of P) { const m = s.match(re); if (!m) continue; const ms = this.miss, tmp = new Set(); this.miss = tmp; let i = 1; const out = v.replace(/\\{\\}/g, () => this.t(m[i++] || '')); this.miss = ms; if (!tmp.size) return out; if (!first) first = [out, tmp]; } if (first) { for (const x of first[1]) this.miss.add(x); return first[0]; }
       if (/\\s/.test(s) && /[a-zàâçéèêëîïôûùüÿœ’]{3}/i.test(s)) this.miss.add(s); return s; } };
@@ -20,7 +20,7 @@ js='''// v0.10.5 — Langues : dialogues, objectifs et messages passent par LANG
   Talk.say = (lines, cb) => say(tl(lines), cb);
   Talk.choose = (lines, opts, cb) => cho(tl(lines), opts.map(T), cb);
   for (const S of [typeof Histoire !== 'undefined' && Histoire, typeof Voie !== 'undefined' && Voie]) if (S && S.obj) { const o = S.obj; S.obj = function () { const r = o.apply(this, arguments); return Array.isArray(r) ? r.map(T) : r; }; }
-  if (window.UI) for (const k of ['toast', 'reward']) if (UI[k]) { const f = UI[k]; UI[k] = function (s, ...a) { return f.call(this, T(s), ...a); }; }
+  if (typeof UI !== 'undefined') for (const k of ['toast', 'reward']) if (UI[k]) { const f = UI[k]; UI[k] = function (s, ...a) { const L = window.LANG10, had = L && typeof s === 'string' && L.miss.has(s); const r = T(s); if (L && r === s && !had) L.miss.delete(s); return f.call(this, r, ...a); }; /* v0.10.58 : le texte peut être déjà traduit — pas de faux « manquant » */ }
   // option de langue (menu pause)
   const add = () => { const m = document.getElementById('m10'); if (!m || document.getElementById('lang10')) return; const b = document.createElement('button'); b.id = 'lang10'; b.className = m.querySelector('button') ? m.querySelector('button').className : ''; const lab = () => (b.textContent = L.lang === 'fr' ? 'Langue : FR' : 'Language: EN'); lab();
     b.onclick = () => { L.lang = L.lang === 'fr' ? 'en' : 'fr'; lab(); try { UI.objective(); } catch (e) {} }; m.appendChild(b); };

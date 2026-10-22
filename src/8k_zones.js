@@ -9,7 +9,7 @@
     ['Porte & route', 1100, 2300, 2200, 3200], ['Forêt Ouest', 0, 2300, 1100, 4400], ['Plaine', 2200, 2300, 3500, 3300], ['Bois de l’Est', 3500, 2300, 4800, 3300], ['Rivière', 1100, 3200, 3200, 4400], ['Collines', 3200, 3300, 4800, 4400]];
   // nom du quartier : petit bandeau discret (pas de fondu, pas de frontière)
   const dEl = document.createElement('div'); dEl.id = 'dist10'; dEl.style.cssText = 'position:fixed;left:50%;top:64px;transform:translateX(-50%);z-index:20;pointer-events:none;color:#eaf0ff;font:400 22px var(--f-title,serif);letter-spacing:.08em;text-shadow:0 2px 8px #000a;opacity:0;transition:opacity .5s'; document.body.appendChild(dEl);
-  let dCur = null, dT = 0; setInterval(() => { const h = Game.hero; if (!h || Game.titleMode || ZONE8.room || h.x > 19000) { dCur = null; return; } const k = window.K10 || 1, x = h.x / k, y = h.y / k; const d = DISTRICTS.find((q) => x >= q[1] && x < q[3] && y >= q[2] && y < q[4]); const n = d ? d[0] : null;
+  let dCur = null, dT = 0; setInterval(() => { const h = Game.hero; if (!h || Game.titleMode || ZONE8.room || h.x > 19000) { dCur = null; return; } const k = K10, x = h.x / k, y = h.y / k; const d = DISTRICTS.find((q) => x >= q[1] && x < q[3] && y >= q[2] && y < q[4]); const n = d ? d[0] : null;
     if (n && n !== dCur) { if (dCur) { dEl.textContent = n; dEl.style.opacity = '1'; clearTimeout(dT); dT = setTimeout(() => (dEl.style.opacity = '0'), 1800); } dCur = n; } }, 250);
   const secAt = (x, y) => SECS.find((s) => x >= s.x && x < s.x + s.w && y >= s.y && y < s.y + s.h) || SECS[0];
   // ---------- transition encre ----------

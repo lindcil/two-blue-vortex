@@ -1,7 +1,7 @@
 // v0.9.6 — Animations de base, décrites en données (ANIM10) pour les régler facilement : combo M1, dash, Kawarimi (bûche), réactions aux coups, garde, course de Naruto.
 // Ne touche ni aux dégâts ni aux timings de gameplay : seulement poses, VFX et hit-stop cosmétique (plafonné).
 (() => {
-  const TAU = Math.PI * 2, cl = (v) => Math.max(0, Math.min(1, v)), RF = () => !(window.Save && Save.set && Save.set.rf === false);
+  const TAU = Math.PI * 2, cl = (v) => Math.max(0, Math.min(1, v)), RF = () => !(typeof Save !== 'undefined' && Save.set && Save.set.rf === false);
   const ANIM10 = window.ANIM10 = {
     m1: [ // une pose distincte par coup : anticipation → frappe (smear) → prolongement → retour
       { ph: [0.24, 0.36, 0.7], follow: { aF: 1.9, eF: 0.1, lean: 0.55, sx: 1.08, sy: 0.94, hF: 0.8, kF: -0.2, hB: -0.7 }, stretch: 0.22, smear: [[-1.3, 1.1, 54], [-1.0, 1.3, 40]], sparks: { n: 6, sp: 380, spread: 0.5 }, hs: 0.04, shake: 0.06 },
