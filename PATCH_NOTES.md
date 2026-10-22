@@ -1,3 +1,6 @@
+## v0.10.30 — v0.10.30: dedupe skills, Fukasaku toad, Myoboku clearing
+Doublons retirés : Chidori Eisō vit dans l'arbre Sharingan (Sasuke), Hakke Kūshō dans l'arbre Byakugan, Nikudan Sensha reste la technique avancée Akimichi (le mode Akimichi prend Bubun Baika). Anciennes sauvegardes migrées. Fukasaku est un vrai petit crapaud (cape, sourcils blancs). Le hameau du Mont Myōboku est une clairière.
+
 ## v0.10.29 — v0.10.29: progression - modes learned from masters; Mount Myoboku hamlet + Fukasaku
 Progression : en Voie, Z n'active plus le Manteau de Kyūbi pour tout le monde. Le Mode Ermite s'apprend auprès de Fukasaku, au nouveau hameau du Mont Myōboku (sud-est, hors des murs), puis par la méditation au terrain d'entraînement (verrouillée avant). Le Manteau est réservé aux jinchūriki.
 

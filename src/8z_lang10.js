@@ -838,7 +838,8 @@
 "Maître trouvé : Fukasaku — méditation d’ermite ouverte": "Master found: Fukasaku — sage meditation unlocked",
 "Ton chakra naturel grandit. Continue de méditer.": "Your natural chakra is growing. Keep meditating.",
 "Alors, cette méditation ? Immobile, j’ai dit !": "Well, that meditation? I said stay still!",
-"Médite au terrain d’entraînement pour éveiller le Mode Ermite": "Meditate at the training ground to awaken Sage Mode"
+"Médite au terrain d’entraînement pour éveiller le Mode Ermite": "Meditate at the training ground to awaken Sage Mode",
+"Bubun Baika": "Bubun Baika"
 }
 };
   const L = window.LANG10 = { DATA, miss: new Set(), get lang() { return (Save.set && Save.set.lang) || 'en'; }, set lang(v) { Save.set.lang = v; try { Save.saveSet && Save.saveSet(); } catch (e) {} },

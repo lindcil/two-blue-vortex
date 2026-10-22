@@ -104,7 +104,7 @@ button.b.p{background:var(--gold);color:var(--ink)}button.b.p2{background:var(--
 <script>
 'use strict';
 /* ============ Noyau : réglages, sauvegarde, entrées, audio ============ */
-const VERSION = '0.10.29';
+const VERSION = '0.10.30';
 const K10 = Math.sqrt(10); // v0.9.7 : échelle des cartes extérieures (surface ×10)
 const $ = (s) => document.querySelector(s);
 const TAU = Math.PI * 2, clamp = (v, a, b) => (v < a ? a : v > b ? b : v), lerp = (a, b, t) => a + (b - a) * t;
@@ -1829,6 +1829,14 @@ const Shop = { open_: false, sel: 0, data: (() => { try { return JSON.parse(loca
   const po = poseOf; poseOf = function (u) { const P = po(u); if (u && u.isHero && TREE10.jump) { const q = TREE10.jump.t / TREE10.jump.dur; return { ...P, lean: 0.9, sx: 1.2, sy: 0.82, aF: -1.9, aB: -1.7, eF: 0.2, eB: 0.2, hF: q < 0.5 ? 1.5 : 0.7, kF: q < 0.5 ? -2.2 : -0.6, hB: q < 0.5 ? 0.9 : -0.8, kB: q < 0.5 ? -2.0 : -0.6, head: -0.1, rot: 0.15 * u.face * (q - 0.5) }; }
     if (u && u.land10 != null && Game.t - u.land10 < 0.22) { const k = (Game.t - u.land10) / 0.22; return mixP({ ...P, by: 8, sy: 0.78, sx: 1.18, hF: 1.2, kF: -1.8, hB: -1.0, kB: -1.6, aF: 0.4, aB: -0.6, lean: 0.5 }, P, k); } return P; };
   const dr = drawRig; drawRig = function (g, u, tint) { if (!u || !u.jz) return dr(g, u, tint); g.save(); g.translate(0, -u.jz); try { dr(g, u, tint); } finally { g.restore(); } if (!tint) { g.fillStyle = 'rgba(0,0,0,.2)'; g.beginPath(); g.ellipse(u.x, u.y, 18, 6, 0, 0, TAU); g.fill(); } };
+})();
+
+// v0.10.30 — Clairières des villes (après l'ajout d'arbres de 8b) : rien ne pousse dans le hameau du Mont Myōboku.
+(() => { const bd = World.build.bind(World);
+  World.build = function () { const r = bd(); if (Game.titleMode || !this.k10) return r; const C = [[3350, 3860, 470]];
+    const inC = (x, y) => C.some(([cx, cy, R]) => Math.hypot(x - K10 * cx, y - K10 * cy) < K10 * R);
+    const T = this.props.filter((p) => p.kind === 'tree' && inC(p.x, p.y)); this.props = this.props.filter((p) => !T.includes(p)); if (this.trees10) this.trees10 = this.trees10.filter((p) => !inC(p.x, p.y));
+    this.solids = this.solids.filter((o) => !(o.w < 25 * K10 && inC(o.x + o.w / 2, o.y + o.h / 2) && T.some((t) => Math.abs(t.x - (o.x + o.w / 2)) < 2 && Math.abs(t.y - (o.y + o.h / 2) - 3 * K10) < 4 * K10))); return r; };
 })();
 
 // v0.7 — Course ninja : après ~1,6 s de course continue, sprint (bras en arrière, buste penché, 440 px/s).
@@ -3806,6 +3814,15 @@ addEventListener('touchstart',()=>document.body.classList.add('touch07'),{passiv
   const EL = { amaterasu: 'fire', m8u_sharingan_3: 'fire', shinra: 'yang', m8_byakugan_0_1: 'yang' };
   for (const id in EL) if (SK[id]) SK[id].el = EL[id];
   const F = window.MODE08 && MODE08.F; if (F) { const a = F.sharingan && F.sharingan.st[3]; if (a) { if (a.sk[0]) a.sk[0].el = 'fire'; if (Array.isArray(a.ult)) a.ult[2] = 'fire'; } const b = F.byakugan && F.byakugan.st[0]; if (b && b.sk[1]) b.sk[1].el = 'yang'; }
+  // v0.10.30 : doublons retirés — un seul foyer par technique.
+  // Chidori Eisō → arbre Sharingan (Sasuke) ; Hakke Kūshō → arbre Byakugan ; Nikudan Sensha → technique avancée Akimichi (le mode prend Bubun Baika).
+  const GONE = { eiso: 'chidori', kusho: 'kaiten' };
+  for (const id in GONE) { if (window.TREE8 && TREE8.REQ) delete TREE8.REQ[id]; }
+  const ak = F && F.akimichi && F.akimichi.st[0]; if (ak && ak.sk[1]) ak.sk[1].n = 'Bubun Baika'; if (SK.m8_akimichi_0_1) { SK.m8_akimichi_0_1.n = 'Bubun Baika'; delete SK.m8_akimichi_0_1.n_fr; }
+  const mig = () => { const m = Voie.me; if (!m) return; const sw = (a) => a && a.forEach((v, i) => { if (GONE[v]) a[i] = a.includes(GONE[v]) ? null : GONE[v]; });
+    sw(m.known); if (m.known) m.known = m.known.filter(Boolean); if (Game.mode === 'voie') { sw(Game.skills); Game.skills = Game.skills.map((v) => v || 'bunshin'); } };
+  const st = Voie.start.bind(Voie); Voie.start = function (sv) { const r = st(sv); try { mig(); } catch (e) {} return r; };
+  window.CANON10 = { GONE, mig };
 })();
 
 // v0.10.29 — Progression : les modes s'apprennent auprès d'un maître dans une autre ville.
@@ -3819,7 +3836,7 @@ addEventListener('touchstart',()=>document.body.classList.add('touch07'),{passiv
   window.MASTER10 = { MS, has, hint(id) { UI.toast(T('Il te faut un maître :') + ' ' + MS[id].n + ' — ' + T(MS[id].where)); } };
   const st = Voie.start.bind(Voie);
   Voie.start = function (sv) { const r = st(sv); if (Game.mode !== 'voie') return r; for (const id in MS) { const M = MS[id];
-      Game.extras.push({ id: 'master_' + id, n: M.n, look: M.look(), x: K10 * M.x, y: K10 * M.y, r: 12, face: -1, vx: 0, vy: 0, anim: 0, isNpc: true, master10: id,
+      Game.extras.push({ id: 'master_' + id, n: M.n, look: M.look(), x: K10 * M.x, y: K10 * M.y, r: 12, face: -1, vx: 0, vy: 0, anim: 0, isNpc: true, master10: id, toad10: id === 'toad' ? 1 : 0,
         onTalk: () => { const m = me(); if (!m) return; m.masters = m.masters || {}; if (m.masters[id]) { Talk.say([[M.n, m.sage ? 'Ton chakra naturel grandit. Continue de méditer.' : 'Alors, cette méditation ? Immobile, j’ai dit !']]); return; }
           Talk.say(M.lines, () => { m.masters[id] = 1; UI.reward(M.reward, '#7fd36a', 1); Game.save && Game.save(); }); } }); }
     return r; };
@@ -3827,6 +3844,20 @@ addEventListener('touchstart',()=>document.body.classList.add('touch07'),{passiv
   const en = MODE08.enter.bind(MODE08);
   MODE08.enter = function (h, key, st2) { if (key === 'Z' && inVoie() && h === Game.hero) { const m = me(); if (!(m.sage > 0) && !m.jin) { h.beastG = 0; h.beastT = 0; if (!this._z10 || Game.t - this._z10 > 3) { this._z10 = Game.t; has('toad') ? UI.toast(T('Médite au terrain d’entraînement pour éveiller le Mode Ermite')) : MASTER10.hint('toad'); } return false; } }
     return en(h, key, st2); };
+  // Fukasaku : un vrai petit crapaud (≈ genou du héros), de profil, cape de sage, sourcils blancs.
+  const dr = drawRig; drawRig = function (g, u, tint) { if (!u || !u.toad10) return dr(g, u, tint); const f = u.face || -1, b = Math.sin(Game.t * 2.2) * 1.2, x = u.x, y = u.y;
+    g.save(); g.translate(x, y); g.scale(f, 1); g.lineWidth = 2.5; g.strokeStyle = INK; g.lineJoin = 'round';
+    g.fillStyle = 'rgba(0,0,0,.25)'; g.beginPath(); g.ellipse(0, 2, 26, 7, 0, 0, TAU); g.fill();
+    g.fillStyle = '#7f9a6a'; g.beginPath(); g.ellipse(-8, -6, 14, 8, 0, 0, TAU); g.fill(); g.stroke(); // patte arrière
+    g.fillStyle = '#c96a2a'; g.beginPath(); g.moveTo(-18, -34 + b); g.quadraticCurveTo(-24, -10, -14, -2); g.lineTo(10, -4); g.quadraticCurveTo(6, -24, 0, -36 + b); g.closePath(); g.fill(); g.stroke(); // cape
+    g.fillStyle = '#93ad7c'; g.beginPath(); g.ellipse(2, -24 + b, 17, 15, 0, 0, TAU); g.fill(); g.stroke(); // corps
+    g.fillStyle = '#e8e2c8'; g.beginPath(); g.ellipse(8, -20 + b, 9, 10, 0, 0, TAU); g.fill(); // ventre
+    g.fillStyle = '#93ad7c'; g.beginPath(); g.ellipse(6, -44 + b, 17, 11, 0, 0, TAU); g.fill(); g.stroke(); // tête
+    g.beginPath(); g.ellipse(14, -38 + b, 7, 3, 0.15, 0, Math.PI); g.stroke(); // bouche
+    g.fillStyle = '#e8d070'; g.beginPath(); g.arc(9, -52 + b, 5.5, 0, TAU); g.fill(); g.stroke(); g.fillStyle = INK; g.fillRect(8, -53 + b, 5, 2.5); // œil
+    g.strokeStyle = '#f4f1e6'; g.lineWidth = 3; g.beginPath(); g.moveTo(2, -58 + b); g.quadraticCurveTo(10, -62 + b, 18, -57 + b); g.stroke(); g.beginPath(); g.moveTo(18, -36 + b); g.quadraticCurveTo(20, -30 + b, 16, -27 + b); g.stroke(); // sourcils + barbiche
+    g.strokeStyle = INK; g.lineWidth = 2.5; g.fillStyle = '#7f9a6a'; g.beginPath(); g.ellipse(16, -18 + b, 5, 8, -0.5, 0, TAU); g.fill(); g.stroke(); // bras
+    g.beginPath(); g.ellipse(8, -3, 10, 4, 0, 0, TAU); g.fill(); g.stroke(); g.restore(); };
 })();
 
 // v0.9.6 — Animations de base, décrites en données (ANIM10) pour les régler facilement : combo M1, dash, Kawarimi (bûche), réactions aux coups, garde, course de Naruto.
@@ -5271,7 +5302,8 @@ let FT10 = null, FB10 = null;
 "Maître trouvé : Fukasaku — méditation d’ermite ouverte": "Master found: Fukasaku — sage meditation unlocked",
 "Ton chakra naturel grandit. Continue de méditer.": "Your natural chakra is growing. Keep meditating.",
 "Alors, cette méditation ? Immobile, j’ai dit !": "Well, that meditation? I said stay still!",
-"Médite au terrain d’entraînement pour éveiller le Mode Ermite": "Meditate at the training ground to awaken Sage Mode"
+"Médite au terrain d’entraînement pour éveiller le Mode Ermite": "Meditate at the training ground to awaken Sage Mode",
+"Bubun Baika": "Bubun Baika"
 }
 };
   const L = window.LANG10 = { DATA, miss: new Set(), get lang() { return (Save.set && Save.set.lang) || 'en'; }, set lang(v) { Save.set.lang = v; try { Save.saveSet && Save.saveSet(); } catch (e) {} },
