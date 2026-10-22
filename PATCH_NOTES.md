@@ -1,3 +1,6 @@
+## v0.10.52 — Graduation duel winnable by button-mashing
+Graduation rival: 50% HP and 35% damage. A brand-new player who only attacks now wins narrowly (~30 s to win vs ~33 s to fall); dodging makes it comfortable.
+
 ## v0.10.51 — Graduation rival fight fairer for new players
 Academy graduation duel: the rival had 608 HP and hit for 17-31 on a 120 HP student, so new players lost in ~7 hits. The graduation rival now has 65% HP and deals half damage; later rival fights are unchanged.
 

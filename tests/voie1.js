@@ -28,6 +28,6 @@ for(let it=0;it<900&&Date.now()-T0<330000;it++){
  else if(s.mode==='s1'){await p.keyboard.press('Digit1');await p.waitForTimeout(500)}
  else{const r=it%7;if(r===3)await p.keyboard.press('Digit1');else if(r===5)await p.keyboard.press('Digit2');else{await p.mouse.down();await p.waitForTimeout(50);await p.mouse.up()}await p.waitForTimeout(220)}
  if(s.S==='free'&&s.mis)seen.freeMisDone=0; if(s.S==='free'&&!s.mis&&seen['freechat'+'']){}
- if(s.S==='a4'&&it%25===0)console.log('A4',JSON.stringify(s.t),s.hp,await p.evaluate(()=>{const r=World.foes_.find(f=>f.tag==='rival');const h=Game.hero;return r?[Math.round(r.hp/r.maxHp*100),Math.round(r.x),Math.round(r.y),Math.round(h.x),Math.round(h.y),!!r.passive,r.leash]:null}));
+ if((s.S==='a4'||s.S==='a6')&&it%25===0)console.log('A4',JSON.stringify(s.t),s.hp,JSON.stringify(await p.evaluate(()=>{const r=World.foes_.find(f=>f.tag==='rival'||f.tag==='sensei');const h=Game.hero;return r?[Voie.lesson,Math.round(Math.hypot(h.vx,h.vy)),Math.round(Math.hypot(r.vx||0,r.vy||0))].concat([Math.round(r.hp/r.maxHp*100),Math.round(r.x),Math.round(r.y),Math.round(h.x),Math.round(h.y),!!r.passive]):null})));
  if(stuck>0&&stuck%60===0)console.log('STUCK?',sig,JSON.stringify(s))}
 const e=await p.evaluate(()=>[Voie.step,Voie.mis&&Voie.mis.id,Voie.done,Voie.rank]);console.log('end',JSON.stringify(e),'secs',(Date.now()-T0)/1000|0);await p.screenshot({path:SH+'voie1-fin.png'});console.log('errs',errs.slice(0,5));await b.close()})();
