@@ -1,3 +1,9 @@
+## v0.10.22 — Texte canvas, constellation, Susanoo
+- Tout le texte dessiné sur le canvas passe par la langue (lieux, aides de mini-jeux, popups) ; audit : 0 manquant.
+- Constellation : étoiles et tracés plus lisibles, libellés rapprochés, points plus gros, aide « Click a pulsing star… ».
+- Susanoo de dos en diagonale : plus de visage visible à travers.
+- Perf : police de la constellation mise en cache (plus de getComputedStyle à chaque image).
+
 ## v0.10.21 — Traduction complète
 - Plus aucun texte manquant en anglais sur toute l’Histoire, Ta voie et les missions (test MISS vide).
 - Titres de scènes, toasts de niveau/technique/réaction, menu touches traduits.

@@ -1,9 +1,10 @@
+let FT10 = null, FB10 = null;
 // v0.9.8 — Constellation refaite : plus d'image d'impact. Transition douce (zoom sur le héros → iris d'étoiles → espace mental),
 // vide cosmique en parallaxe avec nébuleuses dérivantes, chaque branche est une constellation d'étoiles reliées par des lignes lumineuses.
 // Survol, zoom (molette/pincement), déplacement (glisser), animation de déblocage. Peu de texte.
 (() => { const T8 = window.TREE8; if (!T8 || !T8.UI) return; const { BR, MAXR } = T8, TAU = Math.PI * 2;
   const css = document.createElement('style'); css.textContent = `#tree10{position:fixed;inset:0;z-index:41;display:none;background:transparent;touch-action:none}#tree10 canvas{position:absolute;inset:0;width:100%;height:100%}
-#tree10 .pt{position:absolute;right:18px;top:14px;color:#ffd166;font:700 16px var(--f-body);letter-spacing:.06em;text-shadow:0 0 10px rgba(255,209,102,.5)}#tree10 .x{position:absolute;left:14px;top:12px;font:700 14px var(--f-body);background:rgba(14,22,48,.6);color:#e8eefc;border:1px solid rgba(160,180,255,.25);border-radius:10px;padding:6px 10px;cursor:pointer}
+#tree10 .pt{position:absolute;right:18px;top:12px;color:#ffd166;font:700 22px var(--f-body);letter-spacing:.06em;text-shadow:0 0 10px rgba(255,209,102,.5)}#tree10 .x{position:absolute;left:14px;top:12px;font:700 14px var(--f-body);background:rgba(14,22,48,.6);color:#e8eefc;border:1px solid rgba(160,180,255,.25);border-radius:10px;padding:6px 10px;cursor:pointer}
 #tree10 .tip{position:absolute;pointer-events:none;display:none;background:rgba(8,12,30,.82);border:1px solid rgba(160,180,255,.25);border-radius:10px;padding:6px 10px;color:#e8eefc;font:600 13px var(--f-body);backdrop-filter:blur(4px);transition:opacity .15s}#tree8,#mind8{display:none!important}`;
   document.head.appendChild(css);
   const box = document.createElement('div'); box.id = 'tree10'; box.innerHTML = '<canvas></canvas><div class="pt"></div><button class="x">✕</button><div class="tip"></div>'; document.body.appendChild(box);
@@ -44,17 +45,17 @@
       // lignes : acquises lumineuses, à venir pointillées très discrètes, ligne en cours de tracé (déblocage)
       for (let i = 1; i < ns.length; i++) { const [x0, y0] = toS(ns[i - 1].x, ns[i - 1].y), [x1, y1] = toS(ns[i].x, ns[i].y), on = i < r; const an = fx.find((f) => f.b === b && f.i === i && f.k === 'line'); const q = an ? Math.min(1, an.t / 0.5) : 1;
         if (on || an) { g.globalAlpha = 0.35 * open; g.strokeStyle = b.c; g.lineWidth = 6; g.beginPath(); g.moveTo(x0, y0); g.lineTo(x0 + (x1 - x0) * q, y0 + (y1 - y0) * q); g.stroke(); g.globalAlpha = 0.9 * open; g.strokeStyle = '#ffffff'; g.lineWidth = 1.4; g.stroke(); }
-        else { g.globalAlpha = 0.2 * open; g.strokeStyle = '#b8c4ff'; g.lineWidth = 1; g.setLineDash([3, 6]); g.beginPath(); g.moveTo(x0, y0); g.lineTo(x1, y1); g.stroke(); g.setLineDash([]); } }
+        else { g.globalAlpha = 0.34 * open; g.strokeStyle = '#b8c4ff'; g.lineWidth = 1.2; g.setLineDash([3, 6]); g.beginPath(); g.moveTo(x0, y0); g.lineTo(x1, y1); g.stroke(); g.setLineDash([]); } }
       for (const n of ns) { const [sx, sy] = toS(n.x, n.y), on = n.i < r, nx = n.i === r, hv = hover === n ? 1 : 0; const h0 = hk.get(n) || 0, h1 = h0 + (hv - h0) * Math.min(1, dt * 14); hk.set(n, h1);
         const pul = on ? 1 + 0.18 * Math.sin(t * 2.4 + n.tw) : 1, rr = (on ? 5.5 : nx ? 4.5 : 2.6) * pul * (1 + h1 * 0.6) * Math.max(0.7, cam.z);
         if (on || nx) { g.globalAlpha = (on ? 0.7 : 0.35 + 0.25 * Math.sin(t * 3)) * open; g.drawImage(SPR9.get('glow', b.c), sx - rr * 5, sy - rr * 5, rr * 10, rr * 10); }
-        g.globalAlpha = (on ? 1 : nx ? 0.9 : 0.4 + 0.15 * Math.sin(t + n.tw)) * open; g.fillStyle = on ? '#ffffff' : nx ? b.c : '#8f9ac8'; g.beginPath(); g.arc(sx, sy, rr, 0, TAU); g.fill();
+        g.globalAlpha = (on ? 1 : nx ? 0.95 : 0.6 + 0.15 * Math.sin(t + n.tw)) * open; g.fillStyle = on ? '#ffffff' : nx ? b.c : '#b4bee8'; g.beginPath(); g.arc(sx, sy, Math.max(rr, on || nx ? 3.5 : 2.4), 0, TAU); g.fill();
         if (on) { g.globalAlpha = 0.6 * open; g.strokeStyle = '#ffffff'; g.lineWidth = 1; g.beginPath(); g.moveTo(sx - rr * 2.4, sy); g.lineTo(sx + rr * 2.4, sy); g.moveTo(sx, sy - rr * 2.4); g.lineTo(sx, sy + rr * 2.4); g.stroke(); }
         if (nx && m.pts) { g.globalAlpha = 0.8 * open; g.strokeStyle = b.c; g.lineWidth = 1.5; g.beginPath(); g.arc(sx, sy, rr + 7 + Math.sin(t * 4) * 2, 0, TAU); g.stroke(); }
         // techniques accrochées : petits glyphes satellites
         const tk = ta.filter((x) => x.main === b.id && x.rank === n.i + 1); tk.forEach((x, j) => { const a = -0.8 + j * 0.7, gx = sx + Math.cos(a) * (rr + 16), gy = sy + Math.sin(a) * (rr + 16); g.globalAlpha = (x.ok ? 0.95 : 0.35) * open; g.fillStyle = x.ok ? (elc(SK[x.id].el) || '#fff') : '#b8c4ff'; g.font = '700 ' + Math.round(11 + 3 * cam.z) + 'px serif'; g.textAlign = 'center'; g.textBaseline = 'middle'; g.fillText(x.ok ? SK[x.id].k : '·', gx, gy); }); }
       // nom de branche : discret, sous la constellation
-      const [lx, ly] = toS(b.cx, b.cy + 160); g.globalAlpha = 0.75 * open; g.fillStyle = b.c; g.font = '400 ' + Math.round(12 + 4 * cam.z) + 'px ' + (getComputedStyle(document.body).getPropertyValue('--f-title') || 'serif'); g.textAlign = 'center'; g.textBaseline = 'alphabetic'; g.fillText(b.n, lx, ly); g.globalAlpha = 0.5 * open; g.font = '700 ' + Math.round(10 + 2 * cam.z) + 'px ' + getComputedStyle(document.body).fontFamily; g.fillText(r + ' / ' + MAXR, lx, ly + 16); }
+      const [lx, ly] = toS(b.cx, b.cy + 125); g.globalAlpha = 0.9 * open; g.fillStyle = b.c; g.font = '400 ' + Math.round(12 + 4 * cam.z) + 'px ' + (FT10 || (FT10 = getComputedStyle(document.body).getPropertyValue('--f-title') || 'serif')); g.textAlign = 'center'; g.textBaseline = 'alphabetic'; g.fillText(b.n, lx, ly); g.globalAlpha = 0.7 * open; g.font = '700 ' + Math.round(10 + 2 * cam.z) + 'px ' + (FB10 || (FB10 = getComputedStyle(document.body).fontFamily)); g.fillText(r + ' / ' + MAXR, lx, ly + 16); }
     // centre : l'esprit du héros
     const [cx, cy] = toS(0, 0); g.globalAlpha = (0.5 + 0.1 * Math.sin(t * 1.5)) * open; g.drawImage(SPR9.get('glow', '#a46bff'), cx - 90 * cam.z, cy - 90 * cam.z, 180 * cam.z, 180 * cam.z); g.globalAlpha = 0.9 * open; g.drawImage(SPR9.get('core', '#d8c8ff'), cx - 14 * cam.z, cy - 14 * cam.z, 28 * cam.z, 28 * cam.z);
     // effets de déblocage
@@ -64,6 +65,7 @@
     g.restore();
     // bord de l'iris pendant la transition
     if (open < 1) { g.globalAlpha = 0.8 * (1 - open); g.strokeStyle = '#c8b8ff'; g.lineWidth = 2; g.beginPath(); g.arc(from.x, from.y, Math.max(1, rad), 0, TAU); g.stroke(); }
+    if (m.pts > 0 && phase !== 'closing') { g.globalAlpha = (0.7 + 0.2 * Math.sin(t * 2.5)) * open; g.fillStyle = '#ffe9a8'; g.font = '700 15px ' + (FB10 || 'sans-serif'); g.textAlign = 'center'; g.fillText('Clique une étoile qui pulse pour dépenser un point', W / 2, H - 22); }
     g.globalAlpha = 1; box.style.opacity = phase === 'closing' ? String(Math.max(0, open * 1.4)) : '1'; ptEl.textContent = '✦ ' + m.pts;
     raf = requestAnimationFrame(draw); };
   // ---------- entrées : survol, clic, glisser, molette, pincement ----------

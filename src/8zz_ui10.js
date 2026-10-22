@@ -18,3 +18,9 @@
   // bascule de langue : retraduit tout
   const hook = () => { const b = document.getElementById('lang10'); if (!b || b.__h) return; b.__h = 1; b.addEventListener('click', () => setTimeout(all, 0)); }; hook(); setInterval(hook, 1000);
 })();
+// v0.10.22 — texte dessiné sur le canvas : traduit au vol (cache), les manques sont listés dans LANG10.cmiss
+(() => { if (!window.LANG10) return; const L = LANG10, P = CanvasRenderingContext2D.prototype, C = new Map(); L.cmiss = new Set(); let lg = null;
+  const tx = (s) => { if (typeof s !== 'string' || L.lang === 'fr' || !/[a-zA-Zà-ÿ]{2}/.test(s)) return s; if (lg !== L.lang) { C.clear(); lg = L.lang; } let v = C.get(s); if (v !== undefined) return v;
+    const had = L.miss.has(s); v = L.t(s); if (!had && L.miss.has(s)) { L.miss.delete(s); L.cmiss.add(s); } if (C.size > 4000) C.clear(); C.set(s, v); return v; };
+  for (const k of ['fillText', 'strokeText', 'measureText']) { const f = P[k]; P[k] = function (s, ...a) { return f.call(this, tx(s), ...a); }; }
+})();
