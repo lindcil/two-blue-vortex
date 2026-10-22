@@ -104,7 +104,7 @@ button.b.p{background:var(--gold);color:var(--ink)}button.b.p2{background:var(--
 <script>
 'use strict';
 /* ============ Noyau : réglages, sauvegarde, entrées, audio ============ */
-const VERSION = '0.10.34';
+const VERSION = '0.10.35';
 const K10 = Math.sqrt(10); // v0.9.7 : échelle des cartes extérieures (surface ×10)
 const $ = (s) => document.querySelector(s);
 const TAU = Math.PI * 2, clamp = (v, a, b) => (v < a ? a : v > b ? b : v), lerp = (a, b, t) => a + (b - a) * t;
@@ -4931,7 +4931,7 @@ let FT10 = null, FB10 = null;
 "Rasengan d’or": "Golden Rasengan",
 "Rayon des orbes": "Orb Beam",
 "Pas lunaire": "Moon Step",
-"Rasengan invisible": "Invisible Rasengan",
+"Rasengan invisible": "Vanishing Rasengan",
 "Pas de faille": "Rift Step",
 "Coup de faille": "Rift Strike",
 "Rasengan géant": "Giant Rasengan",
@@ -5435,7 +5435,29 @@ let FT10 = null, FB10 = null;
 "Mode Sage parfait": "Perfect Sage Mode",
 "Senjutsu · nature": "Senjutsu · Nature",
 "Mode Ermite parfait": "Perfect Sage Mode",
-"{} porte Shukaku, scellé de force. La cicatrice reste.": "{} carries Shukaku, sealed by force. The scar remains."
+"{} porte Shukaku, scellé de force. La cicatrice reste.": "{} carries Shukaku, sealed by force. The scar remains.",
+"Sasuke (Rinnegan)": "Sasuke (Rinnegan)",
+"Itachi (Edo Tensei)": "Itachi (Edo Tensei)",
+"Naruto (Mode Kurama)": "Naruto (Kurama Mode)",
+"Naruto (Mode Ermite)": "Naruto (Sage Mode)",
+"Pain (Tendō)": "Pain (Deva Path)",
+"Boruto (Kāma)": "Boruto (Kāma)",
+"Kawaki (Kāma)": "Kawaki (Kāma)",
+"Les frères Uchiha": "The Uchiha Brothers",
+"Vallée de la Fin": "Valley of the End",
+"Invasion de Pain": "Pain's Assault",
+"Réceptacles du Kāma": "Kāma Vessels",
+"Duels canon : choisis ton camp. Kits fidèles, aucune sauvegarde.": "Canon duels: pick your side. Faithful movesets, nothing is saved.",
+"Combat !": "Fight!",
+"Victoire": "Victory",
+"Défaite": "Defeat",
+"Revanche": "Rematch",
+"Autre duel": "Another duel",
+"Mini Bijūdama": "Mini Tailed Beast Bomb",
+"Bansho Ten’in": "Banshō Ten'in",
+"Tiges en éventail": "Rod Fan",
+"Palier {} ({})": "Stage {} ({})",
+"Palier max": "Max stage"
 }
 };
   const L = window.LANG10 = { DATA, miss: new Set(), get lang() { return (Save.set && Save.set.lang) || 'en'; }, set lang(v) { Save.set.lang = v; try { Save.saveSet && Save.saveSet(); } catch (e) {} },
@@ -5454,6 +5476,71 @@ let FT10 = null, FB10 = null;
   const add = () => { const m = document.getElementById('m10'); if (!m || document.getElementById('lang10')) return; const b = document.createElement('button'); b.id = 'lang10'; b.className = m.querySelector('button') ? m.querySelector('button').className : ''; const lab = () => (b.textContent = L.lang === 'fr' ? 'Langue : FR' : 'Language: EN'); lab();
     b.onclick = () => { L.lang = L.lang === 'fr' ? 'en' : 'fr'; lab(); try { UI.objective(); } catch (e) {} }; m.appendChild(b); };
   add(); setTimeout(add, 500);
+})();
+
+// v0.10.35 — Battleground (item 8) : mode séparé, duels canon pré-faits, kits canon des deux côtés. Choix du camp. Pas de sauvegarde.
+(() => { if (!window.CREA8) return; const T = (s) => (window.LANG10 && LANG10.t ? LANG10.t(s) : s);
+  // coups de l'adversaire (l'IA ne peut pas utiliser castSkill : il touche World.foes) — chaque coup canon est rejoué côté ennemi
+  // t : proj | fan | beam | zone | dash ; d : dégâts ; cd : recharge
+  const FIG = {
+    sasuke: { n: 'Sasuke (Rinnegan)', look: { hs: 'sasuke', hair: '#1a1a2a', top: '#3a3a4a', bot: '#2a2a36', cloak: '#3a3a4a', skin: '#f0d0b0', eye: '#7a4ad8' }, hp: 1, sk: ['chidori', 'amaterasu', 'm8_sharingan_2_0', 'm8_sharingan_6_0'], ult: 'm8u_sharingan_8', mode: ['sharingan', 7],
+      ai: [['Chidori', '千', 'bolt', 'dash', 26, 4], ['Amaterasu', '天', 'fire', 'zone', 30, 7], ['Chidori Eisō', '槍', 'bolt', 'beam', 22, 5], ['Flèche de Susanoo', '矢', 'yin', 'proj', 28, 6]], aiU: ['Flèche de l’Indra', 'bolt', 70] },
+    itachi: { n: 'Itachi (Edo Tensei)', look: { hs: 'pony', hair: '#1a1a22', top: '#22222e', bot: '#22222e', cloak: '#1a1a26', org: 1, skin: '#d8ccc0', eye: '#d0283a', scar: 1 }, hp: 1, sk: ['gokakyu', 'm8_sharingan_3_1', 'amaterasu', 'm8_sharingan_6_1'], ult: 'm8u_sharingan_7', mode: ['sharingan', 7],
+      ai: [['Katon : Gōkakyū', '火', 'fire', 'proj', 24, 4], ['Tsukuyomi', '月', 'yin', 'zone', 22, 8], ['Amaterasu', '天', 'fire', 'zone', 30, 7], ['Shuriken guidés', '手', 'yang', 'fan', 8, 3]], aiU: ['Épée de Totsuka', 'yin', 65] },
+    naruto: { n: 'Naruto (Mode Kurama)', look: { hs: 'naruto', hair: '#ffd23a', top: '#ffb13d', bot: '#2a2a36', skin: '#f0c49c', marks: 1 }, hp: 1.1, sk: ['rasen', 'bunshin', 'm8_manteau_2_0', 'm8_manteau_1_0'], ult: 'set_rasenshuriken', mode: ['manteau', 4],
+      ai: [['Rasengan', '螺', 'wind', 'dash', 26, 4], ['Mini Bijūdama', '玉', 'yin', 'proj', 30, 6], ['Kage Bunshin', '影', 'yang', 'fan', 9, 5], ['Bras de chakra', '腕', 'yang', 'beam', 20, 5]], aiU: ['Fūton : Rasenshuriken', 'wind', 70] },
+    naruto_s: { n: 'Naruto (Mode Ermite)', look: { hs: 'naruto', hair: '#ffd23a', top: '#ff8a2a', bot: '#2a2a36', cloak: '#c0402a', skin: '#f0c49c', marks: 1 }, hp: 0.95, sk: ['m8_ermite_0_1', 'm8_ermite_0_0', 'bunshin', 'm8_ermite_2_0'], ult: 'm8u_ermite_0', mode: ['ermite', 2],
+      ai: [['Senpō : Rasengan', '螺', 'wind', 'dash', 22, 4.5], ['Kawazu Kumite', '蛙', 'yang', 'dash', 15, 3.5], ['Senpō : Rasenshuriken', '手', 'wind', 'proj', 26, 8], ['Kage Bunshin', '影', 'yang', 'fan', 7, 5]], aiU: ['Senpō : Chōōdama Rasengan', 'wind', 55] },
+    pain: { n: 'Pain (Tendō)', look: { hs: 'spiky', hair: '#e8752a', top: '#1a1a26', bot: '#1a1a26', cloak: '#1a1a26', org: 1, skin: '#f0d8c0', eye: '#b08ad8' }, hp: 0.9, sk: ['shinra', 'm8_karma_0_2', 'm8_karma_2_0', 'shuriken8'], ult: 'set_chibaku', mode: null, pw: 2.4, me: 1.45,
+      ai: [['Shinra Tensei', '神', 'yang', 'zone', 24, 6], ['Tige noire', '杭', 'yin', 'proj', 15, 3.5], ['Bansho Ten’in', '引', 'yang', 'dash', 16, 6], ['Tige noire', '杭', 'yin', 'fan', 10, 4]], aiU: ['Chibaku Tensei', 'earth', 70] },
+    boruto: { n: 'Boruto (Kāma)', look: { hs: 'boruto', hair: '#f0d060', top: '#2a2a3a', bot: '#2a2a3a', skin: '#f0c49c', karma: 1 }, hp: 0.95, sk: ['rasen', 'm8_jogan_0_1', 'm8_karma_0_0', 'bunshin'], ult: 'uzuhiko', mode: ['karma', 2],
+      ai: [['Rasengan', '螺', 'wind', 'dash', 24, 4], ['Rasengan invisible', '螺', 'wind', 'proj', 26, 5], ['Kage Bunshin', '影', 'yang', 'fan', 9, 5], ['Coup de Kāma', '撃', 'yin', 'dash', 22, 4]], aiU: ['Rasengan Uzuhiko', 'wind', 65] },
+    kawaki: { n: 'Kawaki (Kāma)', look: { hs: 'kawaki', hair: '#1a1a22', top: '#3a3a44', bot: '#2a2a30', skin: '#e8c8a8', karma: 1 }, hp: 1.1, sk: ['m8_karma_0_2', 'm8_karma_1_1', 'm8_karma_0_1', 'm8_karma_0_0'], ult: 'm8u_karma_2', mode: ['karma', 3], pw: 1.9, me: 1.35,
+      ai: [['Tige noire', '杭', 'yin', 'proj', 20, 3], ['Sukunahikona', '小', 'yin', 'beam', 24, 6], ['Coup de Kāma', '撃', 'yin', 'dash', 22, 4], ['Tiges en éventail', '杭', 'yin', 'fan', 10, 4]], aiU: ['Daikokuten', 'yin', 70] } };
+  const MU = [['sasuke', 'itachi', 'Les frères Uchiha'], ['naruto', 'sasuke', 'Vallée de la Fin'], ['naruto_s', 'pain', 'Invasion de Pain'], ['boruto', 'kawaki', 'Réceptacles du Kāma']];
+  const B = window.BG10 = { on: false, FIG, MU, foe: null, me: null, t: 0, ultT: 0 };
+  // ----- menu
+  const css = document.createElement('style'); css.textContent = `#bg10{position:fixed;inset:0;z-index:40;display:none;align-items:center;justify-content:center;background:rgba(6,8,18,.92)}#bg10 .w{width:min(760px,94vw);max-height:92vh;overflow:auto;background:#0e1630;border:2px solid #3a4a7a;border-radius:18px;padding:18px;color:#e8eefc}
+#bg10 h2{font:400 28px var(--f-title);margin:0 0 4px;color:#ffd166;letter-spacing:.06em}#bg10 .m{display:flex;align-items:center;gap:10px;margin:10px 0;padding:10px;border-radius:12px;background:rgba(255,255,255,.04)}#bg10 .m b{flex:1;font:400 17px var(--f-title)}#bg10 .m small{display:block;color:#93a3c6;font:12px var(--f-body)}
+#bg10 button{font:14px var(--f-body);padding:8px 12px;border-radius:10px;border:1px solid #3a4a7a;background:#16204a;color:#e8eefc;cursor:pointer}#bg10 button:hover{border-color:#ffd166}body.bg10 #dq9,body.bg10 #trk10{display:none!important}#bg10r{position:fixed;inset:0;z-index:41;display:none;align-items:center;justify-content:center;flex-direction:column;gap:14px;background:rgba(6,8,18,.75);color:#fff;font:400 44px var(--f-title)}`;
+  document.head.appendChild(css);
+  const box = document.createElement('div'); box.id = 'bg10'; document.body.appendChild(box); const res = document.createElement('div'); res.id = 'bg10r'; document.body.appendChild(res);
+  const menu = () => { box.innerHTML = `<div class="w"><h2>Battleground</h2><small style="color:#93a3c6">${T('Duels canon : choisis ton camp. Kits fidèles, aucune sauvegarde.')}</small>` + MU.map(([a, b, n], i) => `<div class="m"><b>${T(n)}<small>${T(FIG[a].n)} vs ${T(FIG[b].n)}</small></b><button data-i="${i}" data-s="0">${T(FIG[a].n)}</button><button data-i="${i}" data-s="1">${T(FIG[b].n)}</button></div>`).join('') + `<div style="text-align:right"><button id="bg10x">${T('Retour')}</button></div></div>`;
+    box.style.display = 'flex'; box.querySelectorAll('button[data-i]').forEach((b) => (b.onclick = () => { box.style.display = 'none'; start(+b.dataset.i, +b.dataset.s); })); box.querySelector('#bg10x').onclick = () => (box.style.display = 'none'); };
+  const bt = document.querySelector('#title .btns'); if (bt) { const b = document.createElement('button'); b.className = 'b'; b.id = 'bBG'; b.textContent = 'Battleground'; b.onclick = () => { Sfx.init && Sfx.init(); menu(); }; bt.appendChild(b); }
+  // ----- démarrage
+  const co = CREA8.open; CREA8.open = function () { const r = co.apply(this, arguments); if (B.on) { const P = document.getElementById('crea8'); if (P) P.style.display = 'none'; CREA8.on = false; const E = document.getElementById('ed9'); if (E) E.style.display = 'none'; } return r; };
+  const start = (i, side) => { const [a, b] = MU[i], mine = FIG[side ? b : a], his = FIG[side ? a : b]; B.on = true; document.body.classList.add('bg10'); B.me = mine; B.his = his; B.i = i; B.side = side; B.over = false;
+    $('#title').style.display = 'none'; Game.startVoie({ name: mine.n, clan: 'uchiha', look: makeLook(7, mine.look), creative: 1, el: 'fire', sk: mine.sk.slice() });
+    setTimeout(() => { CREA8.open(); setTimeout(setup, 300); }, 750); };
+  const setup = () => { const h = Game.hero, R = ZONE8.ROOMS.creatif, mine = B.me, his = B.his; h.look = makeLook(7, mine.look); h.n = mine.n; Game.skills = mine.sk.slice(); Game.ultId = mine.ult; Game.ultV = 0; B.fight = true; Voie.step = 'free'; Voie.mis = null; Talk.q = []; Talk.cb = null; Talk.opts = null; Talk.ocb = null; Talk.showing = false; if (Talk.on) Talk.next(); Game.cine = false; if (window.Scene && Scene.on && Scene.skip) Scene.skip(); h.maxHp = Math.round(h.maxHp0 = h.maxHp0 || h.maxHp) * 2.6 * mine.hp * (mine.me || 1) | 0; h.hp = h.maxHp; h.ch = h.maxCh; h.cd = {}; World.foes_ = []; Proj.length = 0;
+    h.x = R.x + 900; h.y = R.y + 1000; h.face = 1; if (mine.mode) { MODE08.enter(h, MODE08.F[mine.mode[0]].key || 'Z'); if (h.md) { h.md.fam = mine.mode[0]; h.md.st = 0; MODE08.stage(h, mine.mode[1]); h.md.ult0 = null; } Game.skills = mine.sk.slice(); Game.ultId = mine.ult; Game.page = 0; }
+    if (!FOE.bg10) FOE.bg10 = Object.assign({}, FOE.rival, { n: 'Duelliste', dmg: 7, xp: 0 }); const f = spawnFoe('bg10', R.x + 1500, R.y + 1000, { look: makeLook(11, his.look), n: his.n, tag: 'bg' }); f.maxHp = f.hp = Math.round(850 * his.hp * [0.75, 1, 1.25][Save.set.diff || 0]); f.aggro = true; f.boss = 1; f.cdS = 99; f.bg = his; f.bgT = 2; f.bgU = 0; f.face = -1; B.foe = f; B.t = 0;
+    UI.toast(T(MU[B.i][2]) + ' — ' + T('Combat !'), 1); };
+  // ----- IA : coups canon
+  const shoot = (f, a, sp, d, el, r, kind) => Proj.push({ x: f.x, y: f.y - 34, vx: Math.cos(a) * sp, vy: Math.sin(a) * sp, life: 1.4, dmg: d, el, team: 1, r, src: f, kind: kind || (el === 'water' ? 'water' : el === 'bolt' ? 'bolt' : 'orb'), hit: new Set() });
+  const call = (f, n, el) => { FX.text(f.x, f.y - 120, T(n), elc(el), 22); FX.glow(f.x, f.y - 40, elc(el), 60, 0.4); f.sign = { k: 'tora', t: 0 }; };
+  const move = (f, M, h) => { const [n, k, el, t, d, cd] = M, a = Math.atan2(h.y - f.y, h.x - f.x), K = [0.45, 0.6, 0.75][Save.set.diff || 0]; call(f, n, el); f.bgT = cd * (0.8 + Math.random() * 0.5);
+    if (t === 'proj') Game.later(0.35, () => shoot(f, Math.atan2(h.y - f.y, h.x - f.x), 600, d * K, el, 20));
+    else if (t === 'fan') Game.later(0.3, () => { for (let i = -2; i <= 2; i++) shoot(f, a + i * 0.16, 560, d * K, el, 12); });
+    else if (t === 'beam') Game.later(0.45, () => { const b = Math.atan2(h.y - f.y, h.x - f.x); for (let i = 0; i < 6; i++) Game.later(i * 0.04, () => shoot(f, b, 900, d * K / 3, el, 16, 'bolt')); });
+    else if (t === 'zone') { const x = h.x, y = h.y; FX.custom({ x, y, life: 0.8, ground: 1, draw: (g, p, q) => { g.save(); g.strokeStyle = elc(el); g.globalAlpha = 0.5 + 0.5 * q; g.lineWidth = 3; g.beginPath(); g.ellipse(x, y, 110, 66, 0, 0, TAU); g.stroke(); g.globalAlpha = 0.15 * q; g.fillStyle = elc(el); g.fill(); g.restore(); } });
+      Game.later(0.8, () => { FX.glow(x, y - 20, elc(el), 140, 0.5); Cam.shake(0.2); if (Math.hypot((h.x - x) / 110, (h.y - y) / 66) < 1) hurt(h, d * K, f, { el }); }); }
+    else if (t === 'dash') { f.vx = Math.cos(a) * 900; f.vy = Math.sin(a) * 900; Game.later(0.22, () => { FX.glow(f.x + Math.cos(a) * 30, f.y - 34, elc(el), 70, 0.3); if (dist(f, h) < 95) hurt(h, d * K, f, { el, kb: 1.5 }); }); } };
+  const up = Game.update.bind(Game); Game.update = function (dt) { const r = up(dt); if (!B.on || !this.running || this.paused) return r; const f = B.foe, h = this.hero; if (!f || !h || B.over) return r; B.t += dt;
+    if (f.hp <= 0 || f.gone) return end(true); if (h.hp <= 0) return end(false);
+    f.cdS = 99; f.bgT -= dt; f.bgU += dt; if (!this.cine && !f.act && dist(f, h) < 620) { if (f.bgU > 22 && f.hp < f.maxHp * 0.65) { f.bgU = 0; const [n, el, d] = f.bg.aiU; call(f, n, el); Cam.shake(0.3); move(f, [n, '極', el, 'zone', d, 6], h); } else if (f.bgT <= 0) move(f, f.bg.ai[(Math.random() * f.bg.ai.length) | 0], h); }
+    return r; };
+  for (const k of ['say', 'choose']) { const o = Talk[k].bind(Talk); Talk[k] = function () { if (B.on && B.fight) return; return o.apply(this, arguments); }; }
+  const vt = Voie.target.bind(Voie); Voie.target = function () { return B.on ? null : vt.apply(this, arguments); };
+  const ob0 = Voie.obj.bind(Voie); Voie.obj = function () { return B.on ? ['Battleground', T(B.me ? B.me.n : '') + ' vs ' + T(B.his ? B.his.n : '')] : ob0.apply(this, arguments); };
+  const hu0 = hurt; hurt = function (t, d, src, o) { if (B.on && src && src === Game.hero && B.me && B.me.pw) d *= B.me.pw; return hu0.call(this, t, d, src, o); };
+  const hd = Game.heroDown.bind(Game); Game.heroDown = function () { if (B.on) { end(false); return; } return hd(); };
+  const sl = Game.skillLock.bind(Game); Game.skillLock = function (id) { return B.on ? null : sl(id); };
+  const ul = Game.ultLock.bind(Game); Game.ultLock = function () { return B.on ? (this.ultId ? null : 'Aucun ultime') : ul(); };
+  const end = (win) => { if (B.over) return; B.over = true; Game.paused = true; res.innerHTML = `<div style="color:${win ? '#ffd166' : '#ff6a6a'}">${T(win ? 'Victoire' : 'Défaite')}</div><div style="font:16px var(--f-body);color:#c8d4f0">${T(B.me.n)} vs ${T(B.his.n)} · ${Math.round(B.t)} s</div><div style="display:flex;gap:10px"><button class="b" id="bg10a">${T('Revanche')}</button><button class="b" id="bg10m">${T('Autre duel')}</button><button class="b" id="bg10q">${T('Écran titre')}</button></div>`;
+    res.style.display = 'flex'; res.querySelector('#bg10a').onclick = () => { res.style.display = 'none'; Game.paused = false; B.over = false; setup(); }; res.querySelector('#bg10m').onclick = () => { res.style.display = 'none'; Game.paused = false; B.over = false; setup(); Game.paused = true; menu(); box.querySelectorAll('button[data-i]').forEach((b) => (b.onclick = () => { box.style.display = 'none'; B.me = FIG[MU[+b.dataset.i][+b.dataset.s]]; B.his = FIG[MU[+b.dataset.i][1 - +b.dataset.s]]; B.i = +b.dataset.i; Game.paused = false; setup(); })); };
+    res.querySelector('#bg10q').onclick = () => location.reload(); };
 })();
 
 // v0.10.33 — Créatif (item 7) : tous les modes/paliers au choix ; techniques (y c. perso) classées auto par élément et par forme ;

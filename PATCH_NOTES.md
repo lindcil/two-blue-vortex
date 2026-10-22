@@ -1,3 +1,6 @@
+## v0.10.35 — v0.10.35: Battleground mode - 4 canon duels, both sides playable
+Battleground (écran titre) : duels canon pré-faits — Frères Uchiha (Sasuke Rinnegan vs Itachi Edo Tensei), Vallée de la Fin (Naruto Kurama vs Sasuke), Invasion de Pain (Naruto Ermite vs Pain Tendō), Réceptacles du Kāma (Boruto vs Kawaki). Choix du camp, kits canon (techniques, mode, ultime), l'adversaire rejoue ses coups canon (annoncés). Victoire/Défaite, Revanche, Autre duel. Aucune sauvegarde.
+
 ## v0.10.34 — v0.10.34: translate all mode/stage names + Shukaku line
 Traduction : tous les noms de modes et paliers (Susanoo, Tenseigan, Jōgan, Kāma, Manteau, clans, Ermite) et une réplique d'histoire manquaient en anglais (affichés dans le sélecteur de modes du Créatif).
 
