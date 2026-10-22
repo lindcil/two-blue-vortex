@@ -1,3 +1,6 @@
+## v0.10.31 — v0.10.31: Jinchuriki path (Killer B + Fox Altar), Kama via Momoshiki remnant, Z mode choice
+Jinchūriki : Killer B à la Cascade t'envoie à l'Autel du renard (Sanctuaire) qui scelle un fragment de Kurama : Manteau de chakra (Z). Paliers (1 queue, 4 queues, Mode Bijū, Bête) débloqués en revenant voir B après des missions. Kāma : le Vestige de Momoshiki (Ruines du Sud) t'en fait réceptacle ; paliers de même. Choix du mode Z dans l'onglet Ninjutsu. Clairières autour des maîtres. Temps de recharge arrondis.
+
 ## v0.10.30 — v0.10.30: dedupe skills, Fukasaku toad, Myoboku clearing
 Doublons retirés : Chidori Eisō vit dans l'arbre Sharingan (Sasuke), Hakke Kūshō dans l'arbre Byakugan, Nikudan Sensha reste la technique avancée Akimichi (le mode Akimichi prend Bubun Baika). Anciennes sauvegardes migrées. Fukasaku est un vrai petit crapaud (cape, sourcils blancs). Le hameau du Mont Myōboku est une clairière.
 

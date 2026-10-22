@@ -1,0 +1,14 @@
+const {chromium}=require('playwright-core');const SH='/workspace/two-blue-vortex/screens/v10/map/';
+(async()=>{const b=await chromium.launch({executablePath:'/usr/bin/google-chrome',args:['--no-sandbox']});const errs=[];const p=await b.newPage({viewport:{width:1280,height:720}});p.on('pageerror',e=>errs.push(e.message));p.on('console',m=>m.type()==='error'&&errs.push(m.text()));
+await p.goto('file:///workspace/two-blue-vortex/index.html');await p.waitForTimeout(900);if(await p.$('#lay07'))await p.click('#lay1');
+await p.evaluate(()=>{Game.startVoie({name:'Aoi',clan:'uzumaki',look:makeLook(3)});const m=Voie.me;m.sage=0;m.jin=0;m.karma=0;m.masters={};Voie.done=0;setInterval(()=>{if(Talk.on){Talk.t=1;Talk.showing?Talk.pick(0):Talk.next()}},120)});{const t0=Date.now();while(Date.now()-t0<30000){if(await p.evaluate(()=>Voie.step==='a1'&&!Scene.on&&!Talk.on))break;await p.waitForTimeout(200)}}await p.evaluate(()=>{const m=Voie.me;m.sage=0;m.jin=0;m.karma=0;m.masters={};Voie.done=0;ZONE8.exit({instant:true})});await p.waitForTimeout(500);
+const talk=async(id)=>{await p.evaluate(id=>{ZONE8.room=null;const M=Game.extras.find(e=>e.id==='master_'+id);const h=Game.hero;h.x=M.x-80;h.y=M.y+30;h.face=1;Cam.x=h.x;Cam.y=h.y;ZONE8.sec=ZONE8.secAt(h.x,h.y);setTimeout(()=>M.onTalk(),900)},id);await p.waitForTimeout(1500)};
+const st=()=>p.evaluate(()=>{const m=Voie.me,h=Game.hero;h.md=null;const r=MODE08.enter(h,'Z');const o=[r,h.md&&h.md.fam,h.md&&h.md.st,m.jin,m.karma,m.masters];h.md=null;return JSON.stringify(o)});
+console.log('none',await st());await talk('altar');console.log('altar w/o B',await st());
+await talk('bee');await p.screenshot({path:SH+'killer-b.png'});console.log('B',await st());await talk('altar');console.log('sealed',await st());
+await talk('bee');console.log('B early',await st());await p.evaluate(()=>{Voie.done=6});await talk('bee');await talk('bee');console.log('B x2',await st());
+await p.evaluate(()=>{const h=Game.hero;MODE08.enter(h,'Z');MODE08.stage(h,5)});console.log('cap',await p.evaluate(()=>Game.hero.md.st));
+await talk('momo');await p.screenshot({path:SH+'momoshiki.png'});console.log('momo',await st());
+await p.evaluate(()=>{JIN10.pick('karma')});console.log('pick karma',await st());
+await p.evaluate(()=>UI.open('ninjutsu'));await p.waitForTimeout(500);await p.screenshot({path:SH+'mode-z.png'});
+console.log('errs',errs);await b.close()})();
