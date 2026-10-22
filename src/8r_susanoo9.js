@@ -14,16 +14,19 @@
   // une pièce = { pts, w (trait), fill (alpha), fl (pas des flammes), out (centre pour orienter les normales), s0/s1 (fenêtre d’assemblage), arm (pivot pour l’épée), kind }
   const part = (o) => prep(Object.assign({ w: 4, s0: 0, s1: 0.2 }, o));
   const BUILD = {};
-  const shapes = (lvl) => { if (BUILD[lvl]) return BUILD[lvl]; const A = [];
+  const shapes = (lvl, back) => { const key = lvl + (back ? 'b' : ''); if (BUILD[key]) return BUILD[key]; const A = [];
     // 1 — cage thoracique : colonne, 7 paires de côtes, clavicules, bassin
     A.push(part({ pts: bez([0, -10], [8, -70], [-8, -140], [0, -205], 14), w: 7, fl: 26, out: [0, -110], s0: 0, s1: 0.18 }));
-    [40, 58, 70, 76, 72, 62, 48].forEach((w, i) => { const y = -190 + i * 22; const R = bez([0, y], [w * 0.7, y - 16], [w * 1.05, y + 8], [w * 0.82, y + 30], 8); A.push(part({ pts: R, w: 5, fl: 30, out: [0, -110], s0: 0.06 + i * 0.03, s1: 0.2 + i * 0.03 })); A.push(part({ pts: mir(R), w: 5, fl: 30, out: [0, -110], s0: 0.06 + i * 0.03, s1: 0.2 + i * 0.03 })); });
+    if (back) { // v0.10.42 — vue de dos : vertèbres, omoplates, côtes qui partent de la colonne vers l’avant (plus courtes)
+      for (let i = 0; i < 9; i++) { const y = -196 + i * 21; A.push(part({ pts: [[-7, y], [7, y]], w: 4, s0: 0.03 + i * 0.02, s1: 0.12 + i * 0.02 })); }
+      for (const sc of [1, -1]) A.push(part({ pts: [[sc * 22, -196], [sc * 70, -192], [sc * 58, -140], [sc * 26, -160], [sc * 22, -196]], w: 5, fill: 0.12, fl: 26, out: [sc * 44, -170], s0: 0.12, s1: 0.26 })); }
+    [40, 58, 70, 76, 72, 62, 48].forEach((w, i) => { const y = -190 + i * 22; const R = back ? bez([4, y + 4], [w * 0.5, y - 8], [w * 0.95, y + 2], [w * 0.92, y + 22], 8) : bez([0, y], [w * 0.7, y - 16], [w * 1.05, y + 8], [w * 0.82, y + 30], 8); A.push(part({ pts: R, w: 5, fl: 30, out: [0, -110], s0: 0.06 + i * 0.03, s1: 0.2 + i * 0.03 })); A.push(part({ pts: mir(R), w: 5, fl: 30, out: [0, -110], s0: 0.06 + i * 0.03, s1: 0.2 + i * 0.03 })); });
     A.push(part({ pts: [[-80, -206], [0, -198], [80, -206]], w: 6, fl: 30, out: [0, -120], s0: 0.2, s1: 0.32 }));
     A.push(part({ pts: bez([-55, -10], [-60, 20], [60, 20], [55, -10], 10), w: 6, fl: 28, out: [0, -60], s0: 0.02, s1: 0.16 }));
     if (lvl >= 2) { // 2 — squelette : crâne, mâchoire, dents, cervicales, bras à deux os, mains
       A.push(part({ pts: ell(0, -240, 34, 38, Math.PI * 0.85, Math.PI * 2.15, 20), w: 5, fill: 0.14, fl: 18, out: [0, -240], s0: 0.3, s1: 0.45, kind: 'skull' }));
-      A.push(part({ pts: [[-26, -226], [-22, -206], [-10, -198], [10, -198], [22, -206], [26, -226]], w: 5, fl: 22, out: [0, -230], s0: 0.38, s1: 0.48 }));
-      for (let i = -2; i <= 2; i++) A.push(part({ pts: [[i * 7, -206], [i * 7, -198]], w: 2.5, s0: 0.45, s1: 0.5 }));
+      if (!back) A.push(part({ pts: [[-26, -226], [-22, -206], [-10, -198], [10, -198], [22, -206], [26, -226]], w: 5, fl: 22, out: [0, -230], s0: 0.38, s1: 0.48 }));
+      if (!back) for (let i = -2; i <= 2; i++) A.push(part({ pts: [[i * 7, -206], [i * 7, -198]], w: 2.5, s0: 0.45, s1: 0.5 }));
       for (const s of [-1, 1]) { A.push(part({ pts: [[s * 78, -204], [s * 112, -150], [s * 124, -128]], w: 7, fl: 24, out: [s * 60, -160], s0: 0.32, s1: 0.45, arm: s })); A.push(part({ pts: [[s * 120, -128], [s * 136, -70]], w: 4.5, fl: 30, out: [s * 100, -100], s0: 0.42, s1: 0.52, arm: s })); A.push(part({ pts: [[s * 128, -126], [s * 124, -68]], w: 4, s0: 0.42, s1: 0.52, arm: s }));
         for (let f = 0; f < 4; f++) A.push(part({ pts: [[s * 130, -66], [s * (128 + f * 5), -44 + (f % 2) * 4], [s * (130 + f * 6), -30]], w: 3, s0: 0.5, s1: 0.56, arm: s })); }
     }
@@ -32,10 +35,10 @@
       const torso = [[-108, -204], [-120, -150], [-104, -90], [-80, -40], [-60, 0], [60, 0], [80, -40], [104, -90], [120, -150], [108, -204], [60, -218], [-60, -218], [-108, -204]];
       A.push(part({ pts: torso, w: 4, fill: 0.16, fl: 20, out: [0, -110], s0: 0.5, s1: 0.68, kind: 'flesh' }));
       A.push(part({ pts: ell(0, -248, 40, 46, 0, TAU2, 24), w: 4, fill: 0.2, fl: 16, out: [0, -248], s0: 0.55, s1: 0.68, kind: 'face' }));
-      A.push(part({ pts: [[-2, -254], [62, -236], [4, -230]], w: 4, fill: 0.35, s0: 0.62, s1: 0.72, kind: 'nose' }));
-      A.push(part({ pts: [[-30, -268], [-8, -258]], w: 5, s0: 0.62, s1: 0.7 })); A.push(part({ pts: [[30, -268], [8, -258]], w: 5, s0: 0.62, s1: 0.7 }));
-      A.push(part({ pts: [[-14, -214], [-10, -200]], w: 3, s0: 0.66, s1: 0.72 })); A.push(part({ pts: [[14, -214], [10, -200]], w: 3, s0: 0.66, s1: 0.72 }));
-      A.push(part({ pts: bez([-60, -212], [-30, -180], [30, -180], [60, -212], 12), w: 2, s0: 0.66, s1: 0.74, kind: 'beads' }));
+      if (!back) A.push(part({ pts: [[-2, -254], [62, -236], [4, -230]], w: 4, fill: 0.35, s0: 0.62, s1: 0.72, kind: 'nose' }));
+      if (!back) { A.push(part({ pts: [[-30, -268], [-8, -258]], w: 5, s0: 0.62, s1: 0.7 })); A.push(part({ pts: [[30, -268], [8, -258]], w: 5, s0: 0.62, s1: 0.7 })); }
+      if (!back) { A.push(part({ pts: [[-14, -214], [-10, -200]], w: 3, s0: 0.66, s1: 0.72 })); A.push(part({ pts: [[14, -214], [10, -200]], w: 3, s0: 0.66, s1: 0.72 })); }
+      if (!back) A.push(part({ pts: bez([-60, -212], [-30, -180], [30, -180], [60, -212], 12), w: 2, s0: 0.66, s1: 0.74, kind: 'beads' }));
       for (const s of [-1, 1]) A.push(part({ pts: [[s * 108, -204], [s * 140, -140], [s * 140, -80]], w: 18, fl: 22, out: [s * 90, -150], s0: 0.58, s1: 0.7, arm: s, kind: 'limb' }));
     }
     if (lvl >= 4) { // 4 — samouraï : plaques du dō, ōsode, casque kabuto à cimier (kuwagata), menpō, épée, bouclier de Yata
@@ -44,18 +47,18 @@
       A.push(part({ pts: ell(0, -262, 48, 34, Math.PI, TAU2, 16).concat([[48, -262], [-48, -262]]), w: 4, fill: 0.36, fl: 18, out: [0, -250], s0: 0.78, s1: 0.86, kind: 'plate' }));
       A.push(part({ pts: bez([-14, -290], [-50, -330], [-80, -360], [-70, -410], 10), w: 6, fl: 16, out: [-20, -330], s0: 0.84, s1: 0.92 })); A.push(part({ pts: bez([14, -290], [50, -330], [80, -360], [70, -410], 10), w: 6, fl: 16, out: [20, -330], s0: 0.84, s1: 0.92 }));
       A.push(part({ pts: [[0, -296], [-10, -318], [0, -340], [10, -318], [0, -296]], w: 3, fill: 0.5, s0: 0.86, s1: 0.92, kind: 'gem' }));
-      A.push(part({ pts: [[-34, -230], [-24, -216], [24, -216], [34, -230]], w: 4, s0: 0.8, s1: 0.86 }));
+      if (!back) A.push(part({ pts: [[-34, -230], [-24, -216], [24, -216], [34, -230]], w: 4, s0: 0.8, s1: 0.86 }));
     }
     if (lvl >= 5) { // 5 — parfait : ailes à plumes, jupe de plaques (kusazuri), jambes, seconde paire d’yeux
       for (const s of [-1, 1]) { for (let f = 0; f < 6; f++) { const a = -0.3 - f * 0.22; A.push(part({ pts: bez([s * 90, -190], [s * (160 + f * 14), -230 - f * 8], [s * (240 + f * 8), -180 + f * 6], [s * (210 + f * 16) + s * Math.cos(a) * 30, -60 + f * 26], 10), w: 5, fill: 0, fl: 22, out: [s * 90, -100], s0: 0.86 + f * 0.015, s1: 0.95 })); } }
       for (let i = 0; i < 5; i++) { const x = -80 + i * 40; A.push(part({ pts: [[x - 20, -6], [x + 20, -6], [x + 24, 60], [x - 24, 60], [x - 20, -6]], w: 3, fill: 0.28, s0: 0.88, s1: 0.96, kind: 'plate' })); }
     }
-    BUILD[lvl] = A; return A; };
+    BUILD[key] = A; return A; };
   // --- rendu ---
   const strokePart = (g, P, r) => { const n = P.pts.length; if (r <= 0) return; const lim = P.L * r; g.beginPath(); g.moveTo(P.pts[0][0], P.pts[0][1]); for (let i = 1; i < n; i++) { if (P.cum[i] > lim) { const a = P.pts[i - 1], b = P.pts[i], k = (lim - P.cum[i - 1]) / ((P.cum[i] - P.cum[i - 1]) || 1); g.lineTo(a[0] + (b[0] - a[0]) * k, a[1] + (b[1] - a[1]) * k); break; } g.lineTo(P.pts[i][0], P.pts[i][1]); } };
   const magatama = (g, x, y, r, a, c) => { g.save(); g.translate(x, y); g.rotate(a); g.fillStyle = c; g.beginPath(); g.arc(0, 0, r, 0, TAU2); g.fill(); g.beginPath(); g.moveTo(r, 0); g.quadraticCurveTo(r * 1.2, r * 1.6, -r * 0.3, r * 2.1); g.quadraticCurveTo(r * 0.4, r * 1.2, 0, r); g.fill(); g.restore(); };
   MODE08.drawSusanoo = function (g, x, y, lvl, c, o = {}) { const t = o.t || 0, b = o.build == null ? 1 : o.build, sw = o.sw || 0, face = o.face || 1, K = lvl >= 5 ? 1.5 : 1 + (lvl - 1) * 0.05; const tier = window.Q9 ? Q9.tier : 2;
-    const A = shapes(lvl), light = W(c, 0.55), pale = W(c, 0.8), glow = SPR9.get('glow', c), lick = SPR9.get('lick', c), lickL = SPR9.get('lick', light);
+    const A = shapes(lvl, o.back), light = W(c, 0.55), pale = W(c, 0.8), glow = SPR9.get('glow', c), lick = SPR9.get('lick', c), lickL = SPR9.get('lick', light);
     g.save(); g.translate(x, y); g.scale(K * face, K); g.rotate(Math.sin(t * 1.4) * 0.02); g.lineCap = 'round'; g.lineJoin = 'round';
     // aura extérieure (sprite) qui respire
     const br = 1 + Math.sin(t * 3) * 0.04; g.globalCompositeOperation = 'lighter'; g.globalAlpha = 0.22 * cl(b * 2); g.drawImage(glow, -230 * br, -380 * br, 460 * br, 460 * br); g.globalAlpha = 0.25 * cl(b * 2); g.drawImage(glow, -150, -260, 300, 300);
@@ -78,7 +81,7 @@
       if (P.kind === 'beads' && r >= 1) for (let i = 0; i < 5; i++) { const q = P.pts[2 + i * 2]; magatama(g, q[0], q[1] + 4, 5, 0.6 + i * 0.3, pale); }
       if (rot) g.restore(); }
     // yeux (crâne → orbites ; visage → fentes lumineuses)
-    if (lvl >= 2 && b > 0.45) { g.globalAlpha = cl((b - 0.45) * 5); g.fillStyle = lvl >= 3 ? '#ffffff' : pale; const ey = lvl >= 3 ? -252 : -242;
+    if (lvl >= 2 && b > 0.45 && !o.back) { g.globalAlpha = cl((b - 0.45) * 5); g.fillStyle = lvl >= 3 ? '#ffffff' : pale; const ey = lvl >= 3 ? -252 : -242;
       for (const s of [-1, 1]) { g.beginPath(); if (lvl >= 3) { g.moveTo(s * 26, ey - 4); g.lineTo(s * 8, ey + 2); g.lineTo(s * 24, ey + 4); } else g.ellipse(s * 13, ey, 8, 6, 0, 0, TAU2); g.fill(); g.drawImage(glow, s * 16 - 14, ey - 14, 28, 28); } if (lvl >= 5) { for (const s of [-1, 1]) { g.beginPath(); g.moveTo(s * 22, ey + 22); g.lineTo(s * 8, ey + 26); g.lineTo(s * 20, ey + 28); g.fill(); } } }
     // épée de Totsuka (flamme) + ruban de taille
     if (lvl >= 4 && b > 0.8 && !o.alt) { const a2 = cl((b - 0.8) * 5); g.save(); g.translate(140, -80); g.rotate(0.35 + sw * 1.9 - (sw > 0 ? 1.6 * Math.sin(sw * Math.PI) : 0)); g.globalAlpha = a2; g.drawImage(glow, -40, -300, 80, 320);

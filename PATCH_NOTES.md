@@ -1,3 +1,7 @@
+## v0.10.42 — Susanoo back view; canon Shinten Bunshin no Jutsu
+- Susanoo seen from behind (walking up): spine with vertebrae, shoulder blades and back ribs; no face, jaw or mask shown from the back.
+- Yamanaka ultimate renamed to its canon name, Shinten Bunshin no Jutsu (Mind Clone Switch): the mind splits into every nearby enemy and the controlled enemies strike each other.
+
 ## v0.10.41 — Battleground: Zabuza and Kakashi tuning
 - Zabuza: Water Clones hit harder (26).
 - Kakashi: Fanged Pursuit ninja dogs hold the target 1.5 s.

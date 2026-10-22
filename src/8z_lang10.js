@@ -1039,7 +1039,8 @@
 "Omote Renge": "Omote Renge",
 "Sabaku Sōsō": "Sabaku Sōsō",
 "Rock Lee": "Rock Lee",
-"Kage Bunshin": "Kage Bunshin"
+"Kage Bunshin": "Kage Bunshin",
+"Shinten Bunshin no Jutsu": "Mind Clone Switch Technique"
 }
 };
   const L = window.LANG10 = { DATA, miss: new Set(), get lang() { return (Save.set && Save.set.lang) || 'en'; }, set lang(v) { Save.set.lang = v; try { Save.saveSet && Save.saveSet(); } catch (e) {} },

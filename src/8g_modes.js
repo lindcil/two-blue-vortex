@@ -213,7 +213,7 @@
     const lg = P2(); lg.moveTo(-60, 0); lg.lineTo(-70, 40); lg.moveTo(60, 0); lg.lineTo(75, 40); flameOutline(g, lg, c, t, 6); g.restore(); };
   // dessin dans le monde, derrière le héros
   FX.custom({ x: 0, y: 0, life: 1e9, ground: 2, draw: (g) => { const h = Game.hero; if (!h || !h.md || h.hp <= 0) return; const M = h.md, S = F[M.fam].st[M.st - 1]; h.susSw = Math.max(0, (h.susSw || 0) - 0.06); const sw = h.susSw ? Math.sin((1 - h.susSw) * Math.PI) : 0;
-    if (S.sus) MODE08.drawSusanoo(g, h.x, h.y + 4, S.sus, M.col, { t: Game.t, build: M.build, sw, face: Math.cos(h.aimA || 0) < 0 ? -1 : 1 });
+    if (S.sus) MODE08.drawSusanoo(g, h.x, h.y + 4, S.sus, M.col, { t: Game.t, build: M.build, sw, face: Math.cos(h.aimA || 0) < 0 ? -1 : 1, back: h.hd != null && Math.sin(h.hd) < -0.5 });
     else if (S.beast) MODE08.drawBeast(g, h.x, h.y + 4, M.col, { t: Game.t, build: M.build, face: Math.cos(h.aimA || 0) < 0 ? -1 : 1 });
     else if (Math.random() < 0.4) FX.add({ k: 'spark', x: h.x + rnd(-22, 22), y: h.y - rnd(0, 70), vx: 0, vy: -120, c: M.col === '#2a2a3a' ? PUR : M.col, s: 2.5, life: 0.45, g: -60 }); } });
   // Susanoo de Sarada (ultime allié) redessiné
