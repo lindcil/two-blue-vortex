@@ -1,3 +1,6 @@
+## v0.10.32 — v0.10.32: master models (Killer B, Momoshiki), map pins via rumours, Fox Altar shot
+Killer B : lunettes noires, bouc, tatouage de corne, sabres, bandeau. Momoshiki : cornes, yeux pâles, Rinnegan dans les paumes, sans bandeau. Rumeurs après des missions (Mont Myōboku, Cascade, Ruines du Sud) : chaque maître entendu ou rencontré a son repère sur la carte ; l'Autel apparaît après Killer B.
+
 ## v0.10.31 — v0.10.31: Jinchuriki path (Killer B + Fox Altar), Kama via Momoshiki remnant, Z mode choice
 Jinchūriki : Killer B à la Cascade t'envoie à l'Autel du renard (Sanctuaire) qui scelle un fragment de Kurama : Manteau de chakra (Z). Paliers (1 queue, 4 queues, Mode Bijū, Bête) débloqués en revenant voir B après des missions. Kāma : le Vestige de Momoshiki (Ruines du Sud) t'en fait réceptacle ; paliers de même. Choix du mode Z dans l'onglet Ninjutsu. Clairières autour des maîtres. Temps de recharge arrondis.
 

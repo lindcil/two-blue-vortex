@@ -867,7 +867,10 @@
 "Kāma": "Kāma",
 "Manteau": "Cloak",
 "Mode Papillon": "Butterfly Mode",
-"jauge pleine · touche {}": "full gauge · key {}"
+"jauge pleine · touche {}": "full gauge · key {}",
+"Rumeur : un vieux crapaud enseigne le Senjutsu au Mont Myōboku, au sud-est.": "Rumour: an old toad teaches Senjutsu on Mount Myōboku, to the south-east.",
+"Rumeur : un ninja qui rappe s’entraîne près de la Cascade, à l’est.": "Rumour: a rapping ninja trains by the Waterfall, to the east.",
+"Rumeur : d’étranges ruines au sud murmurent un nom… Momoshiki.": "Rumour: strange ruins to the south whisper a name... Momoshiki."
 }
 };
   const L = window.LANG10 = { DATA, miss: new Set(), get lang() { return (Save.set && Save.set.lang) || 'en'; }, set lang(v) { Save.set.lang = v; try { Save.saveSet && Save.saveSet(); } catch (e) {} },

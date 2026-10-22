@@ -6,10 +6,10 @@
   const me = () => Voie.me, inVoie = () => Game.mode === 'voie' && me() && !Game.creative;
   const has = (id) => !!(me() && me().masters && me().masters[id]);
   const T = (s) => (window.LANG10 && LANG10.t ? LANG10.t(s) : s);
-  window.MASTER10 = { MS, has, hint(id) { UI.toast(T('Il te faut un maître :') + ' ' + MS[id].n + ' — ' + T(MS[id].where)); } };
+  window.MASTER10 = { MS, has, hint(id) { const m0 = me(); if (m0) { m0.heard = m0.heard || {}; m0.heard[id] = 1; } UI.toast(T('Il te faut un maître :') + ' ' + MS[id].n + ' — ' + T(MS[id].where)); } };
   const st = Voie.start.bind(Voie);
   Voie.start = function (sv) { const r = st(sv); if (Game.mode !== 'voie') return r; for (const id in MS) { const M = MS[id];
-      Game.extras.push({ id: 'master_' + id, n: M.n, look: M.look(), altar10: M.altar ? 1 : 0, x: K10 * M.x, y: K10 * M.y, r: 12, face: -1, vx: 0, vy: 0, anim: 0, isNpc: true, master10: id, toad10: id === 'toad' ? 1 : 0,
+      Game.extras.push({ id: 'master_' + id, n: M.n, look: M.look(), altar10: M.altar ? 1 : 0, who10: id, x: K10 * M.x, y: K10 * M.y, r: 12, face: -1, vx: 0, vy: 0, anim: 0, isNpc: true, master10: id, toad10: id === 'toad' ? 1 : 0,
         onTalk: () => { const m = me(); if (!m) return; m.masters = m.masters || {}; if (M.talk) return M.talk(m); if (m.masters[id]) { Talk.say([[M.n, m.sage ? 'Ton chakra naturel grandit. Continue de méditer.' : 'Alors, cette méditation ? Immobile, j’ai dit !']]); return; }
           Talk.say(M.lines, () => { m.masters[id] = 1; UI.reward(M.reward, '#7fd36a', 1); Game.save && Game.save(); }); } }); }
     return r; };

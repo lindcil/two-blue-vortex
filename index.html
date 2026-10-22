@@ -104,7 +104,7 @@ button.b.p{background:var(--gold);color:var(--ink)}button.b.p2{background:var(--
 <script>
 'use strict';
 /* ============ Noyau : réglages, sauvegarde, entrées, audio ============ */
-const VERSION = '0.10.31';
+const VERSION = '0.10.32';
 const K10 = Math.sqrt(10); // v0.9.7 : échelle des cartes extérieures (surface ×10)
 const $ = (s) => document.querySelector(s);
 const TAU = Math.PI * 2, clamp = (v, a, b) => (v < a ? a : v > b ? b : v), lerp = (a, b, t) => a + (b - a) * t;
@@ -3833,10 +3833,10 @@ addEventListener('touchstart',()=>document.body.classList.add('touch07'),{passiv
   const me = () => Voie.me, inVoie = () => Game.mode === 'voie' && me() && !Game.creative;
   const has = (id) => !!(me() && me().masters && me().masters[id]);
   const T = (s) => (window.LANG10 && LANG10.t ? LANG10.t(s) : s);
-  window.MASTER10 = { MS, has, hint(id) { UI.toast(T('Il te faut un maître :') + ' ' + MS[id].n + ' — ' + T(MS[id].where)); } };
+  window.MASTER10 = { MS, has, hint(id) { const m0 = me(); if (m0) { m0.heard = m0.heard || {}; m0.heard[id] = 1; } UI.toast(T('Il te faut un maître :') + ' ' + MS[id].n + ' — ' + T(MS[id].where)); } };
   const st = Voie.start.bind(Voie);
   Voie.start = function (sv) { const r = st(sv); if (Game.mode !== 'voie') return r; for (const id in MS) { const M = MS[id];
-      Game.extras.push({ id: 'master_' + id, n: M.n, look: M.look(), altar10: M.altar ? 1 : 0, x: K10 * M.x, y: K10 * M.y, r: 12, face: -1, vx: 0, vy: 0, anim: 0, isNpc: true, master10: id, toad10: id === 'toad' ? 1 : 0,
+      Game.extras.push({ id: 'master_' + id, n: M.n, look: M.look(), altar10: M.altar ? 1 : 0, who10: id, x: K10 * M.x, y: K10 * M.y, r: 12, face: -1, vx: 0, vy: 0, anim: 0, isNpc: true, master10: id, toad10: id === 'toad' ? 1 : 0,
         onTalk: () => { const m = me(); if (!m) return; m.masters = m.masters || {}; if (M.talk) return M.talk(m); if (m.masters[id]) { Talk.say([[M.n, m.sage ? 'Ton chakra naturel grandit. Continue de méditer.' : 'Alors, cette méditation ? Immobile, j’ai dit !']]); return; }
           Talk.say(M.lines, () => { m.masters[id] = 1; UI.reward(M.reward, '#7fd36a', 1); Game.save && Game.save(); }); } }); }
     return r; };
@@ -3869,14 +3869,14 @@ addEventListener('touchstart',()=>document.body.classList.add('touch07'),{passiv
   const ready = (m, lv) => (Voie.done || 0) >= lv * 2; // 2 missions de plus par palier
   const up = (m, key, max, M, okLine, waitLine) => { const lv = m[key] || 0; if (lv >= max) { Talk.say([[M.n, okLine]]); return; } if (!ready(m, lv)) { Talk.say([[M.n, waitLine]]); return; }
     m[key] = lv + 1; Talk.say([[M.n, okLine]], () => { UI.reward(T('Palier débloqué') + ' ★' + m[key], '#ffb13d', 1); Game.save && Game.save(); }); };
-  MS.bee = { n: 'Killer B', where: 'Cascade (est)', x: 4560, y: 2060, look: () => makeLook(4, { skin: '#7a4a2e', hair: '#e8e0d0', hs: 'buzz', vest: '#e8e8e8', band: 1 }),
+  MS.bee = { n: 'Killer B', where: 'Cascade (est)', x: 4560, y: 2060, look: () => makeLook(4, { skin: '#7a4a2e', hair: '#e8e0d0', hs: 'buzz', vest: '#e8e8e8', top: '#2a2a2a', bot: '#2a2a2a', band: 1, sword: 1, glasses: 0 }),
     talk(m) { const M = this; if (!m.masters.bee) { Talk.say([[M.n, 'Yo ! Killer B, le jinchūriki à huit queues, ouais !'], [M.n, 'Tu veux le pouvoir d’une bête ? Faut d’abord la regarder en face, idiot, imbécile !'], [M.n, 'Au Sanctuaire du renard, un fragment de Kurama dort. Va le sceller, wee !']], () => { m.masters.bee = 1; UI.reward(T('Maître trouvé : Killer B — va au Sanctuaire du renard'), '#ffb13d', 1); Game.save && Game.save(); }); return; }
       if (!m.jin) { Talk.say([[M.n, 'Le Sanctuaire du renard, au nord-est. Bouge, yo !']]); return; }
       up(m, 'jin', 5, M, 'Ton chakra de bijū grandit, yo ! Un palier de plus.', 'Pas encore, idiot. Reviens après d’autres missions.'); } };
   MS.altar = { n: 'Autel du renard', where: 'Sanctuaire du renard (nord-est)', x: 4300, y: 790, altar: 1, look: () => makeLook(1),
     talk(m) { const M = this; if (m.jin) { Talk.say([[M.n, 'Le sceau tient. Le renard dort… à moitié.']]); return; } if (!m.masters.bee) { Talk.say([[M.n, 'Une chaleur rouge pulse sous la pierre. Il te faudrait un guide.']]); return; }
       Talk.say([[M.n, 'Le chakra rouge s’enroule autour de toi… Le sceau tient.']], () => { m.jin = 1; FX.glow(Game.hero.x, Game.hero.y - 40, '#ff7a2a', 200, 0.8, { grow: 0.6 }); Cam.shake(0.4); UI.reward(T('Jinchūriki ! Manteau de chakra débloqué (Z)'), '#ff7a2a', 1); Game.save && Game.save(); }); } };
-  MS.momo = { n: 'Vestige de Momoshiki', where: 'Ruines du Sud', x: 1600, y: 3780, look: () => makeLook(6, { skin: '#ece6f2', hair: '#f2f2f8', hs: 'long', vest: '#e8e4f0' }),
+  MS.momo = { n: 'Vestige de Momoshiki', where: 'Ruines du Sud', x: 1600, y: 3780, look: () => makeLook(6, { skin: '#ece6f2', hair: '#f2f2f8', hs: 'long', top: '#f0ecf6', bot: '#d8d0e4', cloak: '#f0ecf6', band: 0 }),
     talk(m) { const M = this; if (!m.karma) { Talk.say([[M.n, 'Un être inférieur… mais ce corps fera un réceptacle convenable.'], [M.n, 'Je te laisse ma marque. Le Kāma. Ne me déçois pas.']], () => { m.karma = 1; m.masters.momo = 1; UI.reward(T('Kāma reçu — Mode Kāma débloqué (Z)'), '#a46bff', 1); Game.save && Game.save(); }); return; }
       up(m, 'karma', 4, M, 'Le Kāma s’étend. Tu deviens ce que je suis.', 'Pas encore. Accomplis d’autres missions, réceptacle.'); } };
   // Z : mode choisi parmi ceux appris ; paliers plafonnés par la progression
@@ -3897,6 +3897,17 @@ addEventListener('touchstart',()=>document.body.classList.add('touch07'),{passiv
     g.save(); g.strokeStyle = INK; g.lineWidth = 3; g.fillStyle = 'rgba(0,0,0,.25)'; g.beginPath(); g.ellipse(x, y + 2, 40, 10, 0, 0, TAU); g.fill();
     g.fillStyle = '#8a8478'; g.beginPath(); g.moveTo(x - 30, y); g.lineTo(x - 22, y - 70); g.quadraticCurveTo(x, y - 84, x + 22, y - 70); g.lineTo(x + 30, y); g.closePath(); g.fill(); g.stroke();
     g.fillStyle = `rgba(255,${100 + 40 * p | 0},40,${0.5 + 0.4 * p})`; g.font = 'bold 26px serif'; g.textAlign = 'center'; g.fillText('封', x, y - 32); g.restore(); };
+  // v0.10.32 — modèles : Killer B (lunettes noires, bouc, tatouage de corne, sabres) ; Momoshiki (cornes, yeux pâles, Rinnegan dans les paumes)
+  const dr2 = drawRig; drawRig = function (g, u, tint) { const r0 = dr2(g, u, tint); if (!u || u.who10 !== 'momo' || tint) return r0; const f = u.face || 1;
+    g.save(); for (const s of [1, -1]) { const x = u.x + f * s * 17, y = u.y - 38 + Math.sin(Game.t * 2 + s) * 1.5; g.fillStyle = '#c8b6ee'; g.beginPath(); g.arc(x, y, 5.5, 0, TAU); g.fill(); g.strokeStyle = '#6a3aa8'; g.lineWidth = 1; for (const rr of [1.5, 3, 4.5]) { g.beginPath(); g.arc(x, y, rr, 0, TAU); g.stroke(); } } g.restore(); return r0; };
+  // repères de carte pour les maîtres dont on a entendu parler (rumeurs après des missions)
+  const RUM = [['toad', 0, 'Rumeur : un vieux crapaud enseigne le Senjutsu au Mont Myōboku, au sud-est.'], ['bee', 2, 'Rumeur : un ninja qui rappe s’entraîne près de la Cascade, à l’est.'], ['momo', 4, 'Rumeur : d’étranges ruines au sud murmurent un nom… Momoshiki.']];
+  setInterval(() => { if (!inVoie() || Game.paused || Talk.on) return; const m = me(); m.heard = m.heard || {}; m.masters = m.masters || {}; if (m.masters.bee) m.heard.altar = 1;
+    for (const [id, n, line] of RUM) if (!m.heard[id] && (Voie.done || 0) >= n && Voie.step !== 'birth' && !/^a\d/.test(Voie.step)) { m.heard[id] = 1; UI.toast(T(line)); break; } }, 2500);
+  const CL = { toad: ['#7fd36a', '蛙'], bee: ['#ffb13d', '八'], altar: ['#ff7a2a', '封'], momo: ['#a46bff', '輪'] };
+  const bc = UI.b_carte.bind(UI); UI.b_carte = function () { bc(); const c = document.getElementById('map'); if (!c || !inVoie()) return; const m = me(), H = m.heard || {}, g = c.getContext('2d'), s = 640 / (World.k10 ? W * K10 : W);
+    for (const id in CL) { if (!H[id] && !(m.masters && m.masters[id])) continue; const M = MS[id]; if (!M) continue; const x = K10 * M.x * s, y = K10 * M.y * s, [col, k] = CL[id];
+      g.fillStyle = col; g.strokeStyle = INK; g.lineWidth = 2; g.beginPath(); g.arc(x, y - 10, 9, 0, TAU); g.fill(); g.stroke(); g.beginPath(); g.moveTo(x - 5, y - 4); g.lineTo(x, y + 4); g.lineTo(x + 5, y - 4); g.fill(); g.fillStyle = INK; g.font = 'bold 11px sans-serif'; g.textAlign = 'center'; g.fillText(k, x, y - 6); } };
 })();
 
 // v0.9.6 — Animations de base, décrites en données (ANIM10) pour les régler facilement : combo M1, dash, Kawarimi (bûche), réactions aux coups, garde, course de Naruto.
@@ -5370,7 +5381,10 @@ let FT10 = null, FB10 = null;
 "Kāma": "Kāma",
 "Manteau": "Cloak",
 "Mode Papillon": "Butterfly Mode",
-"jauge pleine · touche {}": "full gauge · key {}"
+"jauge pleine · touche {}": "full gauge · key {}",
+"Rumeur : un vieux crapaud enseigne le Senjutsu au Mont Myōboku, au sud-est.": "Rumour: an old toad teaches Senjutsu on Mount Myōboku, to the south-east.",
+"Rumeur : un ninja qui rappe s’entraîne près de la Cascade, à l’est.": "Rumour: a rapping ninja trains by the Waterfall, to the east.",
+"Rumeur : d’étranges ruines au sud murmurent un nom… Momoshiki.": "Rumour: strange ruins to the south whisper a name... Momoshiki."
 }
 };
   const L = window.LANG10 = { DATA, miss: new Set(), get lang() { return (Save.set && Save.set.lang) || 'en'; }, set lang(v) { Save.set.lang = v; try { Save.saveSet && Save.saveSet(); } catch (e) {} },
@@ -5389,6 +5403,18 @@ let FT10 = null, FB10 = null;
   const add = () => { const m = document.getElementById('m10'); if (!m || document.getElementById('lang10')) return; const b = document.createElement('button'); b.id = 'lang10'; b.className = m.querySelector('button') ? m.querySelector('button').className : ''; const lab = () => (b.textContent = L.lang === 'fr' ? 'Langue : FR' : 'Language: EN'); lab();
     b.onclick = () => { L.lang = L.lang === 'fr' ? 'en' : 'fr'; lab(); try { UI.objective(); } catch (e) {} }; m.appendChild(b); };
   add(); setTimeout(add, 500);
+})();
+
+// v0.10.32 — détails de tête des maîtres (après 8z5 qui remplace drawHead).
+(() => {
+  const dh = drawHead; drawHead = function (g, u, L, C) { const r0 = dh.apply(this, arguments); const w = u && u.who10; if (!w || (w !== 'bee' && w !== 'momo')) return r0; const r = 10, c = -12;
+    g.save(); g.lineJoin = 'round';
+    if (w === 'bee') { g.fillStyle = '#111'; g.beginPath(); g.roundRect ? g.roundRect(r - 9.5, c + 0.6, 8.5, 4.6, 1.6) : g.rect(r - 9.5, c + 0.6, 8.5, 4.6); g.fill(); g.strokeStyle = '#111'; g.lineWidth = 1.2; g.beginPath(); g.moveTo(r - 9.5, c + 2.2); g.lineTo(-2, c + 1.4); g.stroke();
+      g.fillStyle = '#e8e0d0'; g.beginPath(); g.moveTo(r - 4, c + r - 0.5); g.lineTo(r - 1, c + r + 3.5); g.lineTo(r - 6, c + r + 1); g.closePath(); g.fill(); // bouc
+      g.strokeStyle = '#3a2216'; g.lineWidth = 1; g.beginPath(); g.moveTo(1, c + 8); g.quadraticCurveTo(3, c + 4.5, 2, c + 2); g.moveTo(1, c + 8); g.quadraticCurveTo(-1.5, c + 5, -0.5, c + 2.5); g.stroke(); } // tatouage
+    else { g.fillStyle = '#f4f0e6'; g.strokeStyle = '#6a6070'; g.lineWidth = 1.1; for (const [hx, ln] of [[1.5, 9], [-3, 7.5]]) { g.beginPath(); g.moveTo(hx - 2.2, c - r + 2.5); g.quadraticCurveTo(hx - 1, c - r - ln * 0.6, hx + 1.5, c - r - ln); g.quadraticCurveTo(hx + 1.2, c - r - ln * 0.4, hx + 2.4, c - r + 2.8); g.closePath(); g.fill(); g.stroke(); }
+      g.fillStyle = '#eef0ff'; g.beginPath(); g.arc(r - 5.3, c + 3.2, 2.1, 0, TAU); g.fill(); g.fillStyle = '#b06ad8'; g.beginPath(); g.arc(r - 5.3, c - 4.5, 1.1, 0, TAU); g.fill(); }
+    g.restore(); return r0; };
 })();
 
 // v0.10.20 — Interface en anglais par défaut : menus HTML (observateur DOM) + noms de techniques / modes / ultimes (FR via l'option de langue)
