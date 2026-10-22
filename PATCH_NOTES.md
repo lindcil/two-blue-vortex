@@ -1,3 +1,6 @@
+## v0.10.29 — v0.10.29: progression - modes learned from masters; Mount Myoboku hamlet + Fukasaku
+Progression : en Voie, Z n'active plus le Manteau de Kyūbi pour tout le monde. Le Mode Ermite s'apprend auprès de Fukasaku, au nouveau hameau du Mont Myōboku (sud-est, hors des murs), puis par la méditation au terrain d'entraînement (verrouillée avant). Le Manteau est réservé aux jinchūriki.
+
 ## v0.10.28 — v0.10.28: canon pass - mode skill names, distinct clan ults, element fixes
 Canon : 20 techniques de modes affichaient un chiffre au lieu de leur nom (Tsukuyomi, Narakumi, Kage Mane…) et les fan/mark/rain sans nombre ne tiraient rien — corrigé. Ultimes de clan distincts de la technique avancée : Inuzuka Sōtōrō : Garōga, Senju Mokuton : Shinsūsenju, Yamanaka Shinten Bunshin ; Nara avancé = Kage Nui. Éléments : Amaterasu feu, Shinra Tensei yang, Hakke Kūshō Jūken.
 

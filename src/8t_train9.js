@@ -109,6 +109,6 @@
     if (A && A.draw) A.draw(g); } });
   const up = Game.update.bind(Game); Game.update = function (dt) { up(dt); if (!this.running || !this.hero) return; if (!DQ.st) DQ.load(); if (inVoie() && !this.cine) DQ.bonus(); draw();
     if (A) { if (!room() || this.hero.hp <= 0) end(false); else A.upd(dt); return; }
-    if (room() && inVoie() && Input.pressed('use')) { const h = this.hero; for (const s of ST) { const [x, y] = pos(s); if (Math.hypot(h.x - x, h.y - y) < 90) { A = Object.assign(ACT[s[0]](s, x, y), { id: s[0] }); A.b = s[3]; UI.reward(s[1], '#ffd166'); break; } } } };
+    if (room() && inVoie() && Input.pressed('use')) { const h = this.hero; for (const s of ST) { const [x, y] = pos(s); if (Math.hypot(h.x - x, h.y - y) < 90) { if (s[0] === 'sage' && window.MASTER10 && !MASTER10.has('toad')) { MASTER10.hint('toad'); break; } A = Object.assign(ACT[s[0]](s, x, y), { id: s[0] }); A.b = s[3]; UI.reward(s[1], '#ffd166'); break; } } } };
   window.TRAIN9 = { ST, ACT, start(id) { const s = ST.find((q) => q[0] === id); const [x, y] = pos(s); A = Object.assign(ACT[id](s, x, y), { id, b: s[3] }); }, get cur() { return A; }, bxp };
 })();

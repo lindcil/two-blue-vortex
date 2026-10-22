@@ -104,7 +104,7 @@ button.b.p{background:var(--gold);color:var(--ink)}button.b.p2{background:var(--
 <script>
 'use strict';
 /* ============ Noyau : réglages, sauvegarde, entrées, audio ============ */
-const VERSION = '0.10.28';
+const VERSION = '0.10.29';
 const K10 = Math.sqrt(10); // v0.9.7 : échelle des cartes extérieures (surface ×10)
 const $ = (s) => document.querySelector(s);
 const TAU = Math.PI * 2, clamp = (v, a, b) => (v < a ? a : v > b ? b : v), lerp = (a, b, t) => a + (b - a) * t;
@@ -1718,6 +1718,22 @@ const Shop = { open_: false, sel: 0, data: (() => { try { return JSON.parse(loca
       case 'tent': { g.fillStyle = 'rgba(0,0,0,.25)'; g.beginPath(); g.ellipse(p.x, p.y, 50, 12, 0, 0, TAU); g.fill(); g.fillStyle = '#c9b48a'; g.strokeStyle = INK; g.lineWidth = 3; g.beginPath(); g.moveTo(p.x - 48, p.y); g.lineTo(p.x, p.y - 70); g.lineTo(p.x + 48, p.y); g.closePath(); g.fill(); g.stroke(); g.fillStyle = '#5a4a32'; g.beginPath(); g.moveTo(p.x - 12, p.y); g.lineTo(p.x, p.y - 40); g.lineTo(p.x + 12, p.y); g.fill(); return; }
       case 'bridge': { g.fillStyle = '#8a6a44'; g.strokeStyle = INK; g.lineWidth = 3; g.fillRect(p.x - 70, p.y - 30, 140, 46); g.strokeRect(p.x - 70, p.y - 30, 140, 46); g.strokeStyle = 'rgba(11,16,32,.4)'; for (let k = -60; k < 70; k += 16) { g.beginPath(); g.moveTo(p.x + k, p.y - 30); g.lineTo(p.x + k, p.y + 16); g.stroke(); } return; }
     } return dp(g, p); };
+})();
+
+// v0.10.29 — Hameau du Mont Myōboku (sud-est, hors des murs) : quelques maisons de crapauds + statue. Avant le passage à l'échelle K (8b).
+(() => {
+  const bd = World.build.bind(World);
+  World.build = function () { const r = bd(); if (Game.titleMode) return r; const X = 3350, Y = 3900; const near = (o, R) => Math.hypot(o.x - X, o.y - (Y - 20)) < R;
+    const cut = this.props.filter((p) => p.kind !== 'house' && p.kind !== 'bridge' && near(p, 470)); this.props = this.props.filter((p) => !cut.includes(p)); this.solids = this.solids.filter((o) => !near({ x: o.x + o.w / 2, y: o.y + o.h / 2 }, 470));
+    this.pois.push({ id: 'myoboku', x: X, y: Y - 120, n: 'Mont Myōboku', ic: '蛙' });
+    for (const [dx, dy, c] of [[-260, -60, '#4f8a5a'], [-130, -150, '#5f9a4a'], [140, -150, '#4f8a5a'], [270, -60, '#6a8f3a'], [-200, 120, '#5f9a4a'], [210, 120, '#4f8a5a']]) { const w = 84, h = 62; this.solids.push({ x: X + dx - w / 2, y: Y + dy - h, w, h: h * 0.75 }); this.props.push({ kind: 'house', x: X + dx, y: Y + dy, w, h, roof: c, small10: 1 }); }
+    this.props.push({ kind: 'toad10', x: X, y: Y - 40 }); this.solids.push({ x: X - 30, y: Y - 64, w: 60, h: 30 }); return r; };
+  const dp = World.drawProp.bind(World);
+  World.drawProp = function (g, p) { if (p.kind !== 'toad10') return dp(g, p); const { x, y } = p; g.fillStyle = 'rgba(0,0,0,.25)'; g.beginPath(); g.ellipse(x, y + 2, 46, 11, 0, 0, TAU); g.fill();
+    g.strokeStyle = INK; g.lineWidth = 3; g.fillStyle = '#8a8f80'; g.fillRect(x - 34, y - 18, 68, 18); g.strokeRect(x - 34, y - 18, 68, 18);
+    g.fillStyle = '#6fa060'; g.beginPath(); g.ellipse(x, y - 52, 36, 32, 0, 0, TAU); g.fill(); g.stroke();
+    g.fillStyle = '#e8d070'; for (const s of [-1, 1]) { g.beginPath(); g.arc(x + s * 18, y - 78, 10, 0, TAU); g.fill(); g.stroke(); g.fillStyle = INK; g.fillRect(x + s * 18 - 6, y - 80, 12, 3); g.fillStyle = '#e8d070'; }
+    g.strokeStyle = '#c0503a'; g.lineWidth = 4; g.beginPath(); g.moveTo(x - 24, y - 44); g.quadraticCurveTo(x, y - 34, x + 24, y - 44); g.stroke(); };
 })();
 
 // v0.10.26 — Konoha restructuré : îlots de maisons à taille humaine le long de vraies rues, rue marchande avec étals, quartier résidentiel dense.
@@ -3550,7 +3566,7 @@ addEventListener('touchstart',()=>document.body.classList.add('touch07'),{passiv
     if (A && A.draw) A.draw(g); } });
   const up = Game.update.bind(Game); Game.update = function (dt) { up(dt); if (!this.running || !this.hero) return; if (!DQ.st) DQ.load(); if (inVoie() && !this.cine) DQ.bonus(); draw();
     if (A) { if (!room() || this.hero.hp <= 0) end(false); else A.upd(dt); return; }
-    if (room() && inVoie() && Input.pressed('use')) { const h = this.hero; for (const s of ST) { const [x, y] = pos(s); if (Math.hypot(h.x - x, h.y - y) < 90) { A = Object.assign(ACT[s[0]](s, x, y), { id: s[0] }); A.b = s[3]; UI.reward(s[1], '#ffd166'); break; } } } };
+    if (room() && inVoie() && Input.pressed('use')) { const h = this.hero; for (const s of ST) { const [x, y] = pos(s); if (Math.hypot(h.x - x, h.y - y) < 90) { if (s[0] === 'sage' && window.MASTER10 && !MASTER10.has('toad')) { MASTER10.hint('toad'); break; } A = Object.assign(ACT[s[0]](s, x, y), { id: s[0] }); A.b = s[3]; UI.reward(s[1], '#ffd166'); break; } } } };
   window.TRAIN9 = { ST, ACT, start(id) { const s = ST.find((q) => q[0] === id); const [x, y] = pos(s); A = Object.assign(ACT[id](s, x, y), { id, b: s[3] }); }, get cur() { return A; }, bxp };
 })();
 
@@ -3790,6 +3806,27 @@ addEventListener('touchstart',()=>document.body.classList.add('touch07'),{passiv
   const EL = { amaterasu: 'fire', m8u_sharingan_3: 'fire', shinra: 'yang', m8_byakugan_0_1: 'yang' };
   for (const id in EL) if (SK[id]) SK[id].el = EL[id];
   const F = window.MODE08 && MODE08.F; if (F) { const a = F.sharingan && F.sharingan.st[3]; if (a) { if (a.sk[0]) a.sk[0].el = 'fire'; if (Array.isArray(a.ult)) a.ult[2] = 'fire'; } const b = F.byakugan && F.byakugan.st[0]; if (b && b.sk[1]) b.sk[1].el = 'yang'; }
+})();
+
+// v0.10.29 — Progression : les modes s'apprennent auprès d'un maître dans une autre ville.
+// Mode Ermite : Fukasaku (Mont Myōboku) ouvre la méditation d'ermite. Z sans mode appris = rien (avant : Manteau de Kyūbi pour tout le monde).
+(() => {
+  const MS = { toad: { n: 'Fukasaku', where: 'Mont Myōboku (sud-est, hors des murs)', x: 3410, y: 3925, look: () => makeLook(2, { hair: '#9a9a8a', hs: 'bald', skin: '#7fae6a', vest: '#6a5a3a' }),
+    lines: [['Fukasaku', 'Oh ? Un petit jeune qui grimpe jusqu’au Mont Myōboku ?'], ['Fukasaku', 'Le Senjutsu, c’est l’énergie de la nature. Si tu bouges, elle t’échappe.'], ['Fukasaku', 'Retourne au terrain d’entraînement et médite. Immobile… comme une grenouille.']], reward: 'Maître trouvé : Fukasaku — méditation d’ermite ouverte' } };
+  const me = () => Voie.me, inVoie = () => Game.mode === 'voie' && me() && !Game.creative;
+  const has = (id) => !!(me() && me().masters && me().masters[id]);
+  const T = (s) => (window.LANG10 && LANG10.t ? LANG10.t(s) : s);
+  window.MASTER10 = { MS, has, hint(id) { UI.toast(T('Il te faut un maître :') + ' ' + MS[id].n + ' — ' + T(MS[id].where)); } };
+  const st = Voie.start.bind(Voie);
+  Voie.start = function (sv) { const r = st(sv); if (Game.mode !== 'voie') return r; for (const id in MS) { const M = MS[id];
+      Game.extras.push({ id: 'master_' + id, n: M.n, look: M.look(), x: K10 * M.x, y: K10 * M.y, r: 12, face: -1, vx: 0, vy: 0, anim: 0, isNpc: true, master10: id,
+        onTalk: () => { const m = me(); if (!m) return; m.masters = m.masters || {}; if (m.masters[id]) { Talk.say([[M.n, m.sage ? 'Ton chakra naturel grandit. Continue de méditer.' : 'Alors, cette méditation ? Immobile, j’ai dit !']]); return; }
+          Talk.say(M.lines, () => { m.masters[id] = 1; UI.reward(M.reward, '#7fd36a', 1); Game.save && Game.save(); }); } }); }
+    return r; };
+  // Z : seul un mode appris s'active en Voie (Ermite si méditation faite ; Manteau réservé aux jinchūriki)
+  const en = MODE08.enter.bind(MODE08);
+  MODE08.enter = function (h, key, st2) { if (key === 'Z' && inVoie() && h === Game.hero) { const m = me(); if (!(m.sage > 0) && !m.jin) { h.beastG = 0; h.beastT = 0; if (!this._z10 || Game.t - this._z10 > 3) { this._z10 = Game.t; has('toad') ? UI.toast(T('Médite au terrain d’entraînement pour éveiller le Mode Ermite')) : MASTER10.hint('toad'); } return false; } }
+    return en(h, key, st2); };
 })();
 
 // v0.9.6 — Animations de base, décrites en données (ANIM10) pour les régler facilement : combo M1, dash, Kawarimi (bûche), réactions aux coups, garde, course de Naruto.
@@ -5224,7 +5261,17 @@ let FT10 = null, FB10 = null;
 "Voyage rapide": "Quick travel",
 "Porte du village": "Village Gate",
 "Impossible en combat": "Not during combat",
-"Mokuton : Shinsūsenju": "Wood Style: Shinsūsenju"
+"Mokuton : Shinsūsenju": "Wood Style: Shinsūsenju",
+"Mont Myōboku": "Mount Myōboku",
+"Mont Myōboku (sud-est, hors des murs)": "Mount Myōboku (south-east, outside the walls)",
+"Il te faut un maître :": "You need a master:",
+"Oh ? Un petit jeune qui grimpe jusqu’au Mont Myōboku ?": "Oh? A young one climbing all the way to Mount Myōboku?",
+"Le Senjutsu, c’est l’énergie de la nature. Si tu bouges, elle t’échappe.": "Senjutsu is nature's energy. Move, and it slips away.",
+"Retourne au terrain d’entraînement et médite. Immobile… comme une grenouille.": "Go back to the training ground and meditate. Still... like a frog.",
+"Maître trouvé : Fukasaku — méditation d’ermite ouverte": "Master found: Fukasaku — sage meditation unlocked",
+"Ton chakra naturel grandit. Continue de méditer.": "Your natural chakra is growing. Keep meditating.",
+"Alors, cette méditation ? Immobile, j’ai dit !": "Well, that meditation? I said stay still!",
+"Médite au terrain d’entraînement pour éveiller le Mode Ermite": "Meditate at the training ground to awaken Sage Mode"
 }
 };
   const L = window.LANG10 = { DATA, miss: new Set(), get lang() { return (Save.set && Save.set.lang) || 'en'; }, set lang(v) { Save.set.lang = v; try { Save.saveSet && Save.saveSet(); } catch (e) {} },

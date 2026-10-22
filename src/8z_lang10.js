@@ -828,7 +828,17 @@
 "Voyage rapide": "Quick travel",
 "Porte du village": "Village Gate",
 "Impossible en combat": "Not during combat",
-"Mokuton : Shinsūsenju": "Wood Style: Shinsūsenju"
+"Mokuton : Shinsūsenju": "Wood Style: Shinsūsenju",
+"Mont Myōboku": "Mount Myōboku",
+"Mont Myōboku (sud-est, hors des murs)": "Mount Myōboku (south-east, outside the walls)",
+"Il te faut un maître :": "You need a master:",
+"Oh ? Un petit jeune qui grimpe jusqu’au Mont Myōboku ?": "Oh? A young one climbing all the way to Mount Myōboku?",
+"Le Senjutsu, c’est l’énergie de la nature. Si tu bouges, elle t’échappe.": "Senjutsu is nature's energy. Move, and it slips away.",
+"Retourne au terrain d’entraînement et médite. Immobile… comme une grenouille.": "Go back to the training ground and meditate. Still... like a frog.",
+"Maître trouvé : Fukasaku — méditation d’ermite ouverte": "Master found: Fukasaku — sage meditation unlocked",
+"Ton chakra naturel grandit. Continue de méditer.": "Your natural chakra is growing. Keep meditating.",
+"Alors, cette méditation ? Immobile, j’ai dit !": "Well, that meditation? I said stay still!",
+"Médite au terrain d’entraînement pour éveiller le Mode Ermite": "Meditate at the training ground to awaken Sage Mode"
 }
 };
   const L = window.LANG10 = { DATA, miss: new Set(), get lang() { return (Save.set && Save.set.lang) || 'en'; }, set lang(v) { Save.set.lang = v; try { Save.saveSet && Save.saveSet(); } catch (e) {} },
