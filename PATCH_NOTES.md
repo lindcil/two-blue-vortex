@@ -1,3 +1,8 @@
+## v0.10.43 — Mobile onboarding fixes; paper lanterns
+- Phones and tablets skip the keyboard-layout question and show touch controls from the start.
+- Fixed French text on touch devices: dialogue 'tap ▸', cinematic 'Tap: skip' and the touch hints for the C and Z buttons.
+- Village lanterns redrawn as red paper chōchin on wooden posts, swaying gently and glowing warm at night.
+
 ## v0.10.42 — Susanoo back view; canon Shinten Bunshin no Jutsu
 - Susanoo seen from behind (walking up): spine with vertebrae, shoulder blades and back ribs; no face, jaw or mask shown from the back.
 - Yamanaka ultimate renamed to its canon name, Shinten Bunshin no Jutsu (Mind Clone Switch): the mind splits into every nearby enemy and the controlled enemies strike each other.

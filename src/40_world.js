@@ -69,7 +69,13 @@ const World = {
         g.font = "400 15px 'TBV Ext', 'Lilita One', system-ui"; g.fillStyle = 'rgba(238,243,255,.7)'; g.textAlign = 'center'; g.fillText('Le Huitième n’a pas encore de visage.', 960 + 7 * 170, 270); break; }
       case 'wall': g.fillStyle = '#a3896a'; g.fillRect(0, WALL_Y, 1520, 40); g.fillRect(1680, WALL_Y, W - 1680, 40); g.fillStyle = '#7d6a52'; for (let x = 0; x < W; x += 40) if (x < 1520 || x > 1680) g.fillRect(x, WALL_Y, 3, 40); break;
       case 'gate': g.fillStyle = '#2e7d4a'; g.fillRect(1500, WALL_Y - 90, 20, 130); g.fillRect(1680, WALL_Y - 90, 20, 130); g.fillStyle = '#3b9a5d'; g.fillRect(1490, WALL_Y - 100, 220, 26); g.fillStyle = '#eef3ff'; g.font = '700 18px serif'; g.textAlign = 'center'; g.fillText('阿 吽', 1600, WALL_Y - 81); break;
-      case 'lantern': g.fillStyle = '#3b2a1e'; g.fillRect(p.x - 2, p.y - 46, 4, 46); g.fillStyle = night ? '#ffcf7a' : '#e8b24a'; g.fillRect(p.x - 8, p.y - 58, 16, 16); break;
+      case 'lantern': { // v0.10.43 — chōchin en papier sur poteau (au lieu d’un carré plat)
+        const x = p.x, y = p.y, sw = Math.sin((Game.t || 0) * 1.6 + x * 0.01) * 0.06; g.fillStyle = '#4a3322'; g.fillRect(x - 6, y - 4, 12, 4); g.fillStyle = '#3b2a1e'; g.fillRect(x - 2, y - 52, 4, 50); g.fillRect(x - 2, y - 52, 14, 3);
+        g.save(); g.translate(x + 10, y - 49); g.rotate(sw); g.strokeStyle = '#2a1a10'; g.lineWidth = 1; g.beginPath(); g.moveTo(0, 0); g.lineTo(0, 3); g.stroke();
+        if (night) { g.fillStyle = 'rgba(255,190,110,.25)'; g.beginPath(); g.arc(0, 13, 17, 0, Math.PI * 2); g.fill(); }
+        g.fillStyle = night ? '#ff9a4a' : '#d8452e'; g.beginPath(); g.ellipse(0, 13, 7.5, 10, 0, 0, Math.PI * 2); g.fill();
+        g.strokeStyle = night ? 'rgba(160,60,20,.55)' : 'rgba(110,20,10,.45)'; g.lineWidth = 0.8; for (const k of [-6, -2, 2, 6]) { g.beginPath(); g.moveTo(-7 * Math.sqrt(1 - (k / 10) ** 2), 13 + k); g.lineTo(7 * Math.sqrt(1 - (k / 10) ** 2), 13 + k); g.stroke(); }
+        g.fillStyle = '#1a1210'; g.fillRect(-4.5, 2, 9, 2.5); g.fillRect(-4.5, 21.5, 9, 2.5); if (night) { g.fillStyle = 'rgba(255,240,200,.55)'; g.beginPath(); g.ellipse(-2, 11, 2.2, 4, 0, 0, Math.PI * 2); g.fill(); } g.restore(); break; }
       case 'post': g.fillStyle = '#6b4f2a'; g.fillRect(p.x - 7, p.y - 60, 14, 60); g.fillStyle = '#a07a46'; g.fillRect(p.x - 12, p.y - 50, 24, 8); break;
       case 'field': break;
     } },

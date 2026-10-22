@@ -34,7 +34,7 @@
   // astuces
   const hi = Game.hint.bind(Game);
   Game.hint = function (k) { const M = { dodge: () => `<kbd>${Input.label('dodge')}</kbd> ou clic droit : dash`, charge: () => `Maintiens <kbd>${Input.label('charge')}</kbd> : chakra, puis au-delà du max : ${dojOf()[0]}`, mode: () => `Maintiens <kbd>${Input.label('mode')}</kbd> : manteau de chakra` };
-    if (M[k]) { if (this.hints[k]) return; this.hints[k] = 1; this.hintQ = { s: Input.lastDev === 'touch' ? { dodge: '⤳ : dash', charge: 'C : chakra puis éveil', mode: 'Z : manteau' }[k] : M[k](), t: 5 }; return; } return hi(k); };
+    if (M[k]) { if (this.hints[k]) return; this.hints[k] = 1; this.hintQ = { s: Input.lastDev === 'touch' ? LANG10.t({ dodge: '⤳ : dash', charge: 'Bouton C : chakra, puis éveil', mode: 'Bouton Z : mode' }[k]) : M[k](), t: 5 }; return; } return hi(k); };
   const s1 = UI.reward.bind(UI); // déclenche l’astuce chakra au premier manque de chakra
   const ft = FX.text.bind(FX); FX.text = function (x, y, s) { if (s === 'Chakra' && Game.hero && Game.running) Game.hint('charge'); return ft.apply(FX, arguments); };
   // tactile : boutons Z et C
@@ -42,7 +42,7 @@
       d.addEventListener('touchstart', (e) => { e.preventDefault(); Input.virt[a] = true; }, { passive: false }); d.addEventListener('touchend', (e) => { e.preventDefault(); Input.virt[a] = false; }, { passive: false }); }
     const dg = t.querySelector('.tb[data-a="dodge"]'); if (dg) dg.textContent = 'A'; };
   // 1er lancement : choix de la disposition
-  window.addEventListener('load', () => setTimeout(() => { if (!Save.set.layoutAsk || Input.touch) return; const o = document.createElement('div'); o.id = 'lay07';
+  window.addEventListener('load', () => setTimeout(() => { if (matchMedia('(pointer: coarse)').matches && !matchMedia('(any-pointer: fine)').matches && !Input.touch) { Input.touch = true; Input.lastDev = 'touch'; try { Touch.show(); } catch (e) {} } if (!Save.set.layoutAsk || Input.touch) return; const o = document.createElement('div'); o.id = 'lay07';
     o.innerHTML = `<div class="b2"><h2>Tes touches</h2><p>Nouveau : <kbd>Z</kbd> charge ton mode, <kbd>A</kbd> ou clic droit pour le dash, <kbd>C</kbd> charge le chakra, <kbd>1</kbd>–<kbd>4</kbd> techniques.</p><p>Comment veux-tu te déplacer ?</p><button class="b p" id="lay1">Flèches (recommandé)</button><button class="b" id="lay2">ZQSD (charge de mode sur F)</button><p style="font-size:13px;opacity:.7">Modifiable à tout moment dans Réglages › Touches.</p></div>`; document.body.appendChild(o);
     const done = (k) => { Save.set.keys = JSON.parse(JSON.stringify(KEY_PRESETS[k])); Save.set.layoutAsk = 0; Save.saveSet(); o.remove(); }; o.querySelector('#lay1').onclick = () => done('fleches'); o.querySelector('#lay2').onclick = () => done('zqsd'); }, 300));
 })();

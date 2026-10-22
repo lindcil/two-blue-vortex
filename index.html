@@ -104,7 +104,7 @@ button.b.p{background:var(--gold);color:var(--ink)}button.b.p2{background:var(--
 <script>
 'use strict';
 /* ============ Noyau : réglages, sauvegarde, entrées, audio ============ */
-const VERSION = '0.10.42';
+const VERSION = '0.10.43';
 const K10 = Math.sqrt(10); // v0.9.7 : échelle des cartes extérieures (surface ×10)
 const $ = (s) => document.querySelector(s);
 const TAU = Math.PI * 2, clamp = (v, a, b) => (v < a ? a : v > b ? b : v), lerp = (a, b, t) => a + (b - a) * t;
@@ -465,7 +465,13 @@ const World = {
         g.font = "400 15px 'TBV Ext', 'Lilita One', system-ui"; g.fillStyle = 'rgba(238,243,255,.7)'; g.textAlign = 'center'; g.fillText('Le Huitième n’a pas encore de visage.', 960 + 7 * 170, 270); break; }
       case 'wall': g.fillStyle = '#a3896a'; g.fillRect(0, WALL_Y, 1520, 40); g.fillRect(1680, WALL_Y, W - 1680, 40); g.fillStyle = '#7d6a52'; for (let x = 0; x < W; x += 40) if (x < 1520 || x > 1680) g.fillRect(x, WALL_Y, 3, 40); break;
       case 'gate': g.fillStyle = '#2e7d4a'; g.fillRect(1500, WALL_Y - 90, 20, 130); g.fillRect(1680, WALL_Y - 90, 20, 130); g.fillStyle = '#3b9a5d'; g.fillRect(1490, WALL_Y - 100, 220, 26); g.fillStyle = '#eef3ff'; g.font = '700 18px serif'; g.textAlign = 'center'; g.fillText('阿 吽', 1600, WALL_Y - 81); break;
-      case 'lantern': g.fillStyle = '#3b2a1e'; g.fillRect(p.x - 2, p.y - 46, 4, 46); g.fillStyle = night ? '#ffcf7a' : '#e8b24a'; g.fillRect(p.x - 8, p.y - 58, 16, 16); break;
+      case 'lantern': { // v0.10.43 — chōchin en papier sur poteau (au lieu d’un carré plat)
+        const x = p.x, y = p.y, sw = Math.sin((Game.t || 0) * 1.6 + x * 0.01) * 0.06; g.fillStyle = '#4a3322'; g.fillRect(x - 6, y - 4, 12, 4); g.fillStyle = '#3b2a1e'; g.fillRect(x - 2, y - 52, 4, 50); g.fillRect(x - 2, y - 52, 14, 3);
+        g.save(); g.translate(x + 10, y - 49); g.rotate(sw); g.strokeStyle = '#2a1a10'; g.lineWidth = 1; g.beginPath(); g.moveTo(0, 0); g.lineTo(0, 3); g.stroke();
+        if (night) { g.fillStyle = 'rgba(255,190,110,.25)'; g.beginPath(); g.arc(0, 13, 17, 0, Math.PI * 2); g.fill(); }
+        g.fillStyle = night ? '#ff9a4a' : '#d8452e'; g.beginPath(); g.ellipse(0, 13, 7.5, 10, 0, 0, Math.PI * 2); g.fill();
+        g.strokeStyle = night ? 'rgba(160,60,20,.55)' : 'rgba(110,20,10,.45)'; g.lineWidth = 0.8; for (const k of [-6, -2, 2, 6]) { g.beginPath(); g.moveTo(-7 * Math.sqrt(1 - (k / 10) ** 2), 13 + k); g.lineTo(7 * Math.sqrt(1 - (k / 10) ** 2), 13 + k); g.stroke(); }
+        g.fillStyle = '#1a1210'; g.fillRect(-4.5, 2, 9, 2.5); g.fillRect(-4.5, 21.5, 9, 2.5); if (night) { g.fillStyle = 'rgba(255,240,200,.55)'; g.beginPath(); g.ellipse(-2, 11, 2.2, 4, 0, 0, Math.PI * 2); g.fill(); } g.restore(); break; }
       case 'post': g.fillStyle = '#6b4f2a'; g.fillRect(p.x - 7, p.y - 60, 14, 60); g.fillStyle = '#a07a46'; g.fillRect(p.x - 12, p.y - 50, 24, 8); break;
       case 'field': break;
     } },
@@ -968,7 +974,7 @@ const Cine = { on: null,
       g.strokeStyle = INK; g.lineWidth = 6; g.stroke(); g.font = `400 ${Math.round(vh * 0.075)}px 'TBV Ext','Lilita One',sans-serif`; g.textAlign = 'right'; g.lineWidth = 10; g.strokeStyle = INK; g.strokeText(C.name, vw * 0.94, vh * 0.62); g.fillStyle = '#fff'; g.fillText(C.name, vw * 0.94, vh * 0.62); g.restore(); }
     // lignes de vitesse pendant la charge et la frappe
     if (T > 1.6) { const k = T > 2.1 ? 1 : (T - 1.6) / 0.5; g.strokeStyle = `rgba(11,16,32,${0.5 * k})`; g.lineWidth = 2.5; const cx = vw / 2, cy = vh / 2; for (let i = 0; i < 40; i++) { const an = (i / 40) * TAU + T * 0.7, r0 = Math.max(vw, vh) * (0.36 + ((i * 37) % 10) / 60); g.beginPath(); g.moveTo(cx + Math.cos(an) * r0, cy + Math.sin(an) * r0); g.lineTo(cx + Math.cos(an) * r0 * 1.8, cy + Math.sin(an) * r0 * 1.8); g.stroke(); } }
-    if (T > 0.4) { g.font = "400 14px 'Lilita One',sans-serif"; g.textAlign = 'right'; g.fillStyle = 'rgba(238,243,255,.6)'; g.fillText((Input.lastDev === 'touch' ? 'Toucher' : 'J / E') + ' : passer', vw - 18, vh - 14); } } };
+    if (T > 0.4) { g.font = "400 14px 'Lilita One',sans-serif"; g.textAlign = 'right'; g.fillStyle = 'rgba(238,243,255,.6)'; g.fillText(LANG10.t(Input.lastDev === 'touch' ? 'Toucher : passer' : 'J / E : passer'), vw - 18, vh - 14); } } };
 
 // ultimes de clan (mode Ta voie) + Sarada / Kawaki
 const CLAN_ULT = { uchiha: 'susanoo', hyuga: 'hakke64', nara: 'kagekubi', akimichi: 'chodan', yamanaka: 'shinranshin', aburame: 'mushidama', inuzuka: 'garoga', senju: 'jukai' };
@@ -997,7 +1003,7 @@ const Talk = { q: [], cb: null, on: false, t: 0, opts: null, sel: 0,
   next() { const L = this.q.shift(); const el = $('#talk'); const O = $('#talk .opts');
     if (!L) { if (this.opts && !this.showing) { this.showing = true; this.sel = 0; O.innerHTML = this.opts.map((o, i) => `<button class="opt${i ? '' : ' on'}" data-i="${i}"><kbd>${i + 1}</kbd> ${o}</button>`).join(''); O.querySelectorAll('button').forEach((b) => (b.onclick = (e) => { e.stopPropagation(); this.pick(+b.dataset.i); })); return; }
       el.style.display = 'none'; O.innerHTML = ''; document.body.classList.remove('talking'); this.on = false; this.endT = Game.t; Game.cine = false; const c = this.cb; this.cb = null; if (c) c(); return; }
-    O.innerHTML = ''; this.showing = false; el.style.display = 'block'; document.body.classList.add('talking'); el.querySelector('b').textContent = L[0]; el.querySelector('p').textContent = L[1]; el.querySelector('i').textContent = Input.lastDev === 'touch' ? 'toucher ▸' : (Input.label('use') + ' ▸'); this.t = 0; el.classList.remove('pop'); void el.offsetWidth; el.classList.add('pop'); Sfx.play('ui'); },
+    O.innerHTML = ''; this.showing = false; el.style.display = 'block'; document.body.classList.add('talking'); el.querySelector('b').textContent = L[0]; el.querySelector('p').textContent = L[1]; el.querySelector('i').textContent = Input.lastDev === 'touch' ? LANG10.t('toucher ▸') : (Input.label('use') + ' ▸'); this.t = 0; el.classList.remove('pop'); void el.offsetWidth; el.classList.add('pop'); Sfx.play('ui'); },
   pick(i) { this.endT = Game.t; const cb = this.ocb, O = $('#talk .opts'); this.opts = null; this.ocb = null; this.showing = false; O.innerHTML = ''; $('#talk').style.display = 'none'; document.body.classList.remove('talking'); this.on = false; Game.cine = false; Sfx.play('pop'); if (cb) cb(i); },
   update(dt) { if (!this.on) return; this.t += dt; if (this.showing) { const n = this.opts.length; for (let i = 0; i < n; i++) if (Input.hit.has('Digit' + (i + 1)) || Input.hit.has('Numpad' + (i + 1))) return this.pick(i);
       const mv = (Input.pressed('down') || Input.pressed('right') ? 1 : 0) - (Input.pressed('up') || Input.pressed('left') ? 1 : 0); if (mv) { this.sel = (this.sel + mv + n) % n; $('#talk .opts').querySelectorAll('button').forEach((b, i) => b.classList.toggle('on', i === this.sel)); Sfx.play('ui'); }
@@ -1663,7 +1669,7 @@ const Shop = { open_: false, sel: 0, data: (() => { try { return JSON.parse(loca
   // astuces
   const hi = Game.hint.bind(Game);
   Game.hint = function (k) { const M = { dodge: () => `<kbd>${Input.label('dodge')}</kbd> ou clic droit : dash`, charge: () => `Maintiens <kbd>${Input.label('charge')}</kbd> : chakra, puis au-delà du max : ${dojOf()[0]}`, mode: () => `Maintiens <kbd>${Input.label('mode')}</kbd> : manteau de chakra` };
-    if (M[k]) { if (this.hints[k]) return; this.hints[k] = 1; this.hintQ = { s: Input.lastDev === 'touch' ? { dodge: '⤳ : dash', charge: 'C : chakra puis éveil', mode: 'Z : manteau' }[k] : M[k](), t: 5 }; return; } return hi(k); };
+    if (M[k]) { if (this.hints[k]) return; this.hints[k] = 1; this.hintQ = { s: Input.lastDev === 'touch' ? LANG10.t({ dodge: '⤳ : dash', charge: 'Bouton C : chakra, puis éveil', mode: 'Bouton Z : mode' }[k]) : M[k](), t: 5 }; return; } return hi(k); };
   const s1 = UI.reward.bind(UI); // déclenche l’astuce chakra au premier manque de chakra
   const ft = FX.text.bind(FX); FX.text = function (x, y, s) { if (s === 'Chakra' && Game.hero && Game.running) Game.hint('charge'); return ft.apply(FX, arguments); };
   // tactile : boutons Z et C
@@ -1671,7 +1677,7 @@ const Shop = { open_: false, sel: 0, data: (() => { try { return JSON.parse(loca
       d.addEventListener('touchstart', (e) => { e.preventDefault(); Input.virt[a] = true; }, { passive: false }); d.addEventListener('touchend', (e) => { e.preventDefault(); Input.virt[a] = false; }, { passive: false }); }
     const dg = t.querySelector('.tb[data-a="dodge"]'); if (dg) dg.textContent = 'A'; };
   // 1er lancement : choix de la disposition
-  window.addEventListener('load', () => setTimeout(() => { if (!Save.set.layoutAsk || Input.touch) return; const o = document.createElement('div'); o.id = 'lay07';
+  window.addEventListener('load', () => setTimeout(() => { if (matchMedia('(pointer: coarse)').matches && !matchMedia('(any-pointer: fine)').matches && !Input.touch) { Input.touch = true; Input.lastDev = 'touch'; try { Touch.show(); } catch (e) {} } if (!Save.set.layoutAsk || Input.touch) return; const o = document.createElement('div'); o.id = 'lay07';
     o.innerHTML = `<div class="b2"><h2>Tes touches</h2><p>Nouveau : <kbd>Z</kbd> charge ton mode, <kbd>A</kbd> ou clic droit pour le dash, <kbd>C</kbd> charge le chakra, <kbd>1</kbd>–<kbd>4</kbd> techniques.</p><p>Comment veux-tu te déplacer ?</p><button class="b p" id="lay1">Flèches (recommandé)</button><button class="b" id="lay2">ZQSD (charge de mode sur F)</button><p style="font-size:13px;opacity:.7">Modifiable à tout moment dans Réglages › Touches.</p></div>`; document.body.appendChild(o);
     const done = (k) => { Save.set.keys = JSON.parse(JSON.stringify(KEY_PRESETS[k])); Save.set.layoutAsk = 0; Save.saveSet(); o.remove(); }; o.querySelector('#lay1').onclick = () => done('fleches'); o.querySelector('#lay2').onclick = () => done('zqsd'); }, 300));
 })();
@@ -5562,7 +5568,12 @@ let FT10 = null, FB10 = null;
 "Sabaku Sōsō": "Sabaku Sōsō",
 "Rock Lee": "Rock Lee",
 "Kage Bunshin": "Kage Bunshin",
-"Shinten Bunshin no Jutsu": "Mind Clone Switch Technique"
+"Shinten Bunshin no Jutsu": "Mind Clone Switch Technique",
+"Toucher : passer": "Tap: skip",
+"J / E : passer": "J / E: skip",
+"toucher ▸": "tap ▸",
+"Bouton C : chakra, puis éveil": "C button: chakra, then awaken",
+"Bouton Z : mode": "Z button: mode"
 }
 };
   const L = window.LANG10 = { DATA, miss: new Set(), get lang() { return (Save.set && Save.set.lang) || 'en'; }, set lang(v) { Save.set.lang = v; try { Save.saveSet && Save.saveSet(); } catch (e) {} },

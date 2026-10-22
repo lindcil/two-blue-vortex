@@ -1040,7 +1040,12 @@
 "Sabaku Sōsō": "Sabaku Sōsō",
 "Rock Lee": "Rock Lee",
 "Kage Bunshin": "Kage Bunshin",
-"Shinten Bunshin no Jutsu": "Mind Clone Switch Technique"
+"Shinten Bunshin no Jutsu": "Mind Clone Switch Technique",
+"Toucher : passer": "Tap: skip",
+"J / E : passer": "J / E: skip",
+"toucher ▸": "tap ▸",
+"Bouton C : chakra, puis éveil": "C button: chakra, then awaken",
+"Bouton Z : mode": "Z button: mode"
 }
 };
   const L = window.LANG10 = { DATA, miss: new Set(), get lang() { return (Save.set && Save.set.lang) || 'en'; }, set lang(v) { Save.set.lang = v; try { Save.saveSet && Save.saveSet(); } catch (e) {} },

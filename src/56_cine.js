@@ -47,7 +47,7 @@ const Cine = { on: null,
       g.strokeStyle = INK; g.lineWidth = 6; g.stroke(); g.font = `400 ${Math.round(vh * 0.075)}px 'TBV Ext','Lilita One',sans-serif`; g.textAlign = 'right'; g.lineWidth = 10; g.strokeStyle = INK; g.strokeText(C.name, vw * 0.94, vh * 0.62); g.fillStyle = '#fff'; g.fillText(C.name, vw * 0.94, vh * 0.62); g.restore(); }
     // lignes de vitesse pendant la charge et la frappe
     if (T > 1.6) { const k = T > 2.1 ? 1 : (T - 1.6) / 0.5; g.strokeStyle = `rgba(11,16,32,${0.5 * k})`; g.lineWidth = 2.5; const cx = vw / 2, cy = vh / 2; for (let i = 0; i < 40; i++) { const an = (i / 40) * TAU + T * 0.7, r0 = Math.max(vw, vh) * (0.36 + ((i * 37) % 10) / 60); g.beginPath(); g.moveTo(cx + Math.cos(an) * r0, cy + Math.sin(an) * r0); g.lineTo(cx + Math.cos(an) * r0 * 1.8, cy + Math.sin(an) * r0 * 1.8); g.stroke(); } }
-    if (T > 0.4) { g.font = "400 14px 'Lilita One',sans-serif"; g.textAlign = 'right'; g.fillStyle = 'rgba(238,243,255,.6)'; g.fillText((Input.lastDev === 'touch' ? 'Toucher' : 'J / E') + ' : passer', vw - 18, vh - 14); } } };
+    if (T > 0.4) { g.font = "400 14px 'Lilita One',sans-serif"; g.textAlign = 'right'; g.fillStyle = 'rgba(238,243,255,.6)'; g.fillText(LANG10.t(Input.lastDev === 'touch' ? 'Toucher : passer' : 'J / E : passer'), vw - 18, vh - 14); } } };
 
 // ultimes de clan (mode Ta voie) + Sarada / Kawaki
 const CLAN_ULT = { uchiha: 'susanoo', hyuga: 'hakke64', nara: 'kagekubi', akimichi: 'chodan', yamanaka: 'shinranshin', aburame: 'mushidama', inuzuka: 'garoga', senju: 'jukai' };
