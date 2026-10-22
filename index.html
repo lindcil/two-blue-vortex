@@ -104,7 +104,7 @@ button.b.p{background:var(--gold);color:var(--ink)}button.b.p2{background:var(--
 <script>
 'use strict';
 /* ============ Noyau : réglages, sauvegarde, entrées, audio ============ */
-const VERSION = '0.10.52';
+const VERSION = '0.10.53';
 const K10 = Math.sqrt(10); // v0.9.7 : échelle des cartes extérieures (surface ×10)
 const $ = (s) => document.querySelector(s);
 const TAU = Math.PI * 2, clamp = (v, a, b) => (v < a ? a : v > b ? b : v), lerp = (a, b, t) => a + (b - a) * t;
@@ -5981,6 +5981,15 @@ let FT10 = null, FB10 = null;
   Voie.spawnRival = function (x, y, lvl) { const r = sr(x, y, lvl); if (this.step === 'a4' || this.pending === 'a4') { r.hp *= 0.5; r.maxHp = r.hp; r.grad10 = 1; } return r; };
   const hu = hurt;
   hurt = function (t, d, s) { if (s && s.grad10 && t && t.isHero) d *= 0.35; return hu.call(this, t, d, ...Array.prototype.slice.call(arguments, 2)); };
+})();
+// v0.10.53 — Filet de sécurité « trois coups » (a6) : vu une fois au test réel, le sensei disparaissait de la liste active à 2/3 (PV NaN ou retiré) → partie bloquée. S’il n’y a plus de sensei valide, on le réinstalle (la progression 2/3 est conservée).
+(() => {
+  const up = Voie.update.bind(Voie);
+  Voie.update = function (dt) { up(dt); if (this.step !== 'a6' || Talk.on || this.lesson >= 3) return; this.se10T = (this.se10T || 0) - dt; if (this.se10T > 0) return; this.se10T = 1;
+    const se = World.foes_.find((f) => f.tag === 'sensei' && !f.gone);
+    if (se && Number.isFinite(se.hp) && se.hp > 0) return;
+    if (se) { se.hp = se.maxHp = 1e9; return; }
+    const T = this.team, n = spawnFoe('sensei', K10 * 2250, K10 * 860, { tag: 'sensei', look: T.sensei.look, n: T.sensei.name, leash: [K10 * 2250, K10 * 860, 300] }); n.aggro = true; n.onTag = () => this.tag(n); };
 })();
 
 </script></body></html>

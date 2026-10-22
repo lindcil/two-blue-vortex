@@ -1,3 +1,6 @@
+## v0.10.53 — Sensei bell test can no longer softlock
+Academy three-hits test: if the sensei ever vanishes from the field before the third hit, he is put back (progress kept), so the test cannot get stuck.
+
 ## v0.10.52 — Graduation duel winnable by button-mashing
 Graduation rival: 50% HP and 35% damage. A brand-new player who only attacks now wins narrowly (~30 s to win vs ~33 s to fall); dodging makes it comfortable.
 

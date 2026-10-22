@@ -6,3 +6,12 @@
   const hu = hurt;
   hurt = function (t, d, s) { if (s && s.grad10 && t && t.isHero) d *= 0.35; return hu.call(this, t, d, ...Array.prototype.slice.call(arguments, 2)); };
 })();
+// v0.10.53 — Filet de sécurité « trois coups » (a6) : vu une fois au test réel, le sensei disparaissait de la liste active à 2/3 (PV NaN ou retiré) → partie bloquée. S’il n’y a plus de sensei valide, on le réinstalle (la progression 2/3 est conservée).
+(() => {
+  const up = Voie.update.bind(Voie);
+  Voie.update = function (dt) { up(dt); if (this.step !== 'a6' || Talk.on || this.lesson >= 3) return; this.se10T = (this.se10T || 0) - dt; if (this.se10T > 0) return; this.se10T = 1;
+    const se = World.foes_.find((f) => f.tag === 'sensei' && !f.gone);
+    if (se && Number.isFinite(se.hp) && se.hp > 0) return;
+    if (se) { se.hp = se.maxHp = 1e9; return; }
+    const T = this.team, n = spawnFoe('sensei', K10 * 2250, K10 * 860, { tag: 'sensei', look: T.sensei.look, n: T.sensei.name, leash: [K10 * 2250, K10 * 860, 300] }); n.aggro = true; n.onTag = () => this.tag(n); };
+})();
