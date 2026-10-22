@@ -1,3 +1,6 @@
+## v0.10.51 — Graduation rival fight fairer for new players
+Academy graduation duel: the rival had 608 HP and hit for 17-31 on a 120 HP student, so new players lost in ~7 hits. The graduation rival now has 65% HP and deals half damage; later rival fights are unchanged.
+
 ## v0.10.50 — Point-blank projectiles hit; academy lesson 3 fixed
 Projectiles fired point-blank no longer pass through an enemy pressed against you (lesson 3 of the Academy could stall with a dummy at contact). Release check now compares FPS side by side against v0.10.35 (3 alternating runs, medians).
 
