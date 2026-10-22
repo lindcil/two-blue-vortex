@@ -5,7 +5,7 @@ await p.goto('file:///workspace/two-blue-vortex/index.html');await p.waitForTime
 await p.evaluate(()=>{Game.startVoie({name:'Aoi',clan:'uchiha',look:makeLook(9)});});await p.waitForTimeout(800);
 const a=await p.evaluate(`(()=>{const c=document.createElement('canvas');c.width=8*170;c.height=2*300;const g=c.getContext('2d');g.fillStyle='#1b2238';g.fillRect(0,0,c.width,c.height);const h=Game.hero;
  for(let k=0;k<8;k++){const hd=k*Math.PI/4;h.hd=hd;const face=Math.cos(hd)<-0.01?-1:1;
-  g.save();g.translate(k*170+85,270);g.scale(0.5,0.5);try{MODE08.drawSusanoo(g,0,0,3,'#7a4ad8',{t:1,build:1,sw:0,face})}catch(e){console.error(e.message)}g.restore();
+  g.save();g.translate(k*170+85,270);g.scale(0.5,0.5);try{MODE08.drawSusanoo(g,0,0,${process.env.LV||3},'#7a4ad8',{t:1,build:1,sw:0,face})}catch(e){console.error(e.message)}g.restore();
   g.save();g.translate(k*170+85,570);g.scale(0.5,0.5);try{MODE08.drawBeast(g,0,0,'#ff8a2a',{t:1,build:1,face})}catch(e){console.error(e.message)}g.restore();
   g.fillStyle='#cfd8ee';g.font='14px sans-serif';g.fillText(['→','↘','↓','↙','←','↖','↑','↗'][k],k*170+8,18)}
  return c.toDataURL()})()`);

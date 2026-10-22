@@ -104,7 +104,7 @@ button.b.p{background:var(--gold);color:var(--ink)}button.b.p2{background:var(--
 <script>
 'use strict';
 /* ============ Noyau : réglages, sauvegarde, entrées, audio ============ */
-const VERSION = '0.10.18';
+const VERSION = '0.10.19';
 const K10 = Math.sqrt(10); // v0.9.7 : échelle des cartes extérieures (surface ×10)
 const $ = (s) => document.querySelector(s);
 const TAU = Math.PI * 2, clamp = (v, a, b) => (v < a ? a : v > b ? b : v), lerp = (a, b, t) => a + (b - a) * t;
@@ -3972,13 +3972,13 @@ addEventListener('touchstart',()=>document.body.classList.add('touch07'),{passiv
     const T0 = Game.t, step = dur / n, sl = lookSleeve(u);
     FX.custom({ x: u.x, y: u.y, life: dur + 0.35, draw: (g, p, q) => { if (u.hp <= 0) return; const t = Game.t - T0, i = Math.min(n - 1, Math.floor(t / step)), lt = t - i * step, last = i === n - 1;
       const pop = lt < 0.08 ? 1 + 0.35 * (1 - lt / 0.08) : 1, sq = lt < 0.08 ? 1 - 0.18 * (1 - lt / 0.08) : 1; const end = last ? Math.max(0, 1 - (t - (n - 1) * step) / (step + 0.35)) : 1;
-      const x = u.x + (u.face || 1) * 4, y = u.y - 116 * (u.size || 1); g.save(); g.globalAlpha = Math.min(1, end * 3); g.translate(x, y); g.scale(pop * 1.55, sq * pop * 1.55); drawSeal(g, 0, 0, seq[i], 1, c, 0.6 + 0.4 * (lt < 0.1 ? 1 : 0.5), sl); g.restore(); } });
+      const x = u.x + (u.face || 1) * 16 * (u.size || 1), y = u.y - 64 * (u.size || 1); g.save(); g.globalAlpha = Math.min(1, end * 3); g.translate(x, y); g.scale(pop * 1.1 * (u.size || 1), sq * pop * 1.1 * (u.size || 1)); drawSeal(g, 0, 0, seq[i], 1, c, 0.6 + 0.4 * (lt < 0.1 ? 1 : 0.5), sl); g.restore(); } });
     seq.forEach((s, i) => Game.later(i * step, () => { if (u.hp <= 0) return; const last = i === n - 1;
-      for (let k = 0; k < 5; k++) FX.add({ k: 'spark', x: u.x, y: u.y - 116 * (u.size || 1), vx: rnd(-140, 140), vy: rnd(-160, 20), c, life: rnd(0.15, 0.3), s: rnd(2, 3) });
+      for (let k = 0; k < 5; k++) FX.add({ k: 'spark', x: u.x + (u.face || 1) * 16, y: u.y - 64 * (u.size || 1), vx: rnd(-140, 140), vy: rnd(-160, 20), c, life: rnd(0.15, 0.3), s: rnd(2, 3) });
       Sfx.tone && Sfx.tone(520 + i * 120, 760 + i * 120, 0.07, 'triangle', 0.05);
       if (last) { FX.shock(u.x, u.y - 50, c, 70, 0.35, 6); FX.glow(u.x, u.y - 50, c, 60, 0.3); u.sq = 0.2; } })); };
   // les petites mains au-dessus de la tête (ancien rendu) sont remplacées par le même dessin
-  drawHands = function (g, x, y, sign, t) { const a = Math.min(1, (0.55 - t) * 5); if (a <= 0) return; g.save(); g.globalAlpha = a; const pop = 1 + 0.25 * Math.max(0, 1 - t * 8); g.translate(x, y - 8); g.scale(1.3 * pop, 1.3 * pop); drawSeal(g, 0, 0, sign, 1, '#8fd3ff', 0.5); g.restore(); };
+  drawHands = function (g, x, y, sign, t) { const a = Math.min(1, (0.55 - t) * 5); if (a <= 0) return; g.save(); g.globalAlpha = a; const pop = 1 + 0.25 * Math.max(0, 1 - t * 8); g.translate(x, y - 8); g.scale(1.0 * pop, 1.0 * pop); drawSeal(g, 0, 0, sign, 1, '#8fd3ff', 0.5); g.restore(); };
   // Kage Bunshin : croix
   const cs = castSkill; castSkill = function (u, S, id, isHero) { const r = cs(u, S, id, isHero); if (id === 'bunshin' && u.sign) u.sign.k = 'bunshin'; return r; };
 })();
@@ -4266,7 +4266,17 @@ addEventListener('touchstart',()=>document.body.classList.add('touch07'),{passiv
   const wrap = (name) => { const f = MODE08[name]; if (!f) return; MODE08[name] = function (g, x, y, lvl, c, o) { const h = Game.hero, a = h && h.hd != null ? h.hd : h && h.aimA;
       if (a == null || !isFinite(a)) return f.apply(this, arguments); const vz = -Math.sin(a), az = Math.abs(vz); if (az < 0.2) return f.apply(this, arguments);
       const k = 1 - 0.3 * Math.sin(Math.PI * 0.5 * Math.min(1, az)), back = vz > 0.45 ? Math.min(1, (vz - 0.45) / 0.3) : 0;
-      g.save(); g.translate(x, y); g.scale(k, 1 - 0.06 * az); if (back) g.globalAlpha *= 1 - 0.3 * back; g.translate(-x, -y); const r = f.apply(this, arguments); g.restore(); return r; }; };
+      g.save(); g.translate(x, y); g.scale(k, 1 - 0.06 * az); if (back) g.globalAlpha *= 1 - 0.3 * back; g.translate(-x, -y); const r = f.apply(this, arguments);
+      if (back > 0.3 && name === 'drawSusanoo') backSus(g, x, y, lvl, c, back, o); g.restore(); return r; }; };
+  // Susanoo vu de dos : le visage est recouvert par l'arrière du crâne (casque/flammes), colonne vertébrale lumineuse
+  const SIL = [null, [0, -120, 92, 96], [10, -150, 120, 140], [0, -170, 150, 170], [0, -180, 175, 200], [0, -185, 190, 215]];
+  function backSus(g, x, y, lvl, c, a, o) { const L = Math.max(1, Math.min(5, lvl | 0)), S = SIL[L], K = lvl >= 5 ? 1.5 : 1 + (lvl - 1) * 0.05, f = (o && o.face) || 1;
+    const hy = S[1] - S[3] + 112 * S[3] / 170, hr = 40 * S[2] / 150, b = (o && o.build != null) ? o.build : 1; if (b < 0.6) return;
+    g.save(); g.translate(x, y); g.scale(K * f, K); g.globalAlpha *= a * Math.min(1, (b - 0.6) * 2.5);
+    g.fillStyle = shade(shade(shade(c))); g.strokeStyle = c; g.lineWidth = 4; g.beginPath(); g.ellipse(S[0], hy, hr, hr * 1.08, 0, 0, TAU); g.fill(); g.stroke();
+    g.lineWidth = 3; for (let i = -2; i <= 2; i++) { g.beginPath(); g.moveTo(S[0] + i * hr * 0.3, hy - hr * 0.6); g.quadraticCurveTo(S[0] + i * hr * 0.45, hy - hr * 1.5, S[0] + i * hr * 0.2, hy - hr * 1.9); g.stroke(); }
+    g.globalCompositeOperation = 'lighter'; g.lineWidth = 5; g.strokeStyle = c; g.beginPath(); g.moveTo(S[0], hy + hr * 1.1); g.lineTo(S[0], S[1] + S[3] * 0.1); g.stroke();
+    for (let i = 1; i <= 4; i++) { const yy = hy + hr * 1.1 + i * (S[1] + S[3] * 0.1 - hy - hr * 1.1) / 5; g.beginPath(); g.moveTo(S[0] - hr * 0.5, yy); g.lineTo(S[0] + hr * 0.5, yy); g.stroke(); } g.restore(); }
   wrap('drawSusanoo'); wrap('drawBeast');
 })();
 
@@ -4283,6 +4293,11 @@ addEventListener('touchstart',()=>document.body.classList.add('touch07'),{passiv
   const st = document.createElement('style'); st.textContent = 'body.cine10 #obj, body.cine10 #dq9, body.cine10 #trk10 { opacity: 0 !important; transition: opacity .2s }'; document.head.appendChild(st);
   setInterval(() => { document.body.classList.toggle('cine10', !!(typeof Cine !== 'undefined' && Cine.on)); }, 100);
 })();
+// v0.10.19 — détente de l'ultime : image d'impact sombre (sans flash blanc), secousse, double onde de choc, poussière, écrasement/étirement du héros
+(() => { const fu = fireUlt; fireUlt = function (u, id) { const r = fu.apply(this, arguments);
+  try { if (u && u.isHero) { const S = SK[id] || {}, c = elc(S.el || 'wind'); Game.impact(u.x, u.y - 40, 0.14); Cam.shake(0.45); Cam.z *= 1.05;
+    FX.shock(u.x, u.y - 30, c, 190, 0.45, 12); Game.later(0.08, () => FX.shock(u.x, u.y - 30, '#ffffff', 280, 0.55, 5)); FX.dust && FX.dust(u.x, u.y, 14); u.sq = -0.38; Game.later(0.12, () => { u.sq = 0.22; }); } } catch (e) {}
+  return r; }; })();
 
 // v0.10.5 — Langues : dialogues, objectifs et messages passent par LANG10.t (clé = texte source FR). Données : lang/*.tsv → python3 lang/gen.py
 (() => {

@@ -45,13 +45,13 @@
     const T0 = Game.t, step = dur / n, sl = lookSleeve(u);
     FX.custom({ x: u.x, y: u.y, life: dur + 0.35, draw: (g, p, q) => { if (u.hp <= 0) return; const t = Game.t - T0, i = Math.min(n - 1, Math.floor(t / step)), lt = t - i * step, last = i === n - 1;
       const pop = lt < 0.08 ? 1 + 0.35 * (1 - lt / 0.08) : 1, sq = lt < 0.08 ? 1 - 0.18 * (1 - lt / 0.08) : 1; const end = last ? Math.max(0, 1 - (t - (n - 1) * step) / (step + 0.35)) : 1;
-      const x = u.x + (u.face || 1) * 4, y = u.y - 116 * (u.size || 1); g.save(); g.globalAlpha = Math.min(1, end * 3); g.translate(x, y); g.scale(pop * 1.55, sq * pop * 1.55); drawSeal(g, 0, 0, seq[i], 1, c, 0.6 + 0.4 * (lt < 0.1 ? 1 : 0.5), sl); g.restore(); } });
+      const x = u.x + (u.face || 1) * 16 * (u.size || 1), y = u.y - 64 * (u.size || 1); g.save(); g.globalAlpha = Math.min(1, end * 3); g.translate(x, y); g.scale(pop * 1.1 * (u.size || 1), sq * pop * 1.1 * (u.size || 1)); drawSeal(g, 0, 0, seq[i], 1, c, 0.6 + 0.4 * (lt < 0.1 ? 1 : 0.5), sl); g.restore(); } });
     seq.forEach((s, i) => Game.later(i * step, () => { if (u.hp <= 0) return; const last = i === n - 1;
-      for (let k = 0; k < 5; k++) FX.add({ k: 'spark', x: u.x, y: u.y - 116 * (u.size || 1), vx: rnd(-140, 140), vy: rnd(-160, 20), c, life: rnd(0.15, 0.3), s: rnd(2, 3) });
+      for (let k = 0; k < 5; k++) FX.add({ k: 'spark', x: u.x + (u.face || 1) * 16, y: u.y - 64 * (u.size || 1), vx: rnd(-140, 140), vy: rnd(-160, 20), c, life: rnd(0.15, 0.3), s: rnd(2, 3) });
       Sfx.tone && Sfx.tone(520 + i * 120, 760 + i * 120, 0.07, 'triangle', 0.05);
       if (last) { FX.shock(u.x, u.y - 50, c, 70, 0.35, 6); FX.glow(u.x, u.y - 50, c, 60, 0.3); u.sq = 0.2; } })); };
   // les petites mains au-dessus de la tête (ancien rendu) sont remplacées par le même dessin
-  drawHands = function (g, x, y, sign, t) { const a = Math.min(1, (0.55 - t) * 5); if (a <= 0) return; g.save(); g.globalAlpha = a; const pop = 1 + 0.25 * Math.max(0, 1 - t * 8); g.translate(x, y - 8); g.scale(1.3 * pop, 1.3 * pop); drawSeal(g, 0, 0, sign, 1, '#8fd3ff', 0.5); g.restore(); };
+  drawHands = function (g, x, y, sign, t) { const a = Math.min(1, (0.55 - t) * 5); if (a <= 0) return; g.save(); g.globalAlpha = a; const pop = 1 + 0.25 * Math.max(0, 1 - t * 8); g.translate(x, y - 8); g.scale(1.0 * pop, 1.0 * pop); drawSeal(g, 0, 0, sign, 1, '#8fd3ff', 0.5); g.restore(); };
   // Kage Bunshin : croix
   const cs = castSkill; castSkill = function (u, S, id, isHero) { const r = cs(u, S, id, isHero); if (id === 'bunshin' && u.sign) u.sign.k = 'bunshin'; return r; };
 })();

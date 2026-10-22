@@ -1,3 +1,8 @@
+## v0.10.19 — Détente d’ultime, sceaux, Susanoo de dos
+- Détente de l’ultime : image d’impact sombre (pas de flash), secousse, double onde de choc, poussière, écrasement/étirement.
+- Sceaux à hauteur de poitrine, à l’échelle du héros.
+- Susanoo vu de dos : arrière du crâne et colonne au lieu du visage.
+
 ## v0.10.18 — Mise en scène des ultimes
 - Arbres, torii et tentes devant le héros s’estompent (fort pendant l’ultime) : le héros reste visible.
 - HUD de quête masqué pendant les cinématiques (bandeau propre).

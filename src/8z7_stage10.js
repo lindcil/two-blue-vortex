@@ -11,3 +11,8 @@
   const st = document.createElement('style'); st.textContent = 'body.cine10 #obj, body.cine10 #dq9, body.cine10 #trk10 { opacity: 0 !important; transition: opacity .2s }'; document.head.appendChild(st);
   setInterval(() => { document.body.classList.toggle('cine10', !!(typeof Cine !== 'undefined' && Cine.on)); }, 100);
 })();
+// v0.10.19 — détente de l'ultime : image d'impact sombre (sans flash blanc), secousse, double onde de choc, poussière, écrasement/étirement du héros
+(() => { const fu = fireUlt; fireUlt = function (u, id) { const r = fu.apply(this, arguments);
+  try { if (u && u.isHero) { const S = SK[id] || {}, c = elc(S.el || 'wind'); Game.impact(u.x, u.y - 40, 0.14); Cam.shake(0.45); Cam.z *= 1.05;
+    FX.shock(u.x, u.y - 30, c, 190, 0.45, 12); Game.later(0.08, () => FX.shock(u.x, u.y - 30, '#ffffff', 280, 0.55, 5)); FX.dust && FX.dust(u.x, u.y, 14); u.sq = -0.38; Game.later(0.12, () => { u.sq = 0.22; }); } } catch (e) {}
+  return r; }; })();
