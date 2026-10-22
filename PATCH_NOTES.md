@@ -1,3 +1,8 @@
+## v0.10.18 — Mise en scène des ultimes
+- Arbres, torii et tentes devant le héros s’estompent (fort pendant l’ultime) : le héros reste visible.
+- HUD de quête masqué pendant les cinématiques (bandeau propre).
+- Captures : screens/v10/ult/avant-* et apres-*.
+
 ## v0.10.17 — Torsion du buste, traduction
 - Torsion : le buste s’incline vers la direction en diagonale (cisaillement léger), lecture 3/4 plus naturelle.
 - Ura Renge traduit (Hidden Lotus) ; plus aucun texte manquant en anglais.

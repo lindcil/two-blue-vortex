@@ -104,7 +104,7 @@ button.b.p{background:var(--gold);color:var(--ink)}button.b.p2{background:var(--
 <script>
 'use strict';
 /* ============ Noyau : réglages, sauvegarde, entrées, audio ============ */
-const VERSION = '0.10.17';
+const VERSION = '0.10.18';
 const K10 = Math.sqrt(10); // v0.9.7 : échelle des cartes extérieures (surface ×10)
 const $ = (s) => document.querySelector(s);
 const TAU = Math.PI * 2, clamp = (v, a, b) => (v < a ? a : v > b ? b : v), lerp = (a, b, t) => a + (b - a) * t;
@@ -4268,6 +4268,20 @@ addEventListener('touchstart',()=>document.body.classList.add('touch07'),{passiv
       const k = 1 - 0.3 * Math.sin(Math.PI * 0.5 * Math.min(1, az)), back = vz > 0.45 ? Math.min(1, (vz - 0.45) / 0.3) : 0;
       g.save(); g.translate(x, y); g.scale(k, 1 - 0.06 * az); if (back) g.globalAlpha *= 1 - 0.3 * back; g.translate(-x, -y); const r = f.apply(this, arguments); g.restore(); return r; }; };
   wrap('drawSusanoo'); wrap('drawBeast');
+})();
+
+// v0.10.18 — mise en scène : les arbres/maisons devant le héros s'estompent (toujours, et surtout pendant l'ultime) ; HUD de quête masqué pendant les cinématiques.
+(() => {
+  const SZ = { tree: [48, 125], house: [0, 0], torii: [70, 120], tent: [50, 60] };
+  const dp = World.drawProp.bind(World);
+  World.drawProp = function (g, p) { const h = Game.hero, z = SZ[p.kind]; if (!h || !z || !z[0]) return dp(g, p);
+    const K = this.k10 && p.lx !== undefined ? K10 : 1, s = p.s || 1, w = z[0] * s * K, ht = z[1] * s * K;
+    const behind = h.y < p.y - 4 && h.y > p.y - ht - 30 * K && Math.abs(h.x - p.x) < w + 14 * K;
+    const tgt = behind ? (Game.cine || (h.act && h.act.k === 'ult') ? 0.22 : 0.42) : 1; p._fa = p._fa == null ? 1 : p._fa + (tgt - p._fa) * 0.18;
+    if (p._fa > 0.98) return dp(g, p); g.save(); g.globalAlpha *= p._fa; try { dp(g, p); } finally { g.restore(); } };
+  // HUD de quête masqué pendant les cinématiques (la bande noire reste propre)
+  const st = document.createElement('style'); st.textContent = 'body.cine10 #obj, body.cine10 #dq9, body.cine10 #trk10 { opacity: 0 !important; transition: opacity .2s }'; document.head.appendChild(st);
+  setInterval(() => { document.body.classList.toggle('cine10', !!(typeof Cine !== 'undefined' && Cine.on)); }, 100);
 })();
 
 // v0.10.5 — Langues : dialogues, objectifs et messages passent par LANG10.t (clé = texte source FR). Données : lang/*.tsv → python3 lang/gen.py
