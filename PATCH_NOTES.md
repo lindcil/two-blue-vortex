@@ -1,3 +1,7 @@
+## v0.10.47 — Minimalist boss HP bar
+- New boss bar: letter-spaced name, thin bar with a white damage trail, notches at 25/50/75 %, discreet percentage, gentle pulse below 25 %, slide-in on appear.
+- Fixed: bosses defined only by their type (e.g. Code in the prologue) showed no bar at all.
+
 ## v0.10.46 — Onboarding: compass to enemies, clearer Code objective
 - The objective compass now points to the nearest active enemy when the objective has no fixed place (e.g. 'Drive back the Claw Grimes'). New players no longer wander looking for the fight.
 - Prologue objective 'Code.' now reads 'Code bursts out of a Claw Mark. Defeat him.'

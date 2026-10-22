@@ -1,0 +1,6 @@
+const {chromium}=require('playwright-core');
+(async()=>{const b=await chromium.launch({executablePath:'/usr/bin/google-chrome',args:['--no-sandbox']});const errs=[];const p=await b.newPage({viewport:{width:1280,height:720}});p.on('pageerror',e=>errs.push(e.message));
+await p.goto('file:///workspace/two-blue-vortex/index.html');await p.waitForTimeout(900);if(await p.$('#lay07'))await p.click('#lay1');
+await p.evaluate(()=>{Game.startVoie({name:'Aoi',clan:'uchiha',look:makeLook(9)});setInterval(()=>{if(Talk.on&&Talk.t>0.3){if(Talk.showing)Talk.pick(0);else Talk.next()}},200)});await p.waitForTimeout(7000);
+console.log(await p.evaluate(()=>{ZONE8.exit&&ZONE8.exit({instant:true});const h=Game.hero;const c=spawnFoe('code',h.x+300,h.y,{look:'code'});c.aggro=true;c.hp=c.maxHp*0.62;return [c.boss,FOE.code.boss,Cine.on,Game.cine]}));
+await p.waitForTimeout(1500);await p.screenshot({path:'/workspace/two-blue-vortex/screens/v10/ui/barre-boss.png'});await p.evaluate(()=>{const c=World.foes().find(f=>f.type==='code');c.hp=c.maxHp*0.2});await p.waitForTimeout(400);await p.screenshot({path:'/workspace/two-blue-vortex/screens/v10/ui/barre-boss-bas.png'});console.log('errs',errs);await b.close()})();
