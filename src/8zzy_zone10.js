@@ -15,3 +15,12 @@
     if (R && h && !this.titleMode && !(h.x >= R.x - 80 && h.x <= R.x + R.w + 80 && h.y >= R.y - 80 && h.y <= R.y + R.h + 80)) { Z.room = null; Z.sec = Z.secAt(h.x, h.y); }
     return r; };
 })();
+// v0.10.56 — Garde-fou position : vu une fois au test réel, le sensei avait x/y = NaN (cause non reproduite en 4 runs tracés). Toute unité ennemie dont la position ou la vitesse devient non finie revient à sa dernière position valide, vitesse nulle.
+(() => {
+  const ok = (v) => typeof v === 'number' && Number.isFinite(v);
+  const fu = foeUpdate; foeUpdate = function (f, dt) { const r = fu(f, dt);
+    if (!ok(f.x) || !ok(f.y) || !ok(f.vx) || !ok(f.vy)) { f.x = ok(f.lx10) ? f.lx10 : (ok(f.hx) ? f.hx : Game.hero.x + 120); f.y = ok(f.ly10) ? f.ly10 : (ok(f.hy) ? f.hy : Game.hero.y); f.vx = f.vy = 0; if (!f.nanW10) { f.nanW10 = 1; console.warn('[pos10] position non finie corrigée', f.type, f.tag); } }
+    else { f.lx10 = f.x; f.ly10 = f.y; } return r; };
+})();
+// v0.10.56 — Boussole « Prends une mission » : visait 126 unités à côté du bureau (hors portée de E). Elle vise maintenant le bureau lui-même.
+(() => { const t0 = Voie.target.bind(Voie); Voie.target = function () { if (this.step === 'free' && !this.mis && this.desk && Game.mode === 'voie') return [this.desk.x, this.desk.y + 30]; return t0(); }; })();

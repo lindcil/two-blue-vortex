@@ -1,3 +1,6 @@
+## v0.10.56 — Compass leads onto the mission desk; translation template fix; enemy position guard
+The 'grab a mission' compass pointed beside the Hokage-tower desk, out of talk range; it now points at the desk. English prompt said 'Talk to Bureau des missions' (two text templates competed); now 'Talk to Mission desk'. Any enemy whose position becomes invalid is put back at its last valid spot.
+
 ## v0.10.55 — Engaged enemies stay active across the wall; stale room state self-heals
 An enemy fighting you (aggro, quest foe, or within reach) stays active if it is knocked, teleports or chases across the village wall. If you are moved out of an interior by a scene, the game no longer thinks you are still inside (which hid every enemy).
 

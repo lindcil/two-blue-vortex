@@ -104,7 +104,7 @@ button.b.p{background:var(--gold);color:var(--ink)}button.b.p2{background:var(--
 <script>
 'use strict';
 /* ============ Noyau : réglages, sauvegarde, entrées, audio ============ */
-const VERSION = '0.10.55';
+const VERSION = '0.10.56';
 const K10 = Math.sqrt(10); // v0.9.7 : échelle des cartes extérieures (surface ×10)
 const $ = (s) => document.querySelector(s);
 const TAU = Math.PI * 2, clamp = (v, a, b) => (v < a ? a : v > b ? b : v), lerp = (a, b, t) => a + (b - a) * t;
@@ -5627,13 +5627,14 @@ let FT10 = null, FB10 = null;
 "Ras": "Buzz cut",
 "Ébouriffés": "Messy",
 "Plaqués": "Slicked",
-"Chauve": "Bald"
+"Chauve": "Bald",
+"Bureau des missions": "Mission desk"
 }
 };
   const L = window.LANG10 = { DATA, miss: new Set(), get lang() { return (Save.set && Save.set.lang) || 'en'; }, set lang(v) { Save.set.lang = v; try { Save.saveSet && Save.saveSet(); } catch (e) {} },
     tpl: {}, t(s) { if (typeof s !== 'string' || this.lang === 'fr') return s; const D = DATA[this.lang]; if (!D) return s; if (D[s] != null) return D[s];
       let P = this.tpl[this.lang]; if (!P) { P = this.tpl[this.lang] = []; for (const k in D) if (k.includes('{}')) P.push([new RegExp('^' + k.split('{}').map((x) => x.replace(/[.*+?^$()|[\]\\]/g, '\\$&')).join('([\\s\\S]*?)') + '$'), D[k]]); }
-      for (const [re, v] of P) { const m = s.match(re); if (m) { let i = 1; return v.replace(/\{\}/g, () => this.t(m[i++] || '')); } }
+      let first = null; for (const [re, v] of P) { const m = s.match(re); if (!m) continue; const ms = this.miss, tmp = new Set(); this.miss = tmp; let i = 1; const out = v.replace(/\{\}/g, () => this.t(m[i++] || '')); this.miss = ms; if (!tmp.size) return out; if (!first) first = [out, tmp]; } if (first) { for (const x of first[1]) this.miss.add(x); return first[0]; }
       if (/\s/.test(s) && /[a-zàâçéèêëîïôûùüÿœ’]{3}/i.test(s)) this.miss.add(s); return s; } };
   const T = (s) => L.t(s);
   const tl = (lines) => lines.map((l) => Array.isArray(l) ? [T(l[0]), T(l[1])].concat(l.slice(2)) : l);
@@ -6011,5 +6012,14 @@ let FT10 = null, FB10 = null;
     if (R && h && !this.titleMode && !(h.x >= R.x - 80 && h.x <= R.x + R.w + 80 && h.y >= R.y - 80 && h.y <= R.y + R.h + 80)) { Z.room = null; Z.sec = Z.secAt(h.x, h.y); }
     return r; };
 })();
+// v0.10.56 — Garde-fou position : vu une fois au test réel, le sensei avait x/y = NaN (cause non reproduite en 4 runs tracés). Toute unité ennemie dont la position ou la vitesse devient non finie revient à sa dernière position valide, vitesse nulle.
+(() => {
+  const ok = (v) => typeof v === 'number' && Number.isFinite(v);
+  const fu = foeUpdate; foeUpdate = function (f, dt) { const r = fu(f, dt);
+    if (!ok(f.x) || !ok(f.y) || !ok(f.vx) || !ok(f.vy)) { f.x = ok(f.lx10) ? f.lx10 : (ok(f.hx) ? f.hx : Game.hero.x + 120); f.y = ok(f.ly10) ? f.ly10 : (ok(f.hy) ? f.hy : Game.hero.y); f.vx = f.vy = 0; if (!f.nanW10) { f.nanW10 = 1; console.warn('[pos10] position non finie corrigée', f.type, f.tag); } }
+    else { f.lx10 = f.x; f.ly10 = f.y; } return r; };
+})();
+// v0.10.56 — Boussole « Prends une mission » : visait 126 unités à côté du bureau (hors portée de E). Elle vise maintenant le bureau lui-même.
+(() => { const t0 = Voie.target.bind(Voie); Voie.target = function () { if (this.step === 'free' && !this.mis && this.desk && Game.mode === 'voie') return [this.desk.x, this.desk.y + 30]; return t0(); }; })();
 
 </script></body></html>

@@ -1057,13 +1057,14 @@
 "Ras": "Buzz cut",
 "Ébouriffés": "Messy",
 "Plaqués": "Slicked",
-"Chauve": "Bald"
+"Chauve": "Bald",
+"Bureau des missions": "Mission desk"
 }
 };
   const L = window.LANG10 = { DATA, miss: new Set(), get lang() { return (Save.set && Save.set.lang) || 'en'; }, set lang(v) { Save.set.lang = v; try { Save.saveSet && Save.saveSet(); } catch (e) {} },
     tpl: {}, t(s) { if (typeof s !== 'string' || this.lang === 'fr') return s; const D = DATA[this.lang]; if (!D) return s; if (D[s] != null) return D[s];
       let P = this.tpl[this.lang]; if (!P) { P = this.tpl[this.lang] = []; for (const k in D) if (k.includes('{}')) P.push([new RegExp('^' + k.split('{}').map((x) => x.replace(/[.*+?^$()|[\]\\]/g, '\\$&')).join('([\\s\\S]*?)') + '$'), D[k]]); }
-      for (const [re, v] of P) { const m = s.match(re); if (m) { let i = 1; return v.replace(/\{\}/g, () => this.t(m[i++] || '')); } }
+      let first = null; for (const [re, v] of P) { const m = s.match(re); if (!m) continue; const ms = this.miss, tmp = new Set(); this.miss = tmp; let i = 1; const out = v.replace(/\{\}/g, () => this.t(m[i++] || '')); this.miss = ms; if (!tmp.size) return out; if (!first) first = [out, tmp]; } if (first) { for (const x of first[1]) this.miss.add(x); return first[0]; }
       if (/\s/.test(s) && /[a-zàâçéèêëîïôûùüÿœ’]{3}/i.test(s)) this.miss.add(s); return s; } };
   const T = (s) => L.t(s);
   const tl = (lines) => lines.map((l) => Array.isArray(l) ? [T(l[0]), T(l[1])].concat(l.slice(2)) : l);
