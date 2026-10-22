@@ -1,0 +1,8 @@
+const {chromium}=require('playwright-core');
+(async()=>{const b=await chromium.launch({executablePath:'/usr/bin/google-chrome',args:['--no-sandbox']});for(const f of ['/workspace/two-blue-vortex/index.html','/tmp/old/index.html']){const p=await b.newPage({viewport:{width:1280,height:720}});
+await p.goto('file://'+f);await p.waitForTimeout(900);if(await p.$('#lay07'))await p.click('#lay1');
+await p.evaluate(()=>{Game.startVoie({name:'Aoi',clan:'uchiha',look:makeLook(9)});setInterval(()=>{if(Talk.on&&Talk.t>0.3){if(Talk.showing)Talk.pick(0);else Talk.next()}},200)});await p.waitForTimeout(6000);
+const r=await p.evaluate(async()=>{ZONE8.exit&&ZONE8.exit({instant:true});World.time=12;const h=Game.hero;h.x=1500*K10;h.y=1300*K10;await new Promise(r=>setTimeout(r,500));const T={};const d0=World.drawProp;World.drawProp=function(g,p){const a=performance.now();const v=d0.call(this,g,p);T[p.kind]=(T[p.kind]||0)+performance.now()-a;return v};
+ const W={};for(const k of ['drawGround','drawLights']){const o=World[k];if(!o)continue;World[k]=function(){const a=performance.now();const v=o.apply(this,arguments);W[k]=(W[k]||0)+performance.now()-a;return v}}
+ let n=0;const r0=Game.render;Game.render=function(){n++;return r0.apply(this,arguments)};await new Promise(r=>setTimeout(r,3000));Game.render=r0;World.drawProp=d0;const o={};for(const k in T)o[k]=(T[k]/n).toFixed(3);for(const k in W)o[k]=(W[k]/n).toFixed(3);return o});
+console.log(f.includes('old')?'old':'new',JSON.stringify(r));await p.close()}await b.close()})();

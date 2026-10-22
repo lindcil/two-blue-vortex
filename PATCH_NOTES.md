@@ -1,3 +1,6 @@
+## v0.10.49 — Village perf: offscreen house cache; dummies real-input test
+Houses are pre-rendered offscreen (day/night, LRU 40): house draw cost 0.098 → ~0.04 ms. Added real-input tests for the dummies lesson and the prologue boss bar.
+
 ## v0.10.48 — Your Way creation screen fixes
 - Character preview no longer cuts off the head.
 - Creation screen fully in English: clan/technique note, hairstyle names (Spiky, Bob, Long, Ponytail, Buns, Pineapple, Buzz cut, Messy, Slicked, Bald), Random.

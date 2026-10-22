@@ -1,0 +1,6 @@
+const {chromium}=require('playwright-core');
+(async()=>{const b=await chromium.launch({executablePath:'/usr/bin/google-chrome',args:['--no-sandbox']});for(const f of (process.env.F||'/workspace/two-blue-vortex/index.html,/tmp/old/index.html').split(',')){const p=await b.newPage({viewport:{width:1280,height:720}});
+await p.goto('file://'+f);await p.waitForTimeout(900);if(await p.$('#lay07'))await p.click('#lay1');
+await p.evaluate(()=>{Game.startVoie({name:'Aoi',clan:'uchiha',look:makeLook(9)});setInterval(()=>{if(Talk.on&&Talk.t>0.3){if(Talk.showing)Talk.pick(0);else Talk.next()}},200)});await p.waitForTimeout(6000);
+const r=await p.evaluate(async()=>{ZONE8.exit&&ZONE8.exit({instant:true});const out=[];for(const [x,y,t] of [[1500,1300,12],[1500,1300,22],[1000,1100,12]]){World.time=t;const h=Game.hero;h.x=x*K10;h.y=y*K10;await new Promise(r=>setTimeout(r,500));const r0=Game.render.bind(Game);let tt=0,n=0;Game.render=function(){const a=performance.now();const v=r0.apply(this,arguments);tt+=performance.now()-a;n++;return v};await new Promise(r=>setTimeout(r,3000));Game.render=r0;out.push((tt/n).toFixed(2))}return out});
+console.log(f.includes('old')?'old':'new',r.join(' / '),'ms render (village day, night, west)');await p.close()}await b.close()})();

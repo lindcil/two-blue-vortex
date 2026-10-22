@@ -4,7 +4,7 @@
   const WALL = ['#efe2c6', '#f2d6bc', '#e6e0d2', '#efd9a8', '#dfe6e2'], TANK = ['#7f9aa6', '#9aa8a0', '#a07a5a'];
   const hs = (p) => { if (p.hs10 == null) { let v = Math.floor(p.x * 13.1 + p.y * 7.7); v = (v ^ (v >> 7)) * 2654435761 >>> 0; p.hs10 = v; } return p.hs10; };
   const dp = World.drawProp.bind(World);
-  World.drawProp = function (g, p) { if (p.kind !== 'house') return dp(g, p); const night = this.dark() > 0.3, { x, y, w, h } = p, H = hs(p), L = x - w / 2, R = x + w / 2, wy = y - h * 0.58;
+  const body = (g, p, night) => { const { x, y, w, h } = p, H = hs(p), L = x - w / 2, R = x + w / 2, wy = y - h * 0.58;
     // ombre
     g.fillStyle = 'rgba(0,0,0,.22)'; g.beginPath(); g.ellipse(x + 8, y + 2, w * 0.56, 9, 0, 0, TAU); g.fill();
     // murs
@@ -27,6 +27,14 @@
     if (!p.label && H % 20 < 9) { const tx = x + ((H >> 4) % 2 ? 1 : -1) * w * 0.22, tb = ry + 2, tr = Math.min(13, w * 0.11), th = 20; g.fillStyle = '#3a3a3a'; g.fillRect(tx - tr + 2, tb - 8, 2, 8); g.fillRect(tx + tr - 4, tb - 8, 2, 8);
       g.fillStyle = TANK[H % 3]; g.fillRect(tx - tr, tb - 8 - th, tr * 2, th); g.beginPath(); g.ellipse(tx, tb - 8 - th, tr, 4, 0, 0, TAU); g.fill(); g.fillStyle = 'rgba(0,0,0,.2)'; g.fillRect(tx - tr, tb - 8 - th * 0.45, tr * 2, 3); g.fillStyle = 'rgba(255,255,255,.25)'; g.fillRect(tx - tr + 3, tb - 6 - th, 3, th - 4); }
     else if (!p.label && H % 20 < 13) { g.fillStyle = '#8a8a8a'; g.fillRect(x + w * 0.25, ry - 10, 4, 14); g.fillRect(x + w * 0.25 - 6, ry - 10, 16, 3); } // antenne
+  };
+  // v0.10.49 — cache : chaque maison visible est pré-rendue hors écran (jour/nuit, échelle ≤ 2), étiquettes en direct. LRU de 40 (≈ 8 Mo).
+  const C = new Map(), MAXC = 40;
+  World.drawProp = function (g, p) { if (p.kind !== 'house') return dp(g, p); const night = this.dark() > 0.3, { x, y, w, h } = p;
+    const m = g.getTransform ? g.getTransform() : null, S = m ? Math.min(2, Math.max(1, Math.ceil(Math.hypot(m.a, m.b) * 2) / 2)) : 1, k2 = S + (night ? 'n' : 'd');
+    let ent = C.get(p); if (!ent || ent.k !== k2) { const pw = w + 60, ph = h + 70, cv = document.createElement('canvas'); cv.width = Math.ceil(pw * S); cv.height = Math.ceil(ph * S); const cg = cv.getContext('2d'); cg.scale(S, S); body(cg, { x: pw / 2, y: h + 50, w, h, roof: p.roof, label: p.label, hs10: hs(p) }, night); ent = { k: k2, c: cv }; C.set(p, ent); if (C.size > MAXC) C.delete(C.keys().next().value); } else { C.delete(p); C.set(p, ent); }
+    g.drawImage(ent.c, x - (w + 60) / 2, y - h - 50, w + 60, h + 70);
+    const ry = y - h;
     if (p.label) { g.font = "400 15px 'TBV Ext', 'Lilita One', system-ui"; g.textAlign = 'center'; g.fillStyle = 'rgba(11,16,32,.75)'; const tw = g.measureText(p.label).width + 14; g.fillRect(x - tw / 2, ry - 30, tw, 20); g.fillStyle = '#eef3ff'; g.fillText(p.label, x, ry - 15); }
     if (p.label === 'Tour du Hokage') { g.fillStyle = '#eef3ff'; g.beginPath(); g.arc(x, y - h * 0.78, 22, 0, TAU); g.fill(); g.fillStyle = '#c0392b'; g.font = '700 26px serif'; g.textAlign = 'center'; g.fillText('火', x, y - h * 0.78 + 9); }
   };
