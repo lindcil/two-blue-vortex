@@ -943,7 +943,9 @@
 "Bansho Ten’in": "Banshō Ten'in",
 "Tiges en éventail": "Rod Fan",
 "Palier {} ({})": "Stage {} ({})",
-"Palier max": "Max stage"
+"Palier max": "Max stage",
+"Tiges de chakra": "Chakra Rods",
+"Bras-lame du Kāma": "Kāma Blade Arm"
 }
 };
   const L = window.LANG10 = { DATA, miss: new Set(), get lang() { return (Save.set && Save.set.lang) || 'en'; }, set lang(v) { Save.set.lang = v; try { Save.saveSet && Save.saveSet(); } catch (e) {} },

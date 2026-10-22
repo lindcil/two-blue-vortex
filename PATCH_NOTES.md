@@ -1,3 +1,10 @@
+## v0.10.36 — Battleground: canon kits for Pain and Kawaki, red Susanoo for Itachi
+- Itachi's Susanoo is now red (canon).
+- Pain gains Banshō Ten'in (pull + stun) and Chakra Rods; Shinra Tensei repels projectiles and grants brief invulnerability.
+- Kawaki: Kāma Blade Arm (faster, wider), Sukunahikona and Kāma absorption (absorbs projectiles, heals, restores chakra).
+- Hidden stat boosts replaced by canon technique strength; small HP adjustments kept.
+- Release script now refuses to ship with missing translations.
+
 ## v0.10.35 — v0.10.35: Battleground mode - 4 canon duels, both sides playable
 Battleground (écran titre) : duels canon pré-faits — Frères Uchiha (Sasuke Rinnegan vs Itachi Edo Tensei), Vallée de la Fin (Naruto Kurama vs Sasuke), Invasion de Pain (Naruto Ermite vs Pain Tendō), Réceptacles du Kāma (Boruto vs Kawaki). Choix du camp, kits canon (techniques, mode, ultime), l'adversaire rejoue ses coups canon (annoncés). Victoire/Défaite, Revanche, Autre duel. Aucune sauvegarde.
 
