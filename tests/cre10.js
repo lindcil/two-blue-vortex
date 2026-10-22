@@ -1,0 +1,15 @@
+const {chromium}=require('playwright-core');const SH='/workspace/two-blue-vortex/screens/v10/ui/';
+(async()=>{const b=await chromium.launch({executablePath:'/usr/bin/google-chrome',args:['--no-sandbox']});const errs=[];const p=await b.newPage({viewport:{width:1280,height:720}});p.on('pageerror',e=>errs.push(e.message));p.on('console',m=>m.type()==='error'&&errs.push(m.text()));
+await p.goto('file:///workspace/two-blue-vortex/index.html');await p.waitForTimeout(900);if(await p.$('#lay07'))await p.click('#lay1');
+await p.evaluate(()=>{localStorage.removeItem('tbv10_used');Game.startVoie({name:'Aoi',clan:'uchiha',look:makeLook(3),creative:1,el:'fire',sk:['gokakyu','chidori','bunshin','combo']})});await p.waitForTimeout(3500);
+const first=()=>p.evaluate(()=>[...document.querySelectorAll('#c8ls .it')].filter(d=>d.style.display!=='none').slice(0,4).map(d=>d.dataset.id).join(','));
+console.log('first',await first());
+await p.evaluate(()=>{const ids=[...document.querySelectorAll('#c8ls .it')].slice(0,2).map(d=>d.dataset.id);for(const id of ids){document.querySelector(`#c8ls .it[data-id="${id}"]`).click();document.getElementById('c8go').click()}});await p.waitForTimeout(1500);
+await p.evaluate(()=>document.getElementById('c8q').dispatchEvent(new Event('input')));await p.waitForTimeout(300);console.log('after use',await first());
+await p.evaluate(()=>{const s=document.getElementById('c8cat');s.value='beam';s.onchange()});await p.waitForTimeout(300);console.log('beam',await first());
+await p.evaluate(()=>{const f=document.getElementById('c8mf');f.value='manteau';f.onchange();document.getElementById('c8ms').value='4';document.getElementById('c8mg').click()});await p.waitForTimeout(1500);
+console.log('mode',await p.evaluate(()=>[Game.hero.md&&Game.hero.md.fam,Game.hero.md&&Game.hero.md.st]));await p.screenshot({path:SH+'creatif-modes.png'});
+await p.evaluate(()=>{const f=document.getElementById('c8mf');f.value='karma';f.onchange();document.getElementById('c8ms').value='3';document.getElementById('c8mg').click()});await p.waitForTimeout(1200);
+console.log('mode2',await p.evaluate(()=>[Game.hero.md&&Game.hero.md.fam,Game.hero.md&&Game.hero.md.st,document.getElementById('c8ms').options.length]));
+console.log('cats',await p.evaluate(()=>{const c={};for(const id in SK)c[CREA10.catOf(id)]=(c[CREA10.catOf(id)]||0)+1;return JSON.stringify(c)}));
+console.log('errs',errs);await b.close()})();

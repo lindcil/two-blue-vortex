@@ -1,3 +1,6 @@
+## v0.10.33 — v0.10.33: Creative - free mode/stage picker, auto shape+element classes, never-used first
+Créatif : choix libre de n'importe quel mode et palier (Sharingan, Byakugan, Jōgan, Kāma, Manteau, clans, Ermite). Techniques classées automatiquement par forme (Projectile, Rayon, Zone, Corps à corps, Contrôle, Soutien, Invocation, Ultime) ; les techniques perso sans élément le reçoivent d'après leur couleur. Listes : jamais utilisées d'abord (pastille verte), puis les moins utilisées.
+
 ## v0.10.32 — v0.10.32: master models (Killer B, Momoshiki), map pins via rumours, Fox Altar shot
 Killer B : lunettes noires, bouc, tatouage de corne, sabres, bandeau. Momoshiki : cornes, yeux pâles, Rinnegan dans les paumes, sans bandeau. Rumeurs après des missions (Mont Myōboku, Cascade, Ruines du Sud) : chaque maître entendu ou rencontré a son repère sur la carte ; l'Autel apparaît après Killer B.
 
