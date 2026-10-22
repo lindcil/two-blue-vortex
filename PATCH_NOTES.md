@@ -1,3 +1,6 @@
+## v0.10.59 — Mission names in English at the desk
+The mission desk listed missions in French for English players ('C · Bandits sur la route'); now 'C · Bandits on the road'. The release check now covers every mission label and description.
+
 ## v0.10.58 — Guard audit: 5 silently-dead features revived
 Audit of guarded globals found 5 features that never ran because they checked window.X for a top-level constant: district names (wrong coordinates), English ultimate names, toast/reward translation, Susanoo reduce-flash, and the reduce-flash opt-out for attack animations. All fixed; already-translated text is no longer re-translated.
 

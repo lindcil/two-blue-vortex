@@ -1058,7 +1058,8 @@
 "Ébouriffés": "Messy",
 "Plaqués": "Slicked",
 "Chauve": "Bald",
-"Bureau des missions": "Mission desk"
+"Bureau des missions": "Mission desk",
+"{} · {}": "{} · {}"
 }
 };
   const L = window.LANG10 = { DATA, miss: new Set(), get lang() { return (Save.set && Save.set.lang) || 'en'; }, set lang(v) { Save.set.lang = v; try { Save.saveSet && Save.saveSet(); } catch (e) {} },
