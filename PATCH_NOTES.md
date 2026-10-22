@@ -1,3 +1,7 @@
+## v0.10.40 — Battleground: Naruto (Sage) HP fix, Zabuza Water Prison
+- Fixed: Naruto (Sage Mode) as the player had reduced HP after the opponent rebalance.
+- Zabuza: Water Prison holds 2 s and deals 5 ticks (canon: Kakashi was trapped long enough for the whole team to act).
+
 ## v0.10.39 — Battleground: Kakashi vs Zabuza and Gaara vs Rock Lee duels
 - New duel: The Great Naruto Bridge — Kakashi (Chidori, Water Dragon, Fanged Pursuit summon, Raikiri) vs Zabuza (Kubikiribōchō, Water Dragon, Water Prison, Water Clone, Hidden Mist: Silent Killing).
 - New duel: Chūnin Exams — Gaara (Sand Coffin, Sand Shuriken, Sand Shield, Sand Rain, Sand Burial; automatic sand shield) vs Rock Lee (Leaf Whirlwind, Leaf Gale, Front Lotus, Eight Gates boost, Hidden Lotus; his speed pierces the sand shield).

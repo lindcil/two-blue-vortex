@@ -104,7 +104,7 @@ button.b.p{background:var(--gold);color:var(--ink)}button.b.p2{background:var(--
 <script>
 'use strict';
 /* ============ Noyau : réglages, sauvegarde, entrées, audio ============ */
-const VERSION = '0.10.39';
+const VERSION = '0.10.40';
 const K10 = Math.sqrt(10); // v0.9.7 : échelle des cartes extérieures (surface ×10)
 const $ = (s) => document.querySelector(s);
 const TAU = Math.PI * 2, clamp = (v, a, b) => (v < a ? a : v > b ? b : v), lerp = (a, b, t) => a + (b - a) * t;
@@ -5585,7 +5585,7 @@ let FT10 = null, FB10 = null;
       ai: [['Katon : Gōkakyū', '火', 'fire', 'proj', 24, 4], ['Tsukuyomi', '月', 'yin', 'zone', 22, 8], ['Amaterasu', '天', 'fire', 'zone', 30, 7], ['Shuriken guidés', '手', 'yang', 'fan', 8, 3]], aiU: ['Épée de Totsuka', 'yin', 65] },
     naruto: { n: 'Naruto (Mode Kurama)', look: { hs: 'naruto', hair: '#ffd23a', top: '#ffb13d', bot: '#2a2a36', skin: '#f0c49c', marks: 1 }, hp: 1.1, sk: ['rasen', 'bunshin', 'm8_manteau_2_0', 'm8_manteau_1_0'], ult: 'set_rasenshuriken', mode: ['manteau', 4],
       ai: [['Rasengan', '螺', 'wind', 'dash', 26, 4], ['Mini Bijūdama', '玉', 'yin', 'proj', 30, 6], ['Kage Bunshin', '影', 'yang', 'fan', 9, 5], ['Bras de chakra', '腕', 'yang', 'beam', 20, 5]], aiU: ['Fūton : Rasenshuriken', 'wind', 70] },
-    naruto_s: { n: 'Naruto (Mode Ermite)', look: { hs: 'naruto', hair: '#ffd23a', top: '#ff8a2a', bot: '#2a2a36', cloak: '#c0402a', skin: '#f0c49c', marks: 1 }, hp: 0.8, sk: ['m8_ermite_0_1', 'm8_ermite_0_0', 'bunshin', 'm8_ermite_2_0'], ult: 'm8u_ermite_0', mode: ['ermite', 2],
+    naruto_s: { n: 'Naruto (Mode Ermite)', look: { hs: 'naruto', hair: '#ffd23a', top: '#ff8a2a', bot: '#2a2a36', cloak: '#c0402a', skin: '#f0c49c', marks: 1 }, hp: 0.8, me: 1.25, sk: ['m8_ermite_0_1', 'm8_ermite_0_0', 'bunshin', 'm8_ermite_2_0'], ult: 'm8u_ermite_0', mode: ['ermite', 2],
       ai: [['Senpō : Rasengan', '螺', 'wind', 'dash', 22, 4.5], ['Kawazu Kumite', '蛙', 'yang', 'dash', 15, 3.5], ['Senpō : Rasenshuriken', '手', 'wind', 'proj', 26, 8], ['Kage Bunshin', '影', 'yang', 'fan', 7, 5]], aiU: ['Senpō : Chōōdama Rasengan', 'wind', 55] },
     pain: { n: 'Pain (Tendō)', look: { hs: 'spiky', hair: '#e8752a', top: '#1a1a26', bot: '#1a1a26', cloak: '#1a1a26', org: 1, skin: '#f0d8c0', eye: '#b08ad8' }, hp: 0.9, sk: ['shinra', 'bansho10', 'rods10', 'shuriken8'], ult: 'set_chibaku', mode: null, me: 1.2,
       ai: [['Shinra Tensei', '神', 'yang', 'zone', 24, 6], ['Tige noire', '杭', 'yin', 'proj', 15, 3.5], ['Bansho Ten’in', '引', 'yang', 'dash', 16, 6], ['Tige noire', '杭', 'yin', 'fan', 10, 4]], aiU: ['Chibaku Tensei', 'earth', 70] },
@@ -5674,7 +5674,7 @@ let FT10 = null, FB10 = null;
     if (id === 'hachi10') { u.hp = Math.max(1, u.hp - u.maxHp * 0.06); u.gate10 = Game.t + 7; FX.glow(u.x, u.y - 40, '#9af07a', 120, 0.6); FX.text(u.x, u.y - 130, T('Troisième porte, ouverte !'), '#9af07a', 20, 1); return; }
     if (id === 'tsuiga10') { const f = near(u, 640); if (!f) return; f.st = f.st || {}; f.st.stun = 1.2; for (let i = 0; i < 8; i++) { const k = (i / 8) * TAU; FX.glow(f.x + Math.cos(k) * 40, f.y + Math.sin(k) * 24, '#6a5a4a', 22, 0.6); } Game.later(0.2, () => hurt(f, 24 * P, u, { el: 'earth', k: 0.1 })); return; }
     if (id === 'kubiki10') { u.iframe = Math.max(u.iframe || 0, 0.35); u.vx += Math.cos(a) * 420; u.vy += Math.sin(a) * 420; Game.later(0.1, () => { slash(u.x + Math.cos(a) * 40, u.y, a, 95, '#d8e6f0'); for (const f of World.foes()) if (!f.passive && Math.hypot(f.x - u.x, f.y - u.y) < 175) { const d = Math.abs(((Math.atan2(f.y - u.y, f.x - u.x) - a + 3 * Math.PI) % TAU) - Math.PI); if (d < 1.3) hurt(f, 36 * P, u, { el: 'water', k: 1.3 }); } }); return; }
-    if (id === 'suiro10') { const f = near(u, 340); if (!f) return; f.st = f.st || {}; f.st.stun = 1.6; FX.custom({ x: f.x, y: f.y, life: 1.6, draw: (g, p, q) => { g.save(); g.globalAlpha = 0.45; g.fillStyle = '#4aa0e0'; g.beginPath(); g.arc(f.x, f.y - 34, 46, 0, TAU); g.fill(); g.restore(); } }); for (let i = 0; i < 4; i++) Game.later(0.3 + i * 0.35, () => hurt(f, 10 * P, u, { el: 'water', k: 0 })); return; }
+    if (id === 'suiro10') { const f = near(u, 340); if (!f) return; f.st = f.st || {}; f.st.stun = 2; FX.custom({ x: f.x, y: f.y, life: 2, draw: (g, p, q) => { g.save(); g.globalAlpha = 0.45; g.fillStyle = '#4aa0e0'; g.beginPath(); g.arc(f.x, f.y - 34, 46, 0, TAU); g.fill(); g.restore(); } }); for (let i = 0; i < 5; i++) Game.later(0.3 + i * 0.35, () => hurt(f, 10 * P, u, { el: 'water', k: 0 })); return; }
     if (id === 'mizubun10') { u.iframe = Math.max(u.iframe || 0, 0.8); FX.glow(u.x, u.y - 30, '#4aa0e0', 60, 0.4); // le clone d’eau encaisse le coup
       for (const s of [-0.35, 0.35]) Proj.push({ x: u.x, y: u.y - 36, vx: Math.cos(a + s) * 700, vy: Math.sin(a + s) * 700, life: 1, dmg: 20 * P, el: 'water', team: 0, r: 16, src: u, kind: 'water', pierce: 1, hit: new Set() }); return; }
   };
