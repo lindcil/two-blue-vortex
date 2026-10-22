@@ -1,3 +1,12 @@
+## v0.10.37 — Shinobi life: time-of-day NPC dialogue, Ichiraku, home, training, shops, NPC routines
+- NPCs speak short, time-of-day lines (morning, day, evening, night) in English by default.
+- Ichiraku: eat a bowl (30 ryō) for full HP and chakra.
+- Home: sleep until morning at night (full rest, saves) or nap 2 h by day.
+- Training Ground: kunai throwing, tree climbing, meditation (time passes, XP/chakra).
+- Shops: Tenten (soldier pill, bandages, study scroll), dango stall, Yamanaka flowers.
+- NPC routines: lunch at Ichiraku, kids play at the training ground after the Academy, evening ramen.
+- Fixed an untranslated 'talk' hint.
+
 ## v0.10.36 — Battleground: canon kits for Pain and Kawaki, red Susanoo for Itachi
 - Itachi's Susanoo is now red (canon).
 - Pain gains Banshō Ten'in (pull + stun) and Chakra Rods; Shinra Tensei repels projectiles and grants brief invulnerability.

@@ -104,7 +104,7 @@ button.b.p{background:var(--gold);color:var(--ink)}button.b.p2{background:var(--
 <script>
 'use strict';
 /* ============ Noyau : réglages, sauvegarde, entrées, audio ============ */
-const VERSION = '0.10.36';
+const VERSION = '0.10.37';
 const K10 = Math.sqrt(10); // v0.9.7 : échelle des cartes extérieures (surface ×10)
 const $ = (s) => document.querySelector(s);
 const TAU = Math.PI * 2, clamp = (v, a, b) => (v < a ? a : v > b ? b : v), lerp = (a, b, t) => a + (b - a) * t;
@@ -1354,7 +1354,7 @@ const Game = {
   bondAvg() { if (this.mode === 'histoire') return 3; const b = Voie.bond; return ((b.t0 || 0) + (b.t1 || 0)) / 2; },
   inCombat() { const h = this.hero; return World.foes().some((f) => f.aggro && f.type !== 'dummy' && !f.passive && dist(f, h) < 650) || (this.inField(h) && World.foes().some((f) => f.type === 'dummy' && dist(f, h) < 260)) || World.foes().some((f) => f.tag === 'yard' && dist(f, h) < 200); },
   inField(u) { return Math.hypot(u.x - K10 * 2850, u.y - K10 * 1250) < 280 * K10; },
-  hint(k) { if (this.hints[k]) return; this.hints[k] = 1; const n1 = this.skills[0] && SK[this.skills[0]].n; const M = { move: () => `<kbd>${Input.label('up')}</kbd><kbd>${Input.label('left')}</kbd><kbd>${Input.label('down')}</kbd><kbd>${Input.label('right')}</kbd> se déplacer`, atk: () => `<kbd>${Input.label('atk')}</kbd> frapper ×3`, dodge: () => `<kbd>${Input.label('dodge')}</kbd> esquiver le rouge`, s1: () => `<kbd>${Input.label('s1')}</kbd> ${n1}`, s2: () => `<kbd>${Input.label('s2')}</kbd> technique de clan`, s4: () => `<kbd>${Input.label('s4')}</kbd> formation d’équipe`, use: () => `<kbd>${Input.label('use')}</kbd> parler` };
+  hint(k) { if (this.hints[k]) return; this.hints[k] = 1; const n1 = this.skills[0] && SK[this.skills[0]].n; const M = { move: () => `<kbd>${Input.label('up')}</kbd><kbd>${Input.label('left')}</kbd><kbd>${Input.label('down')}</kbd><kbd>${Input.label('right')}</kbd> se déplacer`, atk: () => `<kbd>${Input.label('atk')}</kbd> frapper ×3`, dodge: () => `<kbd>${Input.label('dodge')}</kbd> esquiver le rouge`, s1: () => `<kbd>${Input.label('s1')}</kbd> ${n1}`, s2: () => `<kbd>${Input.label('s2')}</kbd> technique de clan`, s4: () => `<kbd>${Input.label('s4')}</kbd> formation d’équipe`, use: () => `<kbd>${Input.label('use')}</kbd> ${LANG10.t('parler / utiliser')}` };
     if (Input.lastDev === 'touch') { this.hintQ = { s: { move: 'Stick : se déplacer', atk: 'M1 : frapper ×3', dodge: '⤳ : esquiver le rouge', s1: '1 : ' + n1, s2: '2 : clan', s4: '4 : équipe', use: 'E : parler' }[k], t: 5 }; return; } if (M[k]) this.hintQ = { s: M[k](), t: 5 }; },
   unlockHint(k) { this.hint(k); },
   gainXp(n) { this.xp += n; FX.text(this.hero.x, this.hero.y - 120, '+' + n + ' XP', '#ffd166', 18, 1); while (this.xp >= this.lvl * 100) { this.xp -= this.lvl * 100; this.lvl++; const h = this.hero; h.maxHp += 15; h.hp = h.maxHp; h.maxCh += 10; h.ch = h.maxCh; Sfx.play('lvl'); UI.reward('Niveau ' + this.lvl, '#ffd166');
@@ -5459,7 +5459,77 @@ let FT10 = null, FB10 = null;
 "Palier {} ({})": "Stage {} ({})",
 "Palier max": "Max stage",
 "Tiges de chakra": "Chakra Rods",
-"Bras-lame du Kāma": "Kāma Blade Arm"
+"Bras-lame du Kāma": "Kāma Blade Arm",
+"Le bouillon mijote depuis l’aube. Reviens à midi !": "The broth's been simmering since dawn. Come back at noon!",
+"Miso chashu ? Ou le spécial « Naruto » ?": "Miso chashu? Or the Naruto special?",
+"Ayame dit que je mets trop de naruto. Impossible.": "Ayame says I use too much naruto. Impossible.",
+"Dernier service ! Un bol avant de rentrer ?": "Last call! One bowl before you head home?",
+"Les fleurs du matin tiennent plus longtemps.": "Morning flowers last longer.",
+"Tu as l’air de quelqu’un qui a besoin de fleurs.": "You look like someone who needs flowers.",
+"Un bouquet pour Sakura ? Elle adore les cerisiers… bien sûr.": "A bouquet for Sakura? She loves cherry blossoms… obviously.",
+"Je ferme. Inojin, rentre dîner !": "Closing up. Inojin, dinner!",
+"Encore une journée à la porte…": "Another day at the gate…",
+"Izumo, on fait une pause ? …Non ? Bon.": "Izumo, break time? …No? Fine.",
+"Les voyageurs du soir, c’est toujours les pires.": "Evening travellers are always the worst.",
+"Pas un bruit. J’aime pas quand c’est calme.": "Not a sound. I don't like it when it's this quiet.",
+"Registre du matin : personne. Parfait.": "Morning log: nobody. Perfect.",
+"Laissez-passer ? Montre-le, que je le tamponne.": "Pass? Show me, I'll stamp it.",
+"Kotetsu a encore mangé mon onigiri.": "Kotetsu ate my onigiri again.",
+"Kotetsu dort debout. Ne lui dis rien.": "Kotetsu's asleep standing up. Don't tell him.",
+"On est en retard pour l’Académie !": "We're late for the Academy!",
+"Iruka-sensei nous a encore donné des clones à faire !": "Iruka-sensei gave us clone homework again!",
+"Maman m’appelle. À demain !": "Mom's calling. See you tomorrow!",
+"J’ai révisé les mudras toute la nuit !": "I practised hand signs all night!",
+"Shikadai a dormi pendant tout le cours. Encore.": "Shikadai slept through the whole class. Again.",
+"Tu veux voir mon lancer de kunai ? Regarde !": "Wanna see my kunai throw? Watch!",
+"J’ai pas pris mon petit-déj. Ichiraku, ça compte ?": "I skipped breakfast. Does Ichiraku count?",
+"Un jour je battrai Boruto. Un jour.": "One day I'll beat Boruto. One day.",
+"Course jusqu’à la stèle ! Le dernier paie les ramens !": "Race to the memorial! Last one pays for ramen!",
+"Le matin, le village sent le pain et la sueur.": "Mornings, the village smells of bread and sweat.",
+"À midi, Ichiraku. Comme le Septième à ton âge.": "Noon means Ichiraku. Like the Seventh at your age.",
+"Les visages du rocher rougissent au couchant. Regarde.": "The Hokage faces turn red at sunset. Look.",
+"J’affûte depuis l’aube. Tu veux voir ?": "Been sharpening since dawn. Want a look?",
+"Je ferme bientôt. Achète vite ou reviens demain.": "Closing soon. Buy now or come back tomorrow.",
+"Ronde du matin. Rien à signaler.": "Morning round. Nothing to report.",
+"Les lanternes s’allument. Restez sur les rues.": "Lanterns are lit. Stay on the streets.",
+"Il est tard, gamin. Rentre chez toi.": "It's late, kid. Go home.",
+"Les premiers dango sortent du feu !": "First dango, fresh off the grill!",
+"Dango tout chauds ! Trois pour le prix de deux !": "Hot dango! Three for the price of two!",
+"Les derniers de la journée, à moitié prix !": "Last of the day, half price!",
+"Il fait déjà chaud. Belle journée pour ne rien faire.": "Already hot. Nice day to do nothing.",
+"Je file chez Ichiraku avant la fermeture.": "Off to Ichiraku before it closes.",
+"Pas assez de ryō.": "Not enough ryō.",
+"Manger un bol (30 ryō)": "Eat a bowl (30 ryō)",
+"Mange lentement. Le bouillon a mis toute la nuit.": "Eat slowly. That broth took all night.",
+"Naruto en prenait trois. Toi, un, c’est bien.": "Naruto used to have three. One's fine for you.",
+"Rassasié": "Full",
+"Dango (15 ryō)": "Dango (15 ryō)",
+"Dango !": "Dango!",
+"Pilule du soldat (60 ryō)": "Soldier pill (60 ryō)",
+"Chakra plein": "Chakra full",
+"Bandages (40 ryō)": "Bandages (40 ryō)",
+"Soigné": "Healed",
+"Rouleau d’étude (120 ryō)": "Study scroll (120 ryō)",
+"Bouquet (25 ryō)": "Bouquet (25 ryō)",
+"Bon choix. Les fleurs disent ce qu’on n’ose pas.": "Good pick. Flowers say what we don't dare to.",
+"Au revoir": "Goodbye",
+"Partir": "Leave",
+"Maison — se reposer": "Home — rest",
+"Terrain d’entraînement — s’entraîner": "Training Ground — train",
+"La maison. Le futon t’attend.": "Home. Your futon is waiting.",
+"La maison. Calme, pour une fois.": "Home. Quiet, for once.",
+"Dormir jusqu’au matin": "Sleep until morning",
+"Faire une sieste (2 h)": "Take a nap (2 h)",
+"Une nuit sans rêves. Nouveau jour à Konoha.": "A dreamless night. A new day in Konoha.",
+"Une courte sieste. Tu te sens reposé.": "A short nap. You feel rested.",
+"Le terrain d’entraînement. Les poteaux portent encore des entailles.": "The training ground. The posts still bear old cuts.",
+"Lancer de kunais (1 h)": "Kunai throwing (1 h)",
+"Marcher sur l’arbre (2 h)": "Tree climbing (2 h)",
+"Méditer (1 h)": "Meditate (1 h)",
+"Dix kunais, dix cibles. Presque.": "Ten kunai, ten targets. Almost.",
+"Le chakra aux pieds… et tu tiens au sommet !": "Chakra to the feet… and you reach the top!",
+"Respire. Le chakra circule mieux.": "Breathe. Your chakra flows better.",
+"parler / utiliser": "talk / use"
 }
 };
   const L = window.LANG10 = { DATA, miss: new Set(), get lang() { return (Save.set && Save.set.lang) || 'en'; }, set lang(v) { Save.set.lang = v; try { Save.saveSet && Save.saveSet(); } catch (e) {} },
@@ -5595,6 +5665,61 @@ let FT10 = null, FB10 = null;
   $c('c8mg').onclick = () => { const h = Game.hero; if (!h) return; const f = $c('c8mf').value, st = +$c('c8ms').value || 1; if (h.md) MODE08.exit(h); MODE08.enter(h, MODE08.F[f].key || 'Z'); if (h.md) { h.md.fam = f; h.md.key = MODE08.F[f].key || h.md.key; h.md.st = 0; MODE08.stage(h, st); } use('mode_' + f); };
   $c('c8mx').onclick = () => { const h = Game.hero; if (h && h.md) MODE08.exit(h); };
   window.CREA10 = { catOf, elOf, U, post };
+})();
+
+// v0.10.37 — Vie de shinobi : répliques selon l'heure, Ichiraku, maison (dormir), entraînement, boutiques, routines jour/nuit des PNJ.
+(() => {
+  const T = (s) => LANG10.t(s);
+  const per = () => { const t = World.time; return t < 5 || t >= 21 ? 3 : t < 11 ? 0 : t < 17 ? 1 : 2; }; // matin, jour, soir, nuit
+  const LN = {
+    teuchi: [['Le bouillon mijote depuis l’aube. Reviens à midi !'], ['Miso chashu ? Ou le spécial « Naruto » ?', 'Ayame dit que je mets trop de naruto. Impossible.'], ['Dernier service ! Un bol avant de rentrer ?'], []],
+    ino: [['Les fleurs du matin tiennent plus longtemps.'], ['Tu as l’air de quelqu’un qui a besoin de fleurs.', 'Un bouquet pour Sakura ? Elle adore les cerisiers… bien sûr.'], ['Je ferme. Inojin, rentre dîner !'], []],
+    kotetsu: [['Encore une journée à la porte…'], ['Izumo, on fait une pause ? …Non ? Bon.'], ['Les voyageurs du soir, c’est toujours les pires.'], ['Pas un bruit. J’aime pas quand c’est calme.']],
+    izumo: [['Registre du matin : personne. Parfait.'], ['Laissez-passer ? Montre-le, que je le tamponne.'], ['Kotetsu a encore mangé mon onigiri.'], ['Kotetsu dort debout. Ne lui dis rien.']],
+    haru: [['On est en retard pour l’Académie !'], ['Iruka-sensei nous a encore donné des clones à faire !'], ['Maman m’appelle. À demain !'], []],
+    mei: [['J’ai révisé les mudras toute la nuit !'], ['Shikadai a dormi pendant tout le cours. Encore.'], ['Tu veux voir mon lancer de kunai ? Regarde !'], []],
+    taro: [['J’ai pas pris mon petit-déj. Ichiraku, ça compte ?'], ['Un jour je battrai Boruto. Un jour.'], ['Course jusqu’à la stèle ! Le dernier paie les ramens !'], []],
+    gen: [['Le matin, le village sent le pain et la sueur.'], ['À midi, Ichiraku. Comme le Septième à ton âge.'], ['Les visages du rocher rougissent au couchant. Regarde.'], []],
+    smith: [['J’affûte depuis l’aube. Tu veux voir ?'], ['Lames, kunais, rouleaux. Pas de crédit.'], ['Je ferme bientôt. Achète vite ou reviens demain.'], []],
+    guard3: [['Ronde du matin. Rien à signaler.'], ['Circulez. Ordre du Huitième.'], ['Les lanternes s’allument. Restez sur les rues.'], ['Il est tard, gamin. Rentre chez toi.']],
+    vend1: [['Les premiers dango sortent du feu !'], ['Dango tout chauds ! Trois pour le prix de deux !'], ['Les derniers de la journée, à moitié prix !'], []],
+    vend2: [['Il fait déjà chaud. Belle journée pour ne rien faire.'], ['Tu as entendu ? Code aurait été vu au nord.'], ['Je file chez Ichiraku avant la fermeture.'], []],
+  };
+  // Routines : déjeuner chez Ichiraku, sortie d'Académie, soirée.
+  const SC = { gen: [[12, 14, 1255, 935]], ino: [[12, 13, 1325, 935]], vend2: [[18, 21, 1300, 940]], haru: [[15, 20, 2780, 1300]], taro: [[15, 20, 2840, 1320]], mei: [[15, 20, 2800, 1350]], smith: [[13, 14, 1270, 940]] };
+  for (const d of NPC_DEF) if (SC[d.id]) d.sched.unshift(...SC[d.id].map(([a, b, x, y]) => [a, b, K10 * x, K10 * y]));
+  const H = () => Game.hero, R = () => Game.ryo || 0;
+  const pay = (n) => { if (R() < n) { Talk.say([['', 'Pas assez de ryō.']]); return false; } Game.ryo -= n; return true; };
+  const pass = (h) => { World.time += h; while (World.time >= 24) { World.time -= 24; World.day++; } };
+  const ok = (s) => FX.text(H().x, H().y - 120, T(s), '#9fe8a0', 18, 1);
+  const shop = { teuchi: [['Manger un bol (30 ryō)', () => { if (!pay(30)) return; const h = H(); h.hp = h.maxHp; h.ch = h.maxCh; pass(0.5); ok('Rassasié'); Talk.say([['Teuchi', pick(['Un grand bol, avec supplément œuf. Ça va mieux ?', 'Mange lentement. Le bouillon a mis toute la nuit.', 'Naruto en prenait trois. Toi, un, c’est bien.'])]]); }]],
+    vend1: [['Dango (15 ryō)', () => { if (!pay(15)) return; const h = H(); h.hp = Math.min(h.maxHp, h.hp + h.maxHp * 0.35); ok('Dango !'); }]],
+    smith: [['Pilule du soldat (60 ryō)', () => { if (!pay(60)) return; H().ch = H().maxCh; ok('Chakra plein'); }], ['Bandages (40 ryō)', () => { if (!pay(40)) return; const h = H(); h.hp = Math.min(h.maxHp, h.hp + h.maxHp * 0.5); ok('Soigné'); }], ['Rouleau d’étude (120 ryō)', () => { if (!pay(120)) return; Game.gainXp(150); }]],
+    ino: [['Bouquet (25 ryō)', () => { if (!pay(25)) return; Talk.say([['Ino', 'Bon choix. Les fleurs disent ce qu’on n’ose pas.']]); }]] };
+  const base = Voie.talkNpc.bind(Voie);
+  Voie.talkNpc = function (n) {
+    const L = (LN[n.id] || [])[per()] || []; n.li = (n.li || 0) + 1; const line = L.length && n.li % 3 ? L[n.li % L.length] : null;
+    const S = shop[n.id]; if (!line && !S) return base(n);
+    const say = line || (L.length ? pick(L) : pick(LN[n.id] ? LN[n.id].flat() : ['…']));
+    if (!S) return Talk.say([[n.n, say]]);
+    Talk.choose([[n.n, say]], S.map((x) => x[0]).concat(['Au revoir']), (i) => { if (S[i]) S[i][1](); });
+  };
+  // Lieux de vie : maison (dormir) et terrain d'entraînement.
+  const homeXY = () => { const P = World.props.filter((p) => p.kind === 'house' && !p.label && p.x < K10 * 1500 && p.y < K10 * 2100).sort((a, b) => Math.hypot(a.x - K10 * 800, a.y - K10 * 1250) - Math.hypot(b.x - K10 * 800, b.y - K10 * 1250))[0]; return P ? [P.x, P.y + K10 * 50] : [K10 * 800, K10 * 1300]; };
+  const fade = (f) => (window.ZONE8 && ZONE8.wipe ? ZONE8.wipe(f) : f());
+  const life = () => { const [hx, hy] = homeXY(); return [{ id: 'home10', x: hx, y: hy, n: 'Maison — se reposer' }, { id: 'train10', x: K10 * 2850, y: K10 * 1250, n: 'Terrain d’entraînement — s’entraîner' }]; };
+  const gi = Game.interactables.bind(Game);
+  Game.interactables = function () { const r = gi(); if (this.mode !== 'voie' || this.inCombat() || document.body.classList.contains('bg10')) return r; const h = this.hero; let best = r; for (const p of life()) { const d = Math.hypot(p.x - h.x, p.y - h.y); if (d < 90 && (!best || d < best.d)) best = { d, k: 'poi', o: p, s: p.n }; } return best; };
+  const up = Game.usePoi.bind(Game);
+  Game.usePoi = function (p) {
+    const h = this.hero;
+    if (p.id === 'home10') { const night = World.time >= 19 || World.time < 6;
+      return Talk.choose([['', night ? 'La maison. Le futon t’attend.' : 'La maison. Calme, pour une fois.']], [night ? 'Dormir jusqu’au matin' : 'Faire une sieste (2 h)', 'Partir'], (i) => { if (i) return; fade(() => { if (night) { if (World.time >= 19) World.day++; World.time = 7; } else pass(2); h.hp = h.maxHp; h.ch = h.maxCh; try { Game.save(); } catch (e) {} }); Talk.say([['', night ? 'Une nuit sans rêves. Nouveau jour à Konoha.' : 'Une courte sieste. Tu te sens reposé.']]); }); }
+    if (p.id === 'train10') return Talk.choose([['', 'Le terrain d’entraînement. Les poteaux portent encore des entailles.']], ['Lancer de kunais (1 h)', 'Marcher sur l’arbre (2 h)', 'Méditer (1 h)', 'Partir'], (i) => { if (i > 2) return; fade(() => { pass([1, 2, 1][i]); if (i === 0) Game.gainXp(60); if (i === 1) { Game.gainXp(140); h.ch = 0; } if (i === 2) h.ch = h.maxCh; }); Talk.say([['', ['Dix kunais, dix cibles. Presque.', 'Le chakra aux pieds… et tu tiens au sommet !', 'Respire. Le chakra circule mieux.'][i]]]); });
+    if (p.id === 'ichiraku' && this.mode === 'voie') { const t = World.npcs.find((n) => n.id === 'teuchi' && !n.hidden); if (t) return Voie.talkNpc(Object.assign(t, { li: 2 })); }
+    return up(p);
+  };
+  window.LIFE10 = { per, homeXY, life, LN };
 })();
 
 // v0.10.32 — détails de tête des maîtres (après 8z5 qui remplace drawHead).
