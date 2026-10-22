@@ -1,3 +1,8 @@
+## v0.10.25 — Aide à la visée
+- M1 et techniques visent le curseur, aimantés vers l’ennemi le plus proche du curseur (150 px / 17°).
+- Sans souris (tactile, manette) : ennemi le plus proche.
+- Réglage « Aim assist » (activé par défaut). Test tests/aim10.js.
+
 ## v0.10.24 — Zonage par lieux réels
 - Le village entier est une seule zone (plus de frontière au milieu de Konoha, plus de changement de côté au bureau des missions).
 - L’extérieur est une seconde zone : on change de zone uniquement en passant la grande porte.

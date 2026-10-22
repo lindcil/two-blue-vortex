@@ -821,7 +821,8 @@
 "Porte & route": "Gate & Road",
 "Plaine": "Plains",
 "Collines": "Hills",
-"Hauteurs Est": "Eastern Heights"
+"Hauteurs Est": "Eastern Heights",
+"Aide à la visée (curseur / ennemi proche)": "Aim assist (cursor / nearest enemy)"
 }
 };
   const L = window.LANG10 = { DATA, miss: new Set(), get lang() { return (Save.set && Save.set.lang) || 'en'; }, set lang(v) { Save.set.lang = v; try { Save.saveSet && Save.saveSet(); } catch (e) {} },
