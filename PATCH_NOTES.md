@@ -1,3 +1,6 @@
+## v0.10.28 — v0.10.28: canon pass - mode skill names, distinct clan ults, element fixes
+Canon : 20 techniques de modes affichaient un chiffre au lieu de leur nom (Tsukuyomi, Narakumi, Kage Mane…) et les fan/mark/rain sans nombre ne tiraient rien — corrigé. Ultimes de clan distincts de la technique avancée : Inuzuka Sōtōrō : Garōga, Senju Mokuton : Shinsūsenju, Yamanaka Shinten Bunshin ; Nara avancé = Kage Nui. Éléments : Amaterasu feu, Shinra Tensei yang, Hakke Kūshō Jūken.
+
 ## v0.10.27 — v0.10.27: herb mission spots walkable in new layout
 Mission Herbes : les 3 touffes sont posées sur des rues dégagées près du bureau (avant : tirage aléatoire pouvant tomber dans une maison du nouveau quartier → mission bloquée). Toutes les missions du village < 2,6 k px à pied.
 

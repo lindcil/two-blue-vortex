@@ -104,7 +104,7 @@ button.b.p{background:var(--gold);color:var(--ink)}button.b.p2{background:var(--
 <script>
 'use strict';
 /* ============ Noyau : réglages, sauvegarde, entrées, audio ============ */
-const VERSION = '0.10.27';
+const VERSION = '0.10.28';
 const K10 = Math.sqrt(10); // v0.9.7 : échelle des cartes extérieures (surface ×10)
 const $ = (s) => document.querySelector(s);
 const TAU = Math.PI * 2, clamp = (v, a, b) => (v < a ? a : v > b ? b : v), lerp = (a, b, t) => a + (b - a) * t;
@@ -2175,7 +2175,7 @@ addEventListener('touchstart',()=>document.body.classList.add('touch07'),{passiv
   // ---------- fabrique de techniques : [nom, glyphe, genre, élément, dégâts, options] ----------
   const KIND = {
     shot(u, o, P, a, h) { const sp = o.sp || 620; add({ x: h.x, y: h.y, vx: Math.cos(a) * sp, vy: Math.sin(a) * sp, life: o.life || 0.9, dmg: o.d * P, el: o.el, r: o.r || 16, src: u, pierce: o.pierce, boom: o.boom, kind: 'm8', draw: (g, p) => { g.save(); lit(g); const R = (o.r || 16); g.fillStyle = rgba(o.c, 0.35); g.beginPath(); g.arc(p.x, p.y, R * 1.7, 0, TAU); g.fill(); g.fillStyle = rgba(o.c, 0.9); g.beginPath(); g.arc(p.x, p.y, R * 0.8, 0, TAU); g.fill(); if (o.shape === 'mag') { g.strokeStyle = rgba(o.c, 0.9); g.lineWidth = 4; g.beginPath(); g.arc(p.x - Math.cos(a) * R, p.y - Math.sin(a) * R, R * 0.7, a - 1.6, a + 1.6); g.stroke(); } if (o.shape === 'arrow') { g.strokeStyle = rgba(o.c, 0.95); g.lineWidth = 5; g.beginPath(); g.moveTo(p.x, p.y); g.lineTo(p.x - Math.cos(a) * 90, p.y - Math.sin(a) * 90); g.stroke(); } g.restore(); }, onHit: o.stun ? (f) => { f.st && (f.st.stun = o.stun); } : undefined }); FX.glow(h.x, h.y, o.c, 30, 0.2); },
-    fan(u, o, P, a, h) { const n = o.n || 3; for (let i = 0; i < n; i++) Game.later(i * 0.05, () => KIND.shot(u, Object.assign({}, o, { r: o.r || 11 }), P, a + (i - (n - 1) / 2) * (o.spread || 0.22), u.hand || h)); },
+    fan(u, o, P, a, h) { const n = CNT(o, 3); for (let i = 0; i < n; i++) Game.later(i * 0.05, () => KIND.shot(u, Object.assign({}, o, { r: o.r || 11 }), P, a + (i - (n - 1) / 2) * (o.spread || 0.22), u.hand || h)); },
     burst(u, o, P) { const R = o.r || 140; FX.ring(u.x, u.y - 20, o.c, 20, R, 0.45); FX.shock(u.x, u.y, o.c, R, 0.45, 8); aoe(u.x, u.y, R, o.d * P, u, { el: o.el, k: 1.3 }); if (o.stun) for (const f of foes()) if (Math.hypot(f.x - u.x, f.y - u.y) < R) f.st.stun = o.stun; if (o.pull) for (const f of foes()) if (Math.hypot(f.x - u.x, f.y - u.y) < R * 1.6) { f.x = lerp(f.x, u.x, 0.4); f.y = lerp(f.y, u.y, 0.4); } Cam.shake(0.15); },
     zone(u, o, P, a) { const f = near(u.x, u.y, 420), x = f ? f.x : u.x + Math.cos(a) * 200, y = f ? f.y : u.y + Math.sin(a) * 120, R = o.r || 110;
       FX.custom({ x, y, life: 0.9, ground: 1, draw: (g, p, q) => { g.save(); lit(g); g.globalAlpha = 0.6 * (1 - q * 0.5); g.strokeStyle = rgba(o.c, 0.9); g.lineWidth = 3; g.beginPath(); g.ellipse(x, y, R * Math.min(1, q * 3), R * 0.42 * Math.min(1, q * 3), 0, 0, TAU); g.stroke(); g.restore(); } });
@@ -2185,12 +2185,13 @@ addEventListener('touchstart',()=>document.body.classList.add('touch07'),{passiv
       for (const f of foes()) { const dx = f.x - h.x, dy = (f.y - 30) - h.y, t = dx * Math.cos(a) + dy * Math.sin(a), n = Math.abs(-dx * Math.sin(a) + dy * Math.cos(a)); if (t > 0 && t < L && n < W + 26) { hurt(f, o.d * P, u, { el: o.el, k: 1.4 }); if (o.stun) f.st.stun = o.stun; } } Cam.shake(0.12); },
     dash(u, o, P, a) { const D = o.D || 220, x0 = u.x, y0 = u.y; u.iframe = Math.max(u.iframe || 0, 0.35); const hit = new Set(); let t = 0;
       FX.custom({ x: x0, y: y0, life: 0.22, upd: (p, d) => { t += d; u.x += Math.cos(a) * D / 0.22 * d; u.y += Math.sin(a) * D * 0.6 / 0.22 * d; for (const f of foes()) if (!hit.has(f) && Math.hypot(f.x - u.x, f.y - u.y) < 60) { hit.add(f); hurt(f, o.d * P, u, { el: o.el, k: 1.5 }); if (o.stun) f.st.stun = o.stun; } FX.ghost && FX.ghost(u, rgba(o.c, 0.5)); }, draw: () => {} }); },
-    mark(u, o, P, a) { const R = o.r || 320; let n = 0; for (const f of foes()) { if (Math.hypot(f.x - u.x, f.y - u.y) > R || n >= (o.n || 3)) continue; n++; f.st.stun = o.stun || 1.4; hurt(f, o.d * P, u, { el: o.el }); FX.ring(f.x, f.y - 50, o.c, 8, 40, 0.5); FX.custom({ x: f.x, y: f.y, life: o.stun || 1.4, draw: (g, p, q) => { g.save(); lit(g); g.globalAlpha = 0.8 * (1 - q); g.strokeStyle = o.c; g.lineWidth = 2; g.beginPath(); g.arc(f.x, f.y - 80, 9 + Math.sin(Game.t * 8) * 2, 0, TAU); g.stroke(); g.restore(); } }); } FX.glow(u.x, u.y - 55, o.c, 40, 0.3); },
-    rain(u, o, P) { const n = o.n || 7; for (let i = 0; i < n; i++) Game.later(i * 0.09, () => { const f = foes()[Math.floor(Math.random() * Math.max(1, foes().length))], x = f && Math.random() < 0.75 ? f.x + rnd(-30, 30) : u.x + rnd(-260, 260), y = f && Math.random() < 0.75 ? f.y + rnd(-20, 20) : u.y + rnd(-160, 160);
+    mark(u, o, P, a) { const R = o.r || 320; let n = 0; for (const f of foes()) { if (Math.hypot(f.x - u.x, f.y - u.y) > R || n >= (CNT(o, 3))) continue; n++; f.st.stun = o.stun || 1.4; hurt(f, o.d * P, u, { el: o.el }); FX.ring(f.x, f.y - 50, o.c, 8, 40, 0.5); FX.custom({ x: f.x, y: f.y, life: o.stun || 1.4, draw: (g, p, q) => { g.save(); lit(g); g.globalAlpha = 0.8 * (1 - q); g.strokeStyle = o.c; g.lineWidth = 2; g.beginPath(); g.arc(f.x, f.y - 80, 9 + Math.sin(Game.t * 8) * 2, 0, TAU); g.stroke(); g.restore(); } }); } FX.glow(u.x, u.y - 55, o.c, 40, 0.3); },
+    rain(u, o, P) { const n = CNT(o, 7); for (let i = 0; i < n; i++) Game.later(i * 0.09, () => { const f = foes()[Math.floor(Math.random() * Math.max(1, foes().length))], x = f && Math.random() < 0.75 ? f.x + rnd(-30, 30) : u.x + rnd(-260, 260), y = f && Math.random() < 0.75 ? f.y + rnd(-20, 20) : u.y + rnd(-160, 160);
       FX.custom({ x, y, life: 0.35, draw: (g, p, q) => { g.save(); lit(g); g.strokeStyle = rgba(o.c, 0.9 * (1 - q)); g.lineWidth = 6 * (1 - q) + 2; g.beginPath(); g.moveTo(x - 60 + q * 60, y - 260 + q * 260); g.lineTo(x, y); g.stroke(); g.restore(); } }); Game.later(0.3, () => { FX.ring(x, y, o.c, 6, 50, 0.3); aoe(x, y, o.r || 55, o.d * P, u, { el: o.el, k: 1 }); }); }); },
     heal(u, o) { u.hp = Math.min(u.maxHp, u.hp + u.maxHp * (o.h || 0.15)); u.shieldT = o.sh || 4; FX.ring(u.x, u.y - 30, o.c, 20, 70, 0.5); FX.text(u.x, u.y - 100, '+', o.c, 18); },
   };
-  const S8 = (n, k, kind, el, d, c, o) => Object.assign({ n, k, kind, el, d, c }, o || {});
+  const CNT = (o, d) => o.cnt || (typeof o.n === 'number' ? o.n : 0) || d;
+  const S8 = (n, k, kind, el, d, c, o) => { const r = Object.assign({ n, k, kind, el, d, c }, o || {}); if (o && typeof o.n === 'number') { r.cnt = o.n; r.n = n; } return r; }; // v0.10.28 : le nombre de projectiles écrasait le nom
   // ---------- familles ----------
   const PUR = '#a46bff', RED = '#ff3b4a', BLU = '#4a8cff', GOLD = '#ffb13d', ORA = '#ff8a2a';
   const F = {};
@@ -3529,7 +3530,7 @@ addEventListener('touchstart',()=>document.body.classList.add('touch07'),{passiv
   if (window.MODE08) { const sg = MODE08.stage.bind(MODE08); MODE08.stage = function (h, n) { const s0 = h.md && h.md.st; const r = sg(h, n); if (h.md && h.md.st > (s0 || 0) && s0) DQ.add('mode'); return r; }; }
   if (window.VAR8) { let last = 0; setInterval(() => { const n = Object.values(VAR8.stat).reduce((a, b) => a + b, 0); if (n > last) { if (last) DQ.add('var', n - last); last = n; } }, 1000); }
   // ---------- Mode Ermite : famille de modes ajoutée en données (débloquée par la méditation) ----------
-  if (window.MODE08) { const S8 = (n, k, kind, el, d, c, o) => Object.assign({ n, k, kind, el, d, c }, o || {}); const fam = { n: 'Mode Ermite', c: '#ffb13d', key: 'Z', st: [
+  if (window.MODE08) { const S8 = (n, k, kind, el, d, c, o) => { const r = Object.assign({ n, k, kind, el, d, c }, o || {}); if (o && typeof o.n === 'number') { r.cnt = o.n; r.n = n; } return r; }; const fam = { n: 'Mode Ermite', c: '#ffb13d', key: 'Z', st: [
       { n: 'Senjutsu · nature', sk: [S8('Kawazu Kumite', '蛙', 'burst', 'yang', 26, '#ffb13d', { r: 150 }), S8('Senpō : Rasengan', '螺', 'shot', 'wind', 30, '#9fe8ff', { r: 24, boom: 80 })], ult: ['Senpō : Chōōdama Rasengan', 'burst', 'wind', 90, '#9fe8ff', { r: 240 }] },
       { n: 'Mode Ermite', sk: [S8('Gamarinshō', '鳴', 'beam', 'water', 34, '#6ec0ff', { L: 500, w: 40 }), S8('Senpō : Goemon', '衛', 'zone', 'fire', 30, '#ff8a2a', { r: 120 })], ult: ['Senpō : Rasenrengan', 'rain', 'wind', 60, '#9fe8ff', { n: 10, r: 80 }] },
       { n: 'Mode Ermite parfait', sk: [S8('Senpō : Rasenshuriken', '手', 'shot', 'wind', 60, '#bfe6ff', { r: 30, boom: 140 }), S8('Senpō : Mokuton', '木', 'rain', 'earth', 34, '#7ad07a', { n: 8 })], ult: ['Senpō : Ōdama Rasen Tarengan', 'rain', 'wind', 80, '#9fe8ff', { n: 14, r: 90 }] }] };
@@ -3778,6 +3779,17 @@ addEventListener('touchstart',()=>document.body.classList.add('touch07'),{passiv
   const cs = castSkill; castSkill = function (u, S, id, isHero) { const r = cs(u, S, id, isHero); if (S && S.m8 && u.act && u.act.k === 'cast' && u.act.S === S) { const A = animOf(S); if (A) { u.act.dur = A.dur; u.act.pose10 = A.pre; } } return r; };
   const fs = fireSkill; fireSkill = function (u, S, id) { const r = fs(u, S, id); if (S && S.m8 && u.act && u.act.k === 'cast' && u.act.S === S && u.act.pose10) { const A = animOf(S); if (A) u.act = { k: 'cast', S, id, t: 0, dur: 0.24, fired: true, pose10: A.post }; u.sq = 0.18; } return r; };
   window.MODEANIM10 = { KIND, SIG, animOf };
+})();
+
+// v0.10.28 — Canon : chaque clan a une technique avancée ET un ultime distincts (avant : Inuzuka/Senju/Yamanaka avaient le même nom pour les deux),
+// Nara avancé = Kage Nui (couture des ombres), éléments corrigés (Amaterasu = feu, Shinra Tensei = yang, Hakke Kūshō = Jūken/yang).
+(() => {
+  if (SK.kubishibari) { SK.kubishibari.n = 'Kage Nui'; SK.kubishibari.k = '縫'; }
+  const U = [['inuzuka', 'garoga', 'ult_sotoro', 'Sōtōrō : Garōga', 'wind', '狼', 'inu'], ['senju', 'jukai', 'ult_shinsu', 'Mokuton : Shinsūsenju', 'earth', '樹', 'tora'], ['yamanaka', 'shinranshin', 'ult_shinten', 'Shinten Bunshin', 'yin', '心', 'tori']];
+  for (const [clan, old, id, n, el, k, sign] of U) { SK[id] = { n, el, k, ult: 1, sign }; if (ULT_FX[old]) ULT_FX[id] = ULT_FX[old]; if (typeof ULT_NAME !== 'undefined') ULT_NAME[id] = n; CLAN_ULT[clan] = id; }
+  const EL = { amaterasu: 'fire', m8u_sharingan_3: 'fire', shinra: 'yang', m8_byakugan_0_1: 'yang' };
+  for (const id in EL) if (SK[id]) SK[id].el = EL[id];
+  const F = window.MODE08 && MODE08.F; if (F) { const a = F.sharingan && F.sharingan.st[3]; if (a) { if (a.sk[0]) a.sk[0].el = 'fire'; if (Array.isArray(a.ult)) a.ult[2] = 'fire'; } const b = F.byakugan && F.byakugan.st[0]; if (b && b.sk[1]) b.sk[1].el = 'yang'; }
 })();
 
 // v0.9.6 — Animations de base, décrites en données (ANIM10) pour les régler facilement : combo M1, dash, Kawarimi (bûche), réactions aux coups, garde, course de Naruto.
@@ -5211,7 +5223,8 @@ let FT10 = null, FB10 = null;
 "Rue marchande": "Market Street",
 "Voyage rapide": "Quick travel",
 "Porte du village": "Village Gate",
-"Impossible en combat": "Not during combat"
+"Impossible en combat": "Not during combat",
+"Mokuton : Shinsūsenju": "Wood Style: Shinsūsenju"
 }
 };
   const L = window.LANG10 = { DATA, miss: new Set(), get lang() { return (Save.set && Save.set.lang) || 'en'; }, set lang(v) { Save.set.lang = v; try { Save.saveSet && Save.saveSet(); } catch (e) {} },

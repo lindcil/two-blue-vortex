@@ -89,7 +89,7 @@
   if (window.MODE08) { const sg = MODE08.stage.bind(MODE08); MODE08.stage = function (h, n) { const s0 = h.md && h.md.st; const r = sg(h, n); if (h.md && h.md.st > (s0 || 0) && s0) DQ.add('mode'); return r; }; }
   if (window.VAR8) { let last = 0; setInterval(() => { const n = Object.values(VAR8.stat).reduce((a, b) => a + b, 0); if (n > last) { if (last) DQ.add('var', n - last); last = n; } }, 1000); }
   // ---------- Mode Ermite : famille de modes ajoutée en données (débloquée par la méditation) ----------
-  if (window.MODE08) { const S8 = (n, k, kind, el, d, c, o) => Object.assign({ n, k, kind, el, d, c }, o || {}); const fam = { n: 'Mode Ermite', c: '#ffb13d', key: 'Z', st: [
+  if (window.MODE08) { const S8 = (n, k, kind, el, d, c, o) => { const r = Object.assign({ n, k, kind, el, d, c }, o || {}); if (o && typeof o.n === 'number') { r.cnt = o.n; r.n = n; } return r; }; const fam = { n: 'Mode Ermite', c: '#ffb13d', key: 'Z', st: [
       { n: 'Senjutsu · nature', sk: [S8('Kawazu Kumite', '蛙', 'burst', 'yang', 26, '#ffb13d', { r: 150 }), S8('Senpō : Rasengan', '螺', 'shot', 'wind', 30, '#9fe8ff', { r: 24, boom: 80 })], ult: ['Senpō : Chōōdama Rasengan', 'burst', 'wind', 90, '#9fe8ff', { r: 240 }] },
       { n: 'Mode Ermite', sk: [S8('Gamarinshō', '鳴', 'beam', 'water', 34, '#6ec0ff', { L: 500, w: 40 }), S8('Senpō : Goemon', '衛', 'zone', 'fire', 30, '#ff8a2a', { r: 120 })], ult: ['Senpō : Rasenrengan', 'rain', 'wind', 60, '#9fe8ff', { n: 10, r: 80 }] },
       { n: 'Mode Ermite parfait', sk: [S8('Senpō : Rasenshuriken', '手', 'shot', 'wind', 60, '#bfe6ff', { r: 30, boom: 140 }), S8('Senpō : Mokuton', '木', 'rain', 'earth', 34, '#7ad07a', { n: 8 })], ult: ['Senpō : Ōdama Rasen Tarengan', 'rain', 'wind', 80, '#9fe8ff', { n: 14, r: 90 }] }] };

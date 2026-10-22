@@ -827,7 +827,8 @@
 "Rue marchande": "Market Street",
 "Voyage rapide": "Quick travel",
 "Porte du village": "Village Gate",
-"Impossible en combat": "Not during combat"
+"Impossible en combat": "Not during combat",
+"Mokuton : Shinsūsenju": "Wood Style: Shinsūsenju"
 }
 };
   const L = window.LANG10 = { DATA, miss: new Set(), get lang() { return (Save.set && Save.set.lang) || 'en'; }, set lang(v) { Save.set.lang = v; try { Save.saveSet && Save.saveSet(); } catch (e) {} },
