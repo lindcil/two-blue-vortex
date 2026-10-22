@@ -1,3 +1,6 @@
+## v0.10.50 — Point-blank projectiles hit; academy lesson 3 fixed
+Projectiles fired point-blank no longer pass through an enemy pressed against you (lesson 3 of the Academy could stall with a dummy at contact). Release check now compares FPS side by side against v0.10.35 (3 alternating runs, medians).
+
 ## v0.10.49 — Village perf: offscreen house cache; dummies real-input test
 Houses are pre-rendered offscreen (day/night, LRU 40): house draw cost 0.098 → ~0.04 ms. Added real-input tests for the dummies lesson and the prologue boss bar.
 

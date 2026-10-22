@@ -1,0 +1,6 @@
+const {chromium}=require('playwright-core');
+(async()=>{const b=await chromium.launch({executablePath:'/usr/bin/google-chrome',args:['--no-sandbox']});const p=await b.newPage({viewport:{width:1280,height:720}});const errs=[];p.on('pageerror',e=>errs.push(e.message));
+await p.goto('file:///workspace/two-blue-vortex/index.html');await p.waitForTimeout(900);if(await p.$('#lay07'))await p.click('#lay1');
+await p.evaluate(()=>{Game.startVoie({name:'Aoi',clan:'uchiha',look:makeLook(9)});setInterval(()=>{if(window.Scene&&Scene.on)Scene.close();if(Talk.on&&Talk.t>0.3){if(Talk.showing)Talk.pick(0);else Talk.next()}},200)});await p.waitForTimeout(5000);
+for(const D of [12,60,150]){const r=await p.evaluate(async(D)=>{Voie.set('a3');Voie.flags.l3t=0;const h=Game.hero;const d=World.foes().filter(f=>f.tag==='yard')[0];h.x=d.x-D;h.y=d.y;h.cd={};h.ch=999;Input.mouse&&(Input.mouse.wx=d.x);const id=Game.skills[0];const hp0=d.hp;h.aimA=0;fireSkill(h,SK[id],id);await new Promise(r=>setTimeout(r,120));const P0=Proj.map(q=>[Math.round(q.x-d.x),Math.round(q.y-d.y),q.team,!!q.src,q.src&&q.src.isHero,q.r,q.kind]);await new Promise(r=>setTimeout(r,1500));return [JSON.stringify(P0),id,D,Voie.step,d.hp,hp0,d.tag,d.dummy,Object.keys(d).filter(k=>/hit|inv|iframe/.test(k))]},D);console.log(JSON.stringify(r))}
+console.log(errs);await b.close()})();

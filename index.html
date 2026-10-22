@@ -104,7 +104,7 @@ button.b.p{background:var(--gold);color:var(--ink)}button.b.p2{background:var(--
 <script>
 'use strict';
 /* ============ Noyau : réglages, sauvegarde, entrées, audio ============ */
-const VERSION = '0.10.49';
+const VERSION = '0.10.50';
 const K10 = Math.sqrt(10); // v0.9.7 : échelle des cartes extérieures (surface ×10)
 const $ = (s) => document.querySelector(s);
 const TAU = Math.PI * 2, clamp = (v, a, b) => (v < a ? a : v > b ? b : v), lerp = (a, b, t) => a + (b - a) * t;
@@ -5959,6 +5959,19 @@ let FT10 = null, FB10 = null;
     g.fillStyle = 'rgba(255,255,255,.18)'; g.fillRect(x, y, W * pr, 1.5);
     g.fillStyle = 'rgba(6,10,22,.9)'; for (const k of [0.25, 0.5, 0.75]) g.fillRect(x + W * k - 1, y - 1, 2, 7);
     g.restore(); };
+})();
+
+// v0.10.50 — Bout portant : un projectile du joueur naît à la main, parfois déjà « derrière » un ennemi collé à lui (ex. leçon 3 de l’Académie, shuriken sur un mannequin au contact → raté).
+// À sa première frame, on teste le segment corps → main : le premier ennemi traversé est touché via le chemin normal (on recule simplement le projectile sur lui).
+(() => {
+  const pu = projUpdate;
+  projUpdate = function (dt) {
+    for (const p of Proj) { if (p._pb10) continue; p._pb10 = 1; const u = p.src; if (p.team !== 0 || !u || !u.isHero) continue;
+      const ax = u.x, ay = u.y - 34, bx = p.x, by = p.y, L = Math.hypot(bx - ax, by - ay) + 1; let best = null, bt = 2;
+      for (const f of World.foes()) { if (f.hp <= 0 || f.gone) continue; const fx = f.x, fy = f.y - 34, t = clamp(((fx - ax) * (bx - ax) + (fy - ay) * (by - ay)) / (L * L), 0, 1); const d = Math.hypot(ax + (bx - ax) * t - fx, ay + (by - ay) * t - fy); if (d < (f.r || 16) + (p.r || 10) && t < bt) { bt = t; best = f; } }
+      if (best) { p.x = best.x - p.vx * dt; p.y = best.y - 34 - p.vy * dt; } }
+    return pu.apply(this, arguments);
+  };
 })();
 
 </script></body></html>
